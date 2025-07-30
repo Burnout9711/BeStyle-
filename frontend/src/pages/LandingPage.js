@@ -53,7 +53,7 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section className="pad-2xl" style={{ background: var('--bg-section') }}>
+      <section className="pad-2xl" style={{ background: 'var(--bg-section)' }}>
         <div className="container">
           <h2 className="heading-1" style={{ textAlign: 'center', marginBottom: '3rem' }}>
             How It Works
