@@ -117,27 +117,24 @@ const QuizPage = () => {
           </div>
 
           {/* Current Step */}
-          <div className="voice-card" style={{ padding: '2rem' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div style={{ 
-                width: '60px', 
-                height: '60px', 
-                background: 'var(--accent-purple-200)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                margin: '0 auto 1rem'
-              }}>
-                <IconComponent size={24} style={{ color: 'var(--accent-purple-400)' }} />
+          <AnimatedSection animationType="slideInUp">
+            <div className="voice-card hover-lift" style={{ padding: '2rem' }}>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <div 
+                  className="step-circle pulse-element"
+                  style={{ 
+                    background: 'linear-gradient(135deg, var(--accent-purple-400) 0%, #b08fb5 100%)'
+                  }}
+                >
+                  <IconComponent size={24} style={{ color: 'white' }} />
+                </div>
+                <h2 className="heading-1" style={{ marginBottom: '0.5rem' }}>
+                  {currentStepData.title}
+                </h2>
+                <p className="body-medium" style={{ color: 'var(--text-muted)' }}>
+                  {currentStepData.description}
+                </p>
               </div>
-              <h2 className="heading-1" style={{ marginBottom: '0.5rem' }}>
-                {currentStepData.title}
-              </h2>
-              <p className="body-medium" style={{ color: 'var(--text-muted)' }}>
-                {currentStepData.description}
-              </p>
-            </div>
 
             {/* Questions */}
             <div style={{ space: '2rem' }}>
