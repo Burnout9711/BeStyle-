@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, User, Ruler, Palette, Briefcase, Heart, Camera } from 'lucide-react';
 import { mockQuizData } from '../data/mock';
+import AnimatedSection from '../components/AnimatedSection';
 
 const QuizPage = () => {
   const navigate = useNavigate();
