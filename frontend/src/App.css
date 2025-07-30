@@ -5,57 +5,48 @@
   box-sizing: border-box;
 }
 
-/* Foundation Colors */
+/* Foundation Colors - Modern Dark Theme */
 :root {
-  /* Backgrounds */
-  --bg-page: #FFF9F2;
-  --bg-card: #FFFFFF;
-  --bg-section: rgba(255, 244, 232, 0.6);
-  --bg-overlay: rgba(255, 255, 255, 0.95);
+  /* Primary Colors */
+  --bg-page: #000000;                    /* Jet Black - Main backgrounds */
+  --bg-card: #1A1A1A;                    /* Charcoal Gray - Card backgrounds */
+  --bg-section: rgba(26, 26, 26, 0.8);   /* Charcoal with opacity */
+  --bg-overlay: rgba(0, 0, 0, 0.95);     /* Black overlay with blur */
   
-  /* Text */
-  --text-primary: #232323;
-  --text-secondary: #353535;
-  --text-muted: #353535;
+  /* Text Colors */
+  --text-primary: #F5F5F5;               /* Soft Cream - Main text */
+  --text-secondary: #CCCCCC;             /* Light gray - Secondary text */
+  --text-muted: #999999;                 /* Medium gray - Muted text */
+  --text-dark: #000000;                  /* Jet Black - Text on light backgrounds */
+  
+  /* Accent Colors */
+  --accent-primary: #4F7FFF;             /* Electric Blue - Primary CTA */
+  --accent-secondary: #F2546D;           /* Deep Rose - Secondary highlights */
+  --accent-primary-hover: #6B8FFF;       /* Lighter blue for hover */
+  --accent-secondary-hover: #FF6B7D;     /* Lighter rose for hover */
   
   /* Borders */
-  --border-primary: #999999;
-  --border-input: #999999;
-  --border-input-focus: #4D4D4D;
-  --border-light: rgba(153, 153, 153, 0.3);
+  --border-primary: #333333;             /* Dark gray borders */
+  --border-input: #444444;               /* Input borders */
+  --border-input-focus: #4F7FFF;         /* Electric blue focus */
+  --border-light: rgba(245, 245, 245, 0.1); /* Subtle light borders */
   
-  /* Voice Interface Accent Colors */
-  --accent-purple-400: #987D9C;
-  --accent-purple-200: #F9E8FA;
-  --accent-blue-400: #768597;
-  --accent-blue-200: #E4EDF8;
-  --accent-orange-400: #BCA182;
-  --accent-orange-200: #FEEFDC;
-  --accent-pink-200: #FCC9C7;
-  --accent-green-200: #b8d1ba;
-  --accent-grey-200: #E9E1E1;
+  /* Gradients */
+  --gradient-hero-dark: linear-gradient(135deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(26, 26, 26, 0.9) 25%,
+    rgba(79, 127, 255, 0.1) 50%,
+    rgba(26, 26, 26, 0.9) 75%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  
+  --gradient-primary: linear-gradient(135deg, #4F7FFF 0%, #6B8FFF 100%);
+  --gradient-secondary: linear-gradient(135deg, #F2546D 0%, #FF6B7D 100%);
+  --gradient-dark: linear-gradient(135deg, #000000 0%, #1A1A1A 100%);
   
   /* Glass Effect Colors */
-  --glass-bg: rgba(255, 255, 255, 0.2);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  
-  /* Hero Gradients */
-  --gradient-hero-warm: linear-gradient(135deg,
-    rgba(252, 202, 199, 1) 0%,
-    rgba(253, 215, 197, 0.9) 25%,
-    rgba(254, 241, 229, 0.8) 50%,
-    rgba(255, 250, 243, 0.9) 75%,
-    rgba(252, 202, 199, 1) 100%
-  );
-  --gradient-hero-subtle: linear-gradient(180deg,
-    rgba(252, 202, 199, 0.95) 0%,
-    rgba(253, 215, 197, 0.8) 40%,
-    rgba(252, 202, 199, 1) 100%);
-    
-  --gradient-divider: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(153, 153, 153, 0.1) 50%, 
-    transparent 100%);
+  --glass-bg: rgba(245, 245, 245, 0.1);
+  --glass-border: rgba(245, 245, 245, 0.2);
 }
 
 /* Typography */
