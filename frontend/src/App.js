@@ -1,18 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import LandingPage from './pages/LandingPage';
+import EnhancedLandingPage from './pages/EnhancedLandingPage';
 import QuizPage from './pages/QuizPage';
-import ResultsPage from './pages/ResultsPage';
+import EnhancedResultsPage from './pages/EnhancedResultsPage';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<EnhancedLandingPage />} />
           <Route path="/quiz" element={<QuizPage />} />
-          <Route path="/results" element={<ResultsPage />} />
+          <Route path="/results" element={<EnhancedResultsPage />} />
         </Routes>
       </BrowserRouter>
     </div>
