@@ -232,6 +232,7 @@ const QuizPage = () => {
                 </div>
               ))}
             </div>
+          </div>
           </AnimatedSection>
 
           {/* Navigation */}
