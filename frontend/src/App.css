@@ -569,6 +569,19 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--accent-purple-400);
 }
 
+/* Performance optimization styles */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Advanced spin animation for loading states */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Responsive Design with 3D considerations */
 @media (min-width: 768px) {
   .container {
