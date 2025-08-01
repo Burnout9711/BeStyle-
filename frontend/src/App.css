@@ -226,21 +226,22 @@ body {
   transform: perspective(1000px) translateZ(2px) scale(0.98);
 }
 
-/* Enhanced 3D Voice Interface Cards */
+/* Enhanced 3D Voice Interface Cards - Dark Theme */
 .voice-card {
   background: var(--bg-card);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(245, 245, 245, 0.1);
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px);
   transform-style: preserve-3d;
+  border: 1px solid var(--border-primary);
 }
 
 .voice-card::before {
@@ -250,7 +251,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.05) 0%, transparent 50%, rgba(79, 127, 255, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -262,29 +263,47 @@ body {
 .voice-card:hover {
   transform: perspective(1000px) rotateX(-5deg) rotateY(8deg) translateZ(20px) scale(1.02);
   box-shadow: 
-    0 25px 80px rgba(0, 0, 0, 0.15),
-    0 10px 30px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    0 25px 80px rgba(79, 127, 255, 0.2),
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(245, 245, 245, 0.2);
+  border-color: var(--accent-primary);
 }
 
 .voice-card:active {
   transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px) scale(0.98);
 }
 
+.voice-card.accent-primary { 
+  background: linear-gradient(135deg, rgba(79, 127, 255, 0.1) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(79, 127, 255, 0.3);
+}
+.voice-card.accent-secondary { 
+  background: linear-gradient(135deg, rgba(242, 84, 109, 0.1) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(242, 84, 109, 0.3);
+}
 .voice-card.accent-purple { 
-  background: linear-gradient(135deg, var(--accent-purple-200) 0%, rgba(249, 232, 250, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(79, 127, 255, 0.1) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(79, 127, 255, 0.3);
 }
 .voice-card.accent-blue { 
-  background: linear-gradient(135deg, var(--accent-blue-200) 0%, rgba(228, 237, 248, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(79, 127, 255, 0.15) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(79, 127, 255, 0.4);
 }
 .voice-card.accent-orange { 
-  background: linear-gradient(135deg, var(--accent-orange-200) 0%, rgba(254, 239, 220, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(242, 84, 109, 0.1) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(242, 84, 109, 0.3);
 }
 .voice-card.accent-pink { 
-  background: linear-gradient(135deg, var(--accent-pink-200) 0%, rgba(252, 201, 199, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(242, 84, 109, 0.15) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(242, 84, 109, 0.4);
 }
 .voice-card.accent-green { 
-  background: linear-gradient(135deg, var(--accent-green-200) 0%, rgba(184, 209, 186, 0.8) 100%);
+  background: linear-gradient(135deg, rgba(79, 127, 255, 0.1) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(79, 127, 255, 0.3);
+}
+.voice-card.accent-grey-200 { 
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.05) 0%, rgba(26, 26, 26, 0.9) 100%);
+  border-color: rgba(245, 245, 245, 0.2);
 }
 
 /* Floating Animation for Hero Elements */
