@@ -92,12 +92,7 @@ const EnhancedLandingPage = () => {
             </ParallaxScrolling>
             
             <AnimatedSection animationType="slideInUp" delay={200}>
-              <h1 className="heading-hero" style={{ 
-                background: 'linear-gradient(135deg, #232323 0%, #987D9C 50%, #768597 100%)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
+              <h1 className="heading-hero" style={{ marginBottom: '1rem' }}>
                 Your Next Outfit,<br />Chosen by AI.
               </h1>
             </AnimatedSection>
