@@ -46,7 +46,7 @@ async def close_mongo_connection():
 async def create_indexes():
     """Create database indexes for better performance"""
     try:
-        if not db_instance.database:
+        if db_instance.database is None:
             return
             
         db = db_instance.database
