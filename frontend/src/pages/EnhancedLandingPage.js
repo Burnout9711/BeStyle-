@@ -41,20 +41,11 @@ const EnhancedLandingPage = () => {
     <PerformanceOptimizer>
       <div className="enhanced-landing-page">
         {/* Particle Background */}
-        <ParticleEffect particleCount={30} color="#fbbf24" size={3} />
+        <ParticleEffect particleCount={30} color="#4F7FFF" size={3} />
         
         {/* Advanced Header */}
-        <header className="header-nav" style={{
-          background: 'rgba(255, 249, 242, 0.95)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }}>
-          <div className="logo" style={{
-            background: 'linear-gradient(135deg, #987D9C 0%, #768597 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>
+        <header className="header-nav">
+          <div className="logo">
             BeStyle.AI
           </div>
           <div className="nav-actions">
