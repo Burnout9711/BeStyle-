@@ -74,7 +74,7 @@ async def create_indexes():
 
 def get_database() -> AsyncIOMotorDatabase:
     """Get database instance"""
-    if not db_instance.database:
+    if db_instance.database is None:
         raise Exception("Database not initialized")
     return db_instance.database
 
