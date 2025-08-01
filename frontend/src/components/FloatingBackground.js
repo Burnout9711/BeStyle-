@@ -2,11 +2,11 @@ import React from 'react';
 
 const FloatingBackground = () => {
   const shapes = [
-    { id: 1, size: 60, left: '10%', top: '20%', color: 'rgba(152, 125, 156, 0.1)', delay: '0s' },
-    { id: 2, size: 80, left: '80%', top: '15%', color: 'rgba(118, 133, 151, 0.1)', delay: '2s' },
-    { id: 3, size: 40, left: '70%', top: '70%', color: 'rgba(188, 161, 130, 0.1)', delay: '4s' },
-    { id: 4, size: 100, left: '15%', top: '80%', color: 'rgba(252, 201, 199, 0.1)', delay: '1s' },
-    { id: 5, size: 50, left: '50%', top: '50%', color: 'rgba(184, 209, 186, 0.1)', delay: '3s' }
+    { id: 1, size: 60, left: '10%', top: '20%', color: 'rgba(79, 127, 255, 0.1)', delay: '0s' },
+    { id: 2, size: 80, left: '80%', top: '15%', color: 'rgba(242, 84, 109, 0.1)', delay: '2s' },
+    { id: 3, size: 40, left: '70%', top: '70%', color: 'rgba(79, 127, 255, 0.08)', delay: '4s' },
+    { id: 4, size: 100, left: '15%', top: '80%', color: 'rgba(242, 84, 109, 0.08)', delay: '1s' },
+    { id: 5, size: 50, left: '50%', top: '50%', color: 'rgba(79, 127, 255, 0.12)', delay: '3s' }
   ];
 
   return (
