@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const ParticleEffect = ({ particleCount = 50, color = '#fbbf24', size = 2 }) => {
+const ParticleEffect = ({ particleCount = 50, color = '#4F7FFF', size = 2 }) => {
   const canvasRef = useRef(null);
   const particles = useRef([]);
   const animationId = useRef(null);
