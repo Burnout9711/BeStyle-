@@ -119,9 +119,7 @@ const EnhancedLandingPage = () => {
                   onClick={() => navigate('/quiz')}
                   style={{ 
                     fontSize: '1.1rem', 
-                    padding: '1.2rem 2.5rem',
-                    background: 'linear-gradient(135deg, #232323 0%, #404040 100%)',
-                    boxShadow: '0 10px 30px rgba(35, 35, 35, 0.3)'
+                    padding: '1.2rem 2.5rem'
                   }}
                 >
                   Start Your Style Journey <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
