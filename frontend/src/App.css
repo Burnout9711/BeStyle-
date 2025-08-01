@@ -511,7 +511,7 @@ body {
   animation: slideInRight 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
-/* Enhanced step number circles */
+/* Enhanced step number circles with new colors */
 .step-circle {
   width: 60px;
   height: 60px;
@@ -525,16 +525,18 @@ body {
   font-size: 1.25rem;
   transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   transform: perspective(1000px) translateZ(0px);
+  background: var(--gradient-primary);
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 8px 25px rgba(79, 127, 255, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .step-circle:hover {
   transform: perspective(1000px) translateZ(15px) rotateX(-10deg) scale(1.1);
   box-shadow: 
-    0 15px 40px rgba(0, 0, 0, 0.2),
+    0 15px 40px rgba(79, 127, 255, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  filter: brightness(1.1);
 }
 
 /* Spacing */
