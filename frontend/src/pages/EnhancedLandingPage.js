@@ -7,6 +7,7 @@ import ParallaxScrolling from '../components/ParallaxScrolling';
 import Avatar3D from '../components/Avatar3D';
 import ParticleEffect from '../components/ParticleEffect';
 import PerformanceOptimizer from '../components/PerformanceOptimizer';
+import QuizIntroSection from '../components/QuizIntroSection';
 
 const EnhancedLandingPage = () => {
   const navigate = useNavigate();
