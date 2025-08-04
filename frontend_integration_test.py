@@ -346,14 +346,14 @@ class FrontendIntegrationTester:
         
         # Test that session persists across multiple requests (as frontend does)
         try:
-            # First request - submit step
+            # First request - submit step (corrected format)
             step_payload = {
                 "session_id": self.session_id,
-                "step_index": 3,
-                "step_data": {
-                    "work_environment": "Office",
-                    "social_activities": ["Dinner parties", "Networking events"],
-                    "daily_routine": "Professional meetings"
+                "step_number": 3,
+                "answers": {
+                    "occupation": "Software Engineer",
+                    "typical_week": ["Mostly work", "Gym & sports"],
+                    "help_occasions": ["Work/office", "Casual daily wear", "Social media outfits"]
                 }
             }
             
