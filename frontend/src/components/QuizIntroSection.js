@@ -313,27 +313,7 @@ const QuizIntroSection = ({ onStartQuiz }) => {
         </div>
       </div>
 
-      {/* Additional CSS animations */}
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { left: -100%; }
-          100% { left: 100%; }
-        }
-        
-        .quiz-intro-section .btn-primary:hover .arrow-icon {
-          transform: translateX(5px);
-        }
-        
-        @media (max-width: 768px) {
-          .quiz-intro-section .voice-card {
-            padding: 1.5rem !important;
-          }
-          
-          .quiz-intro-section .heading-hero {
-            font-size: 2rem !important;
-          }
-        }
-      `}</style>
+      {/* Additional animations are handled via CSS classes */}
     </section>
   );
 };
