@@ -420,7 +420,7 @@ const QuizTeaser = ({ onStartQuiz }) => {
         display: 'flex', 
         justifyContent: 'center',
         transform: 'perspective(1000px) rotateY(-15deg) rotateX(5deg)'
-      }}>
+      }} className="mobile-mockup">
         <MobileMockup />
       </div>
     </div>
