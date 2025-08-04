@@ -109,11 +109,11 @@ class FrontendIntegrationTester:
             self.log_test("QuizPage Step Submission", False, "No session_id available")
             return
         
-        # Simulate frontend step submission pattern
+        # Simulate frontend step submission pattern (corrected to match backend API)
         frontend_step_data = {
             "session_id": self.session_id,
-            "step_index": 0,  # Frontend uses step_index
-            "step_data": {    # Frontend uses step_data
+            "step_number": 0,  # Backend expects step_number
+            "answers": {       # Backend expects answers
                 "full_name": "Emma Thompson",
                 "gender_identity": "Female", 
                 "date_of_birth": "05/20/1990",
