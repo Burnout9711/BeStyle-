@@ -8,6 +8,7 @@ import Avatar3D from '../components/Avatar3D';
 import ParticleEffect from '../components/ParticleEffect';
 import PerformanceOptimizer from '../components/PerformanceOptimizer';
 import QuizIntroSection from '../components/QuizIntroSection';
+import WaitlistSection from '../components/WaitlistSection';
 
 const EnhancedLandingPage = () => {
   const navigate = useNavigate();
