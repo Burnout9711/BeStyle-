@@ -5,18 +5,45 @@ import { quizAPI } from '../services/api';
 
 const ResultsPage = () => {
   const navigate = useNavigate();
-  const [quizAnswers, setQuizAnswers] = useState(null);
+  const location = useLocation();
+  const [quizResults, setQuizResults] = useState(null);
   const [savedOutfits, setSavedOutfits] = useState(new Set());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const savedAnswers = localStorage.getItem('quizAnswers');
-    if (savedAnswers) {
-      setQuizAnswers(JSON.parse(savedAnswers));
-    } else {
-      // If no quiz answers, redirect to quiz
-      navigate('/quiz');
-    }
-  }, [navigate]);
+    const loadResults = async () => {
+      try {
+        setLoading(true);
+        
+        // Get session ID from URL params
+        const urlParams = new URLSearchParams(location.search);
+        const sessionId = urlParams.get('session');
+        
+        if (!sessionId) {
+          // No session ID, redirect to quiz
+          navigate('/quiz');
+          return;
+        }
+        
+        // Fetch quiz results from backend
+        const results = await quizAPI.getResults(sessionId);
+        setQuizResults(results);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to load quiz results:', err);
+        setError('Failed to load your results. Please try taking the quiz again.');
+        // Redirect to quiz after showing error briefly
+        setTimeout(() => {
+          navigate('/quiz');
+        }, 3000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResults();
+  }, [navigate, location.search]);
 
   const toggleSaveOutfit = (outfitId) => {
     const newSaved = new Set(savedOutfits);
@@ -42,9 +69,71 @@ const ResultsPage = () => {
     }
   };
 
-  if (!quizAnswers) {
-    return <div>Loading...</div>;
+  // Loading state
+  if (loading) {
+    return (
+      <div className="results-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-primary)' }}>
+          <div style={{ 
+            width: '60px', 
+            height: '60px', 
+            border: '4px solid var(--border-light)',
+            borderTop: '4px solid var(--accent-purple-400)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <h2>Generating Your Style Profile...</h2>
+          <p style={{ color: 'var(--text-muted)' }}>Our AI is curating the perfect outfits for you</p>
+        </div>
+      </div>
+    );
   }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="results-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-primary)' }}>
+          <h2>Oops! Something went wrong</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>{error}</p>
+          <button 
+            className="btn-primary" 
+            onClick={() => navigate('/quiz')}
+          >
+            Take Quiz Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!quizResults) {
+    return (
+      <div className="results-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh'
+      }}>
+        <p>No results found.</p>
+      </div>
+    );
+  }
+
+  // Extract data from API response
+  const { quiz_answers, style_profile, recommendations, confidence_score } = quizResults;
+  const outfitSuggestions = recommendations || [];
 
   return (
     <div className="results-page" style={{ background: 'var(--bg-page)', minHeight: '100vh' }}>
