@@ -4,6 +4,7 @@ import { ArrowRight, ArrowDown, Brain, Calendar, Shirt, ChevronDown, Instagram, 
 import { waitlistAPI } from '../services/api';
 
 const CinematicLandingPage = () => {
+  console.log('🎬 CINEMATIC LANDING PAGE IS LOADING!');
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
   const [currentSection, setCurrentSection] = useState(0);
