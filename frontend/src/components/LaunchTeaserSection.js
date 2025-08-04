@@ -194,13 +194,7 @@ const LaunchTeaserSection = ({ onTakeQuiz }) => {
         </AnimatedSection>
       </div>
 
-      {/* CSS for blinking cursor */}
-      <style jsx>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-      `}</style>
+      {/* CSS is handled via classes in App.css */}
     </section>
   );
 };
