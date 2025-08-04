@@ -312,13 +312,17 @@ const EnhancedResultsPage = () => {
 
             {/* Enhanced Style Summary */}
             <AnimatedSection animationType="slideInUp" delay={400}>
-              <div className="voice-card accent-purple hover-lift" style={{ 
-                marginBottom: '4rem', 
-                padding: '3rem',
-                background: 'linear-gradient(135deg, var(--accent-purple-200) 0%, rgba(249, 232, 250, 0.6) 100%)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
+              <Enhanced3DCard 
+                className="accent-purple" 
+                intensity={0.7}
+                style={{ 
+                  marginBottom: '4rem', 
+                  padding: '3rem',
+                  background: 'linear-gradient(135deg, var(--accent-purple-200) 0%, rgba(249, 232, 250, 0.6) 100%)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
                 {/* Background pattern */}
                 <div style={{
                   position: 'absolute',
