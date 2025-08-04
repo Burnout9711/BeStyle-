@@ -829,6 +829,24 @@ input:focus {
   .cinematic-section h2 {
     font-size: clamp(1.8rem, 6vw, 3rem) !important;
   }
+  
+  /* Mobile Quiz Layout */
+  .quiz-teaser-grid {
+    grid-template-columns: 1fr !important;
+    gap: 3rem !important;
+    text-align: center !important;
+  }
+  
+  .mobile-mockup {
+    transform: none !important;
+    scale: 0.8;
+  }
+  
+  /* Mobile AI Features */
+  .ai-features-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
 }
 
 /* Sophisticated Background Animations */
