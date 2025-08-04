@@ -483,9 +483,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Quiz Integration with Backend API"
-    - "Results Page Backend Integration"
-    - "Waitlist Backend Integration"
     - "Apple-Style Homepage Animation"
   stuck_tasks: []
   test_all: false
