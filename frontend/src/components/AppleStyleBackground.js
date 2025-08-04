@@ -101,12 +101,12 @@ const SophisticatedBackground = ({
         background: `
           radial-gradient(
             ellipse ${600 + waveOffset1}px ${400 + waveOffset2}px at ${50 + (mousePosition.x - 0.5) * 20}% ${30 + (mousePosition.y - 0.5) * 15}%, 
-            ${primaryColor}08 0%, 
+            ${primaryColor}12 0%, 
             transparent 50%
           ),
           radial-gradient(
             ellipse ${500 + waveOffset2}px ${600 + waveOffset3}px at ${70 + (mousePosition.x - 0.5) * -15}% ${70 + (mousePosition.y - 0.5) * 20}%, 
-            ${secondaryColor}06 0%, 
+            ${secondaryColor}10 0%, 
             transparent 50%
           )
         `,
