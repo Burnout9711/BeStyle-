@@ -151,12 +151,12 @@ class FrontendIntegrationTester:
             self.log_test("QuizPage Completion", False, "No session_id available")
             return
         
-        # Submit a few more steps to complete the quiz
+        # Submit a few more steps to complete the quiz (corrected format)
         steps_data = [
             {
                 "session_id": self.session_id,
-                "step_index": 1,
-                "step_data": {
+                "step_number": 1,
+                "answers": {
                     "height": "5'7\"",
                     "weight": "135 lbs",
                     "body_type": "Hourglass",
@@ -165,8 +165,8 @@ class FrontendIntegrationTester:
             },
             {
                 "session_id": self.session_id,
-                "step_index": 2,
-                "step_data": {
+                "step_number": 2,
+                "answers": {
                     "current_style": ["Smart Casual", "Bohemian"],
                     "interested_styles": ["Trendy", "Elegant"],
                     "favorite_colors": ["Navy", "Cream", "Rose Gold"],
