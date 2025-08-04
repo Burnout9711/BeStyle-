@@ -510,26 +510,53 @@ const CinematicWaitlist = () => {
     agree: false
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle submission logic here
-    setIsSubmitted(true);
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      await waitlistAPI.subscribe(formData.email, formData.instagram);
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error('Waitlist submission error:', err);
+      if (err.response?.status === 400 && err.response?.data?.detail?.includes('already')) {
+        setError("You're already on our waitlist!");
+      } else if (err.response?.status === 422) {
+        setError('Please enter a valid email address');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
     return (
       <div style={{ textAlign: 'center', maxWidth: '600px' }}>
+        <div style={{
+          fontSize: '4rem',
+          marginBottom: '2rem',
+          animation: 'fadeInUp 0.8s ease-out'
+        }}>
+          🎉
+        </div>
         <h2 style={{
           fontSize: 'clamp(2.5rem, 6vw, 4rem)',
           fontWeight: '700',
-          marginBottom: '2rem'
+          marginBottom: '2rem',
+          animation: 'fadeInUp 0.8s ease-out 0.2s both'
         }}>
-          🎉 You're In!
+          You're In!
         </h2>
         <p style={{
           fontSize: '1.4rem',
-          opacity: 0.8
+          opacity: 0.8,
+          animation: 'fadeInUp 0.8s ease-out 0.4s both'
         }}>
           We'll notify you as soon as BeStyle.ai is ready for you.
         </p>
@@ -571,7 +598,8 @@ const CinematicWaitlist = () => {
               border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '12px',
               color: '#FFFFFF',
-              backdropFilter: 'blur(10px)'
+              backdropFilter: 'blur(10px)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -590,7 +618,8 @@ const CinematicWaitlist = () => {
               border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '12px',
               color: '#FFFFFF',
-              backdropFilter: 'blur(10px)'
+              backdropFilter: 'blur(10px)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -610,35 +639,52 @@ const CinematicWaitlist = () => {
           </label>
         </div>
         
+        {error && (
+          <div style={{
+            color: '#F2546D',
+            fontSize: '0.9rem',
+            marginBottom: '1.5rem',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
+        
         <button
           type="submit"
+          disabled={isLoading}
           style={{
-            background: '#FFFFFF',
+            background: isLoading ? 'rgba(255, 255, 255, 0.6)' : '#FFFFFF',
             color: '#000000',
             border: 'none',
             padding: '18px 36px',
             fontSize: '1.2rem',
             fontWeight: '600',
             borderRadius: '50px',
-            cursor: 'pointer',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '12px',
-            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: isLoading ? 0.7 : 1
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = '#f5f5f5';
-            e.target.style.transform = 'translateY(-3px) scale(1.05)';
-            e.target.style.boxShadow = '0 20px 60px rgba(255, 255, 255, 0.3)';
+            if (!isLoading) {
+              e.target.style.background = '#f5f5f5';
+              e.target.style.transform = 'translateY(-3px) scale(1.05)';
+              e.target.style.boxShadow = '0 20px 60px rgba(255, 255, 255, 0.3)';
+            }
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = '#FFFFFF';
-            e.target.style.transform = 'translateY(0px) scale(1)';
-            e.target.style.boxShadow = 'none';
+            if (!isLoading) {
+              e.target.style.background = '#FFFFFF';
+              e.target.style.transform = 'translateY(0px) scale(1)';
+              e.target.style.boxShadow = 'none';
+            }
           }}
         >
           <ArrowRight size={20} />
-          Join Now
+          {isLoading ? 'Joining...' : 'Join Now'}
         </button>
       </form>
     </div>
