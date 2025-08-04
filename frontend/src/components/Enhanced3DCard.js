@@ -3,20 +3,19 @@ import React, { useRef, useEffect, useState } from 'react';
 const Enhanced3DCard = ({ 
   children, 
   className = '', 
-  intensity = 1.0, 
-  enableMouseTracking = true,
+  intensity = 0.3, // Much lower default intensity for subtlety
+  enableMouseTracking = false, // Disabled by default for smoother experience
   enableScrollAnimation = true,
   ...props 
 }) => {
   const cardRef = useRef(null);
   const [isInView, setIsInView] = useState(false);
-  const [scrollDepth, setScrollDepth] = useState(0);
 
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
 
-    // Mouse tracking for 3D tilt effect
+    // Subtle mouse tracking (only if enabled)
     const handleMouseMove = (e) => {
       if (!enableMouseTracking) return;
       
@@ -27,59 +26,42 @@ const Enhanced3DCard = ({
       const deltaX = (e.clientX - centerX) / (rect.width / 2);
       const deltaY = (e.clientY - centerY) / (rect.height / 2);
       
-      const rotateX = deltaY * -8 * intensity; // Invert Y for natural feel
-      const rotateY = deltaX * 12 * intensity;
-      const translateZ = Math.min(Math.abs(deltaX) + Math.abs(deltaY), 1) * 15 * intensity;
+      // Much more subtle rotation values
+      const rotateX = deltaY * -2 * intensity; 
+      const rotateY = deltaX * 3 * intensity;
+      const translateY = Math.abs(deltaX + deltaY) * -2 * intensity;
       
       card.style.transform = `
-        perspective(1200px) 
+        translateY(${translateY}px) 
         rotateX(${rotateX}deg) 
         rotateY(${rotateY}deg) 
-        translateZ(${translateZ}px)
-        scale(${1 + (translateZ / 200)})
+        scale(${1 + (Math.abs(deltaX + deltaY) * 0.005 * intensity)})
       `;
-      
-      // Add dynamic lighting effect
-      const lightX = 50 + deltaX * 20;
-      const lightY = 50 + deltaY * 20;
-      
-      const beforeElement = window.getComputedStyle(card, '::before');
-      if (beforeElement) {
-        card.style.setProperty('--light-x', `${lightX}%`);
-        card.style.setProperty('--light-y', `${lightY}%`);
-      }
     };
 
     const handleMouseLeave = () => {
       if (!enableMouseTracking) return;
       
-      card.style.transform = `
-        perspective(1200px) 
-        rotateX(0deg) 
-        rotateY(0deg) 
-        translateZ(0px)
-        scale(1)
-      `;
-      card.style.transition = 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+      card.style.transform = 'translateY(0px) rotateX(0deg) rotateY(0deg) scale(1)';
+      card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       
       setTimeout(() => {
-        card.style.transition = 'transform 0.2s cubic-bezier(0.23, 1, 0.32, 1)';
-      }, 600);
+        card.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      }, 400);
     };
 
     const handleMouseEnter = () => {
       if (!enableMouseTracking) return;
-      card.style.transition = 'transform 0.2s cubic-bezier(0.23, 1, 0.32, 1)';
+      card.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
     };
 
-    // Scroll-based animations
+    // Simplified scroll-based animations
     const handleScroll = () => {
       if (!enableScrollAnimation || !card) return;
       
       const rect = card.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       
-      // Check if element is in view
       const elementTop = rect.top;
       const elementBottom = rect.bottom;
       const isVisible = elementTop < windowHeight && elementBottom > 0;
@@ -91,22 +73,6 @@ const Enhanced3DCard = ({
           card.classList.add('scroll-reveal', 'in-view');
         } else {
           card.classList.remove('in-view');
-        }
-      }
-      
-      // Calculate scroll depth for layered effect
-      if (isVisible) {
-        const viewportProgress = Math.max(0, Math.min(1, 
-          (windowHeight - elementTop) / (windowHeight + rect.height)
-        ));
-        
-        const depth = Math.floor(viewportProgress * 3) + 1;
-        if (depth !== scrollDepth) {
-          setScrollDepth(depth);
-          
-          // Remove previous depth classes
-          card.classList.remove('scroll-depth-1', 'scroll-depth-2', 'scroll-depth-3');
-          card.classList.add(`scroll-depth-${depth}`);
         }
       }
     };
@@ -122,8 +88,7 @@ const Enhanced3DCard = ({
     if (enableScrollAnimation) {
       card.classList.add('scroll-reveal');
       window.addEventListener('scroll', handleScroll, { passive: true });
-      // Initial check
-      handleScroll();
+      handleScroll(); // Initial check
     }
 
     return () => {
@@ -137,16 +102,12 @@ const Enhanced3DCard = ({
         window.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [intensity, enableMouseTracking, enableScrollAnimation, isInView, scrollDepth]);
+  }, [intensity, enableMouseTracking, enableScrollAnimation, isInView]);
 
   return (
     <div
       ref={cardRef}
       className={`voice-card ${className}`}
-      style={{
-        '--light-x': '50%',
-        '--light-y': '50%'
-      }}
       {...props}
     >
       {children}
