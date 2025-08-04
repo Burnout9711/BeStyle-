@@ -49,7 +49,7 @@ const SophisticatedBackground = ({
       const x = 50 + Math.sin(time * 0.3 + phase) * 20 + (mousePosition.x - 0.5) * 10;
       const y = 50 + Math.cos(time * 0.2 + phase) * 15 + (mousePosition.y - 0.5) * 8;
       const scale = 0.8 + Math.sin(time * 0.4 + phase) * 0.3;
-      const opacity = 0.1 + Math.sin(time * 0.5 + phase) * 0.05;
+      const opacity = 0.15 + Math.sin(time * 0.5 + phase) * 0.08;
       
       return (
         <div
