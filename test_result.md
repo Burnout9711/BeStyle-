@@ -409,6 +409,54 @@ frontend:
         agent: "testing"
         comment: "✅ PASSED - Mobile responsiveness excellent. Tested mobile (390x844), tablet (768x1024), and desktop (1920x1080) viewports. Mobile header navigation works, CTA buttons function properly, quiz flow works on mobile, layouts adapt correctly, text remains readable, all interactions work on touch devices."
 
+  - task: "Quiz Integration with Backend API"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/QuizPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to replace mock data and localStorage usage with real backend API calls. Should integrate: quiz session start, step submission, and completion endpoints."
+
+  - task: "Results Page Backend Integration"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/ResultsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to replace mock outfit suggestions with real AI recommendations from backend API. Should fetch results using session_id from quiz completion."
+
+  - task: "Waitlist Backend Integration"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/components/WaitlistSection.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to replace mock API call with real backend waitlist subscription endpoint. Currently has commented-out API call code."
+
+  - task: "Apple-Style Homepage Animation"
+    implemented: false
+    working: "NA"
+    file: "/app/frontend/src/pages/RestructuredLandingPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "User requested replacement of current homepage animation with Apple Vision Pro-inspired subtle 3D spotlight effect on black background with slow central light/sheen effect."
+
 metadata:
   created_by: "testing_agent"
   version: "1.1"
