@@ -585,7 +585,7 @@ const AIFeatures = () => {
       gap: '2rem',
       maxWidth: '1000px',
       margin: '0 auto'
-    }}>
+    }} className="ai-features-grid">
       {features.map((feature, index) => (
         <div
           key={index}
