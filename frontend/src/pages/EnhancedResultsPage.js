@@ -314,7 +314,8 @@ const EnhancedResultsPage = () => {
             <AnimatedSection animationType="slideInUp" delay={400}>
               <Enhanced3DCard 
                 className="accent-purple" 
-                intensity={0.7}
+                intensity={0.1}
+                enableMouseTracking={false}
                 style={{ 
                   marginBottom: '4rem', 
                   padding: '3rem',
