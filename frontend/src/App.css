@@ -598,13 +598,33 @@ input:focus, textarea:focus, select:focus {
   transition-duration: 0.01ms !important;
 }
 
-/* Advanced spin animation for loading states */
+/* Advanced animations */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* Responsive Design with 3D considerations */
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Quiz intro section specific styles */
+.quiz-intro-section .btn-primary:hover .arrow-icon {
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .quiz-intro-section .voice-card {
+    padding: 1.5rem !important;
+  }
+  
+  .quiz-intro-section .heading-hero {
+    font-size: 2rem !important;
+  }
+}
+
+/* Enhanced mobile responsiveness with 3D considerations */
 @media (min-width: 768px) {
   .container {
     padding: 0 2.25rem;
