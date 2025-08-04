@@ -157,22 +157,6 @@ const RestructuredLandingPage = () => {
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* Interactive cursor effect */}
-          <div 
-            style={{
-              position: 'absolute',
-              left: mousePosition.x - 150,
-              top: mousePosition.y - 150,
-              width: 300,
-              height: 300,
-              background: 'radial-gradient(circle, rgba(79, 127, 255, 0.08) 0%, transparent 70%)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-              transition: 'all 0.3s ease',
-              zIndex: 1
-            }}
-          />
-
           <div style={{ maxWidth: '900px', position: 'relative', zIndex: 2 }}>
             <AnimatedSection animationType="slideInUp">
               <h1 style={{
@@ -180,11 +164,12 @@ const RestructuredLandingPage = () => {
                 fontWeight: '700',
                 lineHeight: '1.1',
                 marginBottom: '1.5rem',
-                background: 'linear-gradient(135deg, #ffffff 0%, #cccccc 100%)',
+                background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                letterSpacing: '-0.02em'
+                letterSpacing: '-0.02em',
+                textShadow: '0 0 40px rgba(255, 255, 255, 0.1)'
               }}>
                 Your Personal<br />Style Genie
               </h1>
@@ -193,11 +178,12 @@ const RestructuredLandingPage = () => {
             <AnimatedSection animationType="slideInUp" delay={200}>
               <p style={{
                 fontSize: '1.4rem',
-                color: 'rgba(255, 255, 255, 0.8)',
+                color: 'rgba(255, 255, 255, 0.85)',
                 lineHeight: '1.6',
                 marginBottom: '3rem',
                 maxWidth: '700px',
-                margin: '0 auto 3rem'
+                margin: '0 auto 3rem',
+                textShadow: '0 0 20px rgba(255, 255, 255, 0.05)'
               }}>
                 BeStyle.ai helps you choose what to wear, based on your mood, occasion, and personality — all powered by AI.
               </p>
@@ -207,7 +193,7 @@ const RestructuredLandingPage = () => {
               <button
                 onClick={handleTryNow}
                 style={{
-                  background: '#FFFFFF',
+                  background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 100%)',
                   color: '#000000',
                   border: 'none',
                   padding: '20px 40px',
@@ -220,22 +206,23 @@ const RestructuredLandingPage = () => {
                   alignItems: 'center',
                   gap: '12px',
                   fontFamily: 'inherit',
-                  boxShadow: '0 10px 40px rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 10px 40px rgba(255, 255, 255, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1)',
                   transform: 'perspective(1000px) translateZ(0px) scale(1)',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  backdropFilter: 'blur(10px)'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = '#000000';
+                  e.target.style.background = 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, #000000 100%)';
                   e.target.style.color = '#FFFFFF';
                   e.target.style.transform = 'perspective(1000px) translateZ(10px) scale(1.05)';
-                  e.target.style.boxShadow = '0 20px 60px rgba(255, 255, 255, 0.3)';
+                  e.target.style.boxShadow = '0 20px 60px rgba(255, 255, 255, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = '#FFFFFF';
+                  e.target.style.background = 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 100%)';
                   e.target.style.color = '#000000';
                   e.target.style.transform = 'perspective(1000px) translateZ(0px) scale(1)';
-                  e.target.style.boxShadow = '0 10px 40px rgba(255, 255, 255, 0.2)';
+                  e.target.style.boxShadow = '0 10px 40px rgba(255, 255, 255, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1)';
                 }}
               >
                 <ArrowRight size={22} />
