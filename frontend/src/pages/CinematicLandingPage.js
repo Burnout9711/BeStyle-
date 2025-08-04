@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowDown, Brain, Calendar, Shirt, ChevronDown, Instagram, Linkedin } from 'lucide-react';
+import { waitlistAPI } from '../services/api';
 
 const CinematicLandingPage = () => {
   const navigate = useNavigate();
