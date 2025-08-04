@@ -726,6 +726,229 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
+/* Cinematic Homepage Animations */
+
+/* Hero Animations */
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+
+@keyframes heroGlow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
+  }
+  50% {
+    filter: brightness(1.08) drop-shadow(0 0 60px rgba(255, 255, 255, 0.4));
+  }
+}
+
+/* Story Section Animations */
+@keyframes storyScaleIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rippleGlow {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* Background Effects */
+@keyframes spotlightPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-15px) translateX(-10px);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100vw) rotate(45deg);
+  }
+}
+
+@keyframes horizontalShimmer {
+  0%, 100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes verticalShimmer {
+  0%, 100% {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-50%) translateY(0%);
+    opacity: 1;
+  }
+}
+
+/* Mobile Quiz Mockup Animations */
+@keyframes mobileFloat {
+  0%, 100% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotateY(2deg);
+  }
+}
+
+@keyframes selectedPulse {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes progressGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(79, 127, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(79, 127, 255, 0.8);
+  }
+}
+
+/* Button Animations */
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Success Animations */
+@keyframes successBounce {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll Intersection Animations */
+.cinematic-section {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cinematic-section.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Feature Card Hover Effects */
+.feature-card:hover .feature-card::before {
+  width: 200px;
+  height: 200px;
+  opacity: 0.1;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .quiz-grid {
+    grid-template-columns: 1fr !important;
+    gap: 4rem !important;
+    text-align: center !important;
+  }
+  
+  .cinematic-section {
+    padding: 2rem 1rem !important;
+  }
+}
+
+/* Smooth scroll enhancement */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Input focus states */
+input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 /* Cinematic Landing Page Animations */
 @keyframes heroGlow {
   0%, 100% {
@@ -789,22 +1012,6 @@ input:focus, textarea:focus, select:focus {
   100% {
     transform: translateY(0px) translateX(0px);
   }
-}
-
-/* Smooth Scroll Enhancement */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Input Field Styling for Cinematic Theme */
-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Enhanced Button Glow Effects */
