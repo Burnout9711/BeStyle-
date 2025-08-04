@@ -394,8 +394,8 @@ const EnhancedResultsPage = () => {
             </AnimatedSection>
             
             <div className="ai-grid" style={{ gap: '2rem' }}>
-              {mockOutfitSuggestions.map((outfit, index) => (
-                <AnimatedSection key={outfit.id} animationType="slideInUp" delay={600 + (index * 100)}>
+              {outfitSuggestions.map((outfit, index) => (
+                <AnimatedSection key={outfit.id || index} animationType="slideInUp" delay={600 + (index * 100)}>
                   <div 
                     className="voice-card hover-lift" 
                     style={{ 
@@ -409,7 +409,7 @@ const EnhancedResultsPage = () => {
                     {/* Enhanced Outfit Visualization */}
                     <div style={{
                       height: '240px',
-                      background: `linear-gradient(135deg, ${outfit.color} 0%, ${outfit.color}80 100%)`,
+                      background: `linear-gradient(135deg, hsl(${(index * 60) % 360}, 30%, 40%) 0%, hsl(${(index * 60) % 360}, 25%, 35%) 100%)`,
                       borderRadius: '1rem',
                       marginBottom: '1.5rem',
                       display: 'flex',
@@ -431,9 +431,10 @@ const EnhancedResultsPage = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '0.025em',
                         fontWeight: '600',
-                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                        color: 'black'
                       }}>
-                        {outfit.occasion}
+                        {outfit.occasion || `Outfit ${index + 1}`}
                       </div>
                       
                       {/* Confidence Badge */}
@@ -452,7 +453,7 @@ const EnhancedResultsPage = () => {
                         gap: '0.25rem'
                       }}>
                         <TrendingUp size={12} />
-                        {outfit.confidence}%
+                        {outfit.match_score || (90 - index * 2)}%
                       </div>
                       
                       {/* Save Button */}
@@ -460,18 +461,18 @@ const EnhancedResultsPage = () => {
                         className="btn-nav"
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleSaveOutfit(outfit.id);
+                          toggleSaveOutfit(outfit.id || index);
                         }}
                         style={{
                           position: 'absolute',
                           top: '20px',
                           right: '70px',
-                          background: savedOutfits.has(outfit.id) ? 'var(--accent-purple-400)' : 'rgba(255,255,255,0.9)',
-                          color: savedOutfits.has(outfit.id) ? 'white' : 'var(--text-primary)',
+                          background: savedOutfits.has(outfit.id || index) ? 'var(--accent-purple-400)' : 'rgba(255,255,255,0.9)',
+                          color: savedOutfits.has(outfit.id || index) ? 'white' : 'var(--text-primary)',
                           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)'
                         }}
                       >
-                        <Heart size={16} fill={savedOutfits.has(outfit.id) ? 'currentColor' : 'none'} />
+                        <Heart size={16} fill={savedOutfits.has(outfit.id || index) ? 'currentColor' : 'none'} />
                       </button>
 
                       {/* Central Icon */}
@@ -492,7 +493,7 @@ const EnhancedResultsPage = () => {
                     {/* Enhanced Outfit Details */}
                     <div style={{ marginBottom: '1.5rem' }}>
                       <h3 className="heading-3" style={{ marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        {outfit.title}
+                        {outfit.title || `Stylish Look ${index + 1}`}
                         <span style={{
                           background: 'var(--accent-purple-200)',
                           color: 'var(--accent-purple-400)',
@@ -511,7 +512,7 @@ const EnhancedResultsPage = () => {
                         color: 'var(--text-muted)',
                         lineHeight: '1.6'
                       }}>
-                        {outfit.description}
+                        {outfit.description || 'A perfectly curated outfit that matches your personal style and preferences.'}
                       </p>
                     </div>
 
@@ -520,8 +521,8 @@ const EnhancedResultsPage = () => {
                       <h4 style={{ fontSize: '0.875rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--text-primary)' }}>
                         Complete Look:
                       </h4>
-                      {outfit.items.map((item, index) => (
-                        <div key={index} style={{ 
+                      {(outfit.items || []).map((item, itemIndex) => (
+                        <div key={itemIndex} style={{ 
                           display: 'flex', 
                           justifyContent: 'space-between', 
                           alignItems: 'center',
@@ -532,7 +533,9 @@ const EnhancedResultsPage = () => {
                           border: '1px solid rgba(152, 125, 156, 0.1)',
                           transition: 'all 0.3s ease'
                         }}>
-                          <span className="body-small" style={{ fontWeight: '500' }}>{item.name}</span>
+                          <span className="body-small" style={{ fontWeight: '500' }}>
+                            {typeof item === 'string' ? item : item.name || `Item ${itemIndex + 1}`}
+                          </span>
                           <span className="caption" style={{ 
                             background: 'var(--accent-purple-400)',
                             color: 'white',
@@ -540,7 +543,7 @@ const EnhancedResultsPage = () => {
                             borderRadius: '1rem',
                             fontSize: '0.7rem'
                           }}>
-                            {item.brand}
+                            {typeof item === 'string' ? 'Various' : item.brand || 'Designer'}
                           </span>
                         </div>
                       ))}
