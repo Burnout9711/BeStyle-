@@ -207,20 +207,25 @@ const CinematicLandingPage = () => {
           transform: `translateY(${Math.max(0, (scrollY - window.innerHeight * 3.5) * 0.1)}px)`
         }}>
           <h2 style={{
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-            fontWeight: '700',
+            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+            fontWeight: '400',
             marginBottom: '1rem',
-            lineHeight: '1.1'
+            lineHeight: '1.1',
+            color: '#FFFFFF',
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
+            letterSpacing: '-0.02em'
           }}>
             Smarter Than a Stylist
           </h2>
           
           <p style={{
-            fontSize: '1.4rem',
-            opacity: 0.8,
-            marginBottom: '4rem',
-            maxWidth: '700px',
-            margin: '0 auto 4rem'
+            fontSize: '1.3rem',
+            opacity: 0.7,
+            marginBottom: '5rem',
+            maxWidth: '600px',
+            margin: '0 auto 5rem',
+            color: '#FFFFFF',
+            fontWeight: '300'
           }}>
             Our AI blends your vibe, goals, and occasion to deliver daily outfit suggestions.
           </p>
