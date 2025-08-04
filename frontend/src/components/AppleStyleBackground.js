@@ -1,73 +1,32 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const AppleStyleBackground = ({ 
-  intensity = 0.6, 
-  color = 'rgba(255, 255, 255, 0.03)', 
-  speed = 0.5,
-  spotlightIntensity = 0.8 
+const SophisticatedBackground = ({ 
+  intensity = 1.0,
+  primaryColor = '#4F7FFF',
+  secondaryColor = '#F2546D', 
+  speed = 0.8
 }) => {
-  const backgroundRef = useRef(null);
-  const spotlightRef = useRef(null);
+  const containerRef = useRef(null);
   const animationRef = useRef(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 });
+  const [time, setTime] = useState(0);
 
   useEffect(() => {
-    let mouseX = 0;
-    let mouseY = 0;
     let animationTime = 0;
 
     const handleMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        setMousePosition({
+          x: (e.clientX - rect.left) / rect.width,
+          y: (e.clientY - rect.top) / rect.height
+        });
+      }
     };
 
     const animate = () => {
-      animationTime += speed;
-      
-      if (backgroundRef.current && spotlightRef.current) {
-        // Create subtle breathing/pulsing effect
-        const breathe = Math.sin(animationTime * 0.01) * 0.1 + 0.9;
-        
-        // Create gentle rotation for the conic gradient
-        const rotation = animationTime * 0.05;
-        
-        // Create parallax effect with mouse
-        const parallaxX = (mouseX / window.innerWidth - 0.5) * 30;
-        const parallaxY = (mouseY / window.innerHeight - 0.5) * 30;
-        
-        // Update the main background gradient
-        backgroundRef.current.style.transform = `
-          translate(${parallaxX}px, ${parallaxY}px) 
-          scale(${breathe})
-        `;
-        
-        // Update the rotating spotlight
-        backgroundRef.current.style.background = `
-          conic-gradient(
-            from ${rotation}deg at 50% 50%, 
-            transparent 0deg, 
-            ${color} 45deg, 
-            transparent 90deg, 
-            transparent 180deg, 
-            ${color} 225deg, 
-            transparent 270deg, 
-            transparent 360deg
-          )
-        `;
-        
-        // Update central spotlight based on mouse position
-        const spotlightX = (mouseX / window.innerWidth) * 100;
-        const spotlightY = (mouseY / window.innerHeight) * 100;
-        
-        spotlightRef.current.style.background = `
-          radial-gradient(
-            ellipse 400px 300px at ${spotlightX}% ${spotlightY}%, 
-            rgba(255, 255, 255, ${spotlightIntensity * 0.08}) 0%, 
-            rgba(255, 255, 255, ${spotlightIntensity * 0.04}) 25%, 
-            transparent 50%
-          )
-        `;
-      }
-      
+      animationTime += speed * 0.016; // ~60fps
+      setTime(animationTime);
       animationRef.current = requestAnimationFrame(animate);
     };
 
@@ -81,102 +40,139 @@ const AppleStyleBackground = ({
       }
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [intensity, color, speed, spotlightIntensity]);
+  }, [speed]);
+
+  // Generate floating orbs with smooth animation
+  const generateFloatingOrbs = () => {
+    return Array.from({ length: 8 }, (_, i) => {
+      const phase = (i * Math.PI * 2) / 8;
+      const x = 50 + Math.sin(time * 0.3 + phase) * 20 + (mousePosition.x - 0.5) * 10;
+      const y = 50 + Math.cos(time * 0.2 + phase) * 15 + (mousePosition.y - 0.5) * 8;
+      const scale = 0.8 + Math.sin(time * 0.4 + phase) * 0.3;
+      const opacity = 0.1 + Math.sin(time * 0.5 + phase) * 0.05;
+      
+      return (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${x}%`,
+            top: `${y}%`,
+            width: `${120 * scale}px`,
+            height: `${120 * scale}px`,
+            background: `radial-gradient(circle, ${i % 2 === 0 ? primaryColor : secondaryColor}${Math.floor(opacity * 255).toString(16).padStart(2, '0')} 0%, transparent 70%)`,
+            borderRadius: '50%',
+            transform: 'translate(-50%, -50%)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: 'none',
+            filter: 'blur(1px)'
+          }}
+        />
+      );
+    });
+  };
+
+  // Generate wave patterns
+  const waveOffset1 = Math.sin(time * 0.2) * 20;
+  const waveOffset2 = Math.cos(time * 0.15) * 15;
+  const waveOffset3 = Math.sin(time * 0.25) * 25;
 
   return (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      overflow: 'hidden',
-      pointerEvents: 'none',
-      zIndex: 0
-    }}>
-      {/* Base gradient layer */}
+    <div 
+      ref={containerRef}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}
+    >
+      {/* Animated gradient background waves */}
       <div style={{
         position: 'absolute',
-        top: '-50%',
-        left: '-50%',
-        width: '200%',
-        height: '200%',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         background: `
           radial-gradient(
-            circle at center, 
-            rgba(255, 255, 255, 0.02) 0%, 
-            transparent 40%
+            ellipse ${600 + waveOffset1}px ${400 + waveOffset2}px at ${50 + (mousePosition.x - 0.5) * 20}% ${30 + (mousePosition.y - 0.5) * 15}%, 
+            ${primaryColor}08 0%, 
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse ${500 + waveOffset2}px ${600 + waveOffset3}px at ${70 + (mousePosition.x - 0.5) * -15}% ${70 + (mousePosition.y - 0.5) * 20}%, 
+            ${secondaryColor}06 0%, 
+            transparent 50%
           )
         `,
-        animation: 'subtleRotate 60s linear infinite'
+        transition: 'background 0.3s ease'
       }} />
-      
-      {/* Rotating conic gradient spotlight */}
-      <div 
-        ref={backgroundRef}
-        style={{
-          position: 'absolute',
-          top: '-100%',
-          left: '-100%',
-          width: '300%',
-          height: '300%',
-          background: `
-            conic-gradient(
-              from 0deg at 50% 50%, 
-              transparent 0deg, 
-              ${color} 45deg, 
-              transparent 90deg, 
-              transparent 180deg, 
-              ${color} 225deg, 
-              transparent 270deg, 
-              transparent 360deg
-            )
-          `,
-          transformOrigin: 'center center',
-          transition: 'transform 0.3s ease-out'
-        }}
-      />
-      
-      {/* Interactive mouse spotlight */}
-      <div 
-        ref={spotlightRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `
-            radial-gradient(
-              ellipse 400px 300px at 50% 50%, 
-              rgba(255, 255, 255, ${spotlightIntensity * 0.08}) 0%, 
-              rgba(255, 255, 255, ${spotlightIntensity * 0.04}) 25%, 
-              transparent 50%
-            )
-          `,
-          transition: 'background 0.3s ease-out'
-        }}
-      />
-      
-      {/* Subtle center glow */}
+
+      {/* Floating orbs */}
+      {generateFloatingOrbs()}
+
+      {/* Interactive center glow */}
       <div style={{
         position: 'absolute',
-        top: '40%',
-        left: '50%',
+        left: `${mousePosition.x * 100}%`,
+        top: `${mousePosition.y * 100}%`,
         transform: 'translate(-50%, -50%)',
-        width: '800px',
+        width: '400px',
         height: '400px',
+        background: `radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%)`,
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderRadius: '50%'
+      }} />
+
+      {/* Subtle grid overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         background: `
-          radial-gradient(
-            ellipse, 
-            rgba(255, 255, 255, 0.015) 0%, 
-            transparent 60%
-          )
+          linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px)
         `,
-        animation: 'gentlePulse 8s ease-in-out infinite'
+        backgroundSize: '60px 60px',
+        animation: 'gridMove 20s linear infinite',
+        opacity: 0.3
+      }} />
+
+      {/* Morphing background shapes */}
+      <div style={{
+        position: 'absolute',
+        top: '20%',
+        left: '10%',
+        width: '200px',
+        height: '200px',
+        background: `linear-gradient(${time * 30}deg, ${primaryColor}05, ${secondaryColor}05)`,
+        borderRadius: '50%',
+        transform: `scale(${1 + Math.sin(time * 0.3) * 0.2}) rotate(${time * 10}deg)`,
+        filter: 'blur(2px)',
+        animation: 'float 6s ease-in-out infinite'
+      }} />
+
+      <div style={{
+        position: 'absolute',
+        bottom: '30%',
+        right: '15%',
+        width: '150px',
+        height: '150px',
+        background: `linear-gradient(${time * -20}deg, ${secondaryColor}04, ${primaryColor}04)`,
+        borderRadius: '50%',
+        transform: `scale(${1 + Math.cos(time * 0.4) * 0.3}) rotate(${time * -15}deg)`,
+        filter: 'blur(1.5px)',
+        animation: 'float 8s ease-in-out infinite reverse'
       }} />
     </div>
   );
 };
 
-export default AppleStyleBackground;
+export default SophisticatedBackground;
