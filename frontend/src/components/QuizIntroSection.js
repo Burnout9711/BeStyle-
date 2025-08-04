@@ -63,7 +63,7 @@ const QuizIntroSection = ({ onStartQuiz }) => {
               borderRadius: '2rem',
               padding: '0.5rem 1rem',
               marginBottom: '2rem',
-              backdrop-filter: 'blur(10px)'
+              backdropFilter: 'blur(10px)'
             }}>
               <Sparkles size={16} style={{ color: 'var(--accent-primary)' }} />
               <span className="caption" style={{ 
