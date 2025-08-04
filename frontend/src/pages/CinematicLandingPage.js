@@ -328,6 +328,8 @@ const ScrollStorySection = ({ storyRefs, scrollY }) => {
             fontWeight: '600',
             lineHeight: '1.2',
             maxWidth: '800px',
+            color: '#FFFFFF',
+            textShadow: '0 0 30px rgba(255, 255, 255, 0.2)',
             opacity: Math.max(0, Math.min(1, 1 - Math.abs(scrollY - window.innerHeight * (index + 1.5)) / 400)),
             transform: `translateY(${Math.max(-100, Math.min(100, (scrollY - window.innerHeight * (index + 1.5)) * 0.3))}px)`,
             transition: 'opacity 0.3s ease-out'
