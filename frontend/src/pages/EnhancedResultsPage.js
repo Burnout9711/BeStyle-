@@ -301,7 +301,7 @@ const EnhancedResultsPage = () => {
                     See how each outfit looks on your personalized avatar
                   </p>
                   <Avatar3D 
-                    userProfile={quizAnswers}
+                    userProfile={quiz_answers}
                     selectedOutfit={selectedOutfit}
                     interactive={true}
                   />
