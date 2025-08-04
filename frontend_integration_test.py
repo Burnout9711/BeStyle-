@@ -184,7 +184,7 @@ class FrontendIntegrationTester:
                     headers={'Content-Type': 'application/json'}
                 ) as response:
                     if response.status != 200:
-                        self.log_test(f"QuizPage Step {step_data['step_index']} Prep", False, f"HTTP {response.status}")
+                        self.log_test(f"QuizPage Step {step_data['step_number']} Prep", False, f"HTTP {response.status}")
                         return
             except Exception as e:
                 self.log_test(f"QuizPage Step {step_data['step_index']} Prep", False, f"Exception: {str(e)}")
