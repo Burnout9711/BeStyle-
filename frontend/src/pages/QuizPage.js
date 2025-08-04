@@ -368,7 +368,7 @@ const QuizPage = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </Enhanced3DCard>
           </AnimatedSection>
 
           {/* Navigation */}
