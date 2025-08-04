@@ -403,7 +403,8 @@ const EnhancedResultsPage = () => {
               {outfitSuggestions.map((outfit, index) => (
                 <AnimatedSection key={outfit.id || index} animationType="slideInUp" delay={600 + (index * 100)}>
                   <Enhanced3DCard
-                    intensity={0.9}
+                    intensity={0.2}
+                    enableMouseTracking={false}
                     style={{ 
                       padding: '2rem',
                       position: 'relative',
