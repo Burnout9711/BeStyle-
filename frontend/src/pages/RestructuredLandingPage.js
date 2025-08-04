@@ -50,8 +50,16 @@ const RestructuredLandingPage = () => {
         color: '#FFFFFF',
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
       }}>
-        {/* Particle Background */}
-        <ParticleEffect particleCount={25} color="#4F7FFF" size={2} />
+        {/* Apple-style Background Animation */}
+        <AppleStyleBackground 
+          intensity={0.7}
+          color="rgba(255, 255, 255, 0.04)"
+          speed={0.3}
+          spotlightIntensity={0.8}
+        />
+        
+        {/* Subtle Particle Effect for Additional Depth */}
+        <ParticleEffect particleCount={15} color="#4F7FFF" size={1.5} />
 
         {/* Header Navigation */}
         <header style={{
