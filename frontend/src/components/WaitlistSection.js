@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, Check, Lock, Mail, Instagram } from 'lucide-react';
+import { waitlistAPI } from '../services/api';
 import AnimatedSection from './AnimatedSection';
 
 const WaitlistSection = () => {
