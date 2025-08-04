@@ -363,7 +363,7 @@ const QuizTeaser = ({ onStartQuiz }) => {
       alignItems: 'center',
       maxWidth: '1200px',
       margin: '0 auto'
-    }}>
+    }} className="quiz-teaser-grid">
       {/* Left side - Text and CTA */}
       <div style={{ textAlign: 'left' }}>
         <div style={{
