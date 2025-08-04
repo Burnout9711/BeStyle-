@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Download, Share2, Heart, ShoppingBag, Sparkles, Zap, TrendingUp } from 'lucide-react';
-import { mockOutfitSuggestions } from '../data/mock';
+import { quizAPI } from '../services/api';
 import AnimatedSection from '../components/AnimatedSection';
 import SocialShare from '../components/SocialShare';
 import Avatar3D from '../components/Avatar3D';
