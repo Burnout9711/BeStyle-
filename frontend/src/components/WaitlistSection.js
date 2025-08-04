@@ -48,23 +48,28 @@ const WaitlistSection = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API call (replace with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Make actual API call to backend
+      const response = await waitlistAPI.subscribe(
+        formData.email,
+        formData.instagram
+      );
       
-      // Here you would make the actual API call to your backend
-      // const response = await fetch('/api/waitlist/subscribe', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     email: formData.email,
-      //     instagram: formData.instagram,
-      //     source: 'waitlist_section'
-      //   })
-      // });
-      
+      console.log('Waitlist subscription successful:', response);
       setIsSubmitted(true);
     } catch (error) {
       console.error('Waitlist submission error:', error);
+      
+      // Handle specific error cases
+      if (error.response?.status === 400 && error.response?.data?.detail?.includes('already')) {
+        // User is already on waitlist
+        setErrors({ email: 'You\'re already on our waitlist!' });
+      } else if (error.response?.status === 422) {
+        // Validation error
+        setErrors({ email: 'Please enter a valid email address' });
+      } else {
+        // General error
+        setErrors({ email: 'Something went wrong. Please try again.' });
+      }
     } finally {
       setIsLoading(false);
     }
