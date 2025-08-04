@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import EnhancedLandingPage from './pages/EnhancedLandingPage';
+import RestructuredLandingPage from './pages/RestructuredLandingPage';
 import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
 
@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<EnhancedLandingPage />} />
+          <Route path="/" element={<RestructuredLandingPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/results" element={<EnhancedResultsPage />} />
         </Routes>
