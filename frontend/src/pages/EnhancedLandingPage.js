@@ -125,7 +125,7 @@ const EnhancedLandingPage = () => {
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                 <button 
                   className="btn-primary hover-scale pulse-element" 
-                  onClick={() => navigate('/quiz')}
+                  onClick={() => handleStartQuiz()}
                   style={{ 
                     fontSize: '1.1rem', 
                     padding: '1.2rem 2.5rem'
