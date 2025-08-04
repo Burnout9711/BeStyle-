@@ -388,7 +388,7 @@ const EnhancedResultsPage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Enhanced3DCard>
             </AnimatedSection>
 
             {/* Enhanced Outfit Suggestions */}
