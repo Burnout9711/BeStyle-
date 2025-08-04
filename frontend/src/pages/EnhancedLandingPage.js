@@ -66,7 +66,7 @@ const EnhancedLandingPage = () => {
               <Play size={16} style={{ marginRight: '0.5rem' }} />
               Demo
             </button>
-            <button className="btn-secondary hover-scale" onClick={() => navigate('/quiz')}>
+            <button className="btn-secondary hover-scale" onClick={() => handleStartQuiz()}>
               Try Quiz
             </button>
           </div>
