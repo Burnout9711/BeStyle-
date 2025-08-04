@@ -178,7 +178,9 @@ const CinematicLandingPage = () => {
             fontSize: 'clamp(2.5rem, 6vw, 4rem)',
             fontWeight: '700',
             marginBottom: '2rem',
-            lineHeight: '1.1'
+            lineHeight: '1.1',
+            color: '#FFFFFF',
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3)'
           }}>
             ✨ Discover Your Look<br />in 60 Seconds
           </h2>
