@@ -306,7 +306,7 @@ const CinematicBackground = ({ scrollY, currentSection }) => {
 const ScrollStorySection = ({ storyRefs, scrollY }) => {
   const stories = [
     "Tired of outfit confusion?",
-    "AI learns your style – and evolves with you.",
+    "AI learns your style — and evolves with you.",
     "Less guessing. More confidence."
   ];
 
@@ -322,19 +322,21 @@ const ScrollStorySection = ({ storyRefs, scrollY }) => {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            position: 'relative'
+            position: 'relative',
+            padding: '0 2rem'
           }}
         >
           <h2 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: '600',
-            lineHeight: '1.2',
-            maxWidth: '800px',
+            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+            fontWeight: '400',
+            lineHeight: '1.1',
+            maxWidth: '900px',
             color: '#FFFFFF',
             textShadow: '0 0 30px rgba(255, 255, 255, 0.2)',
             opacity: Math.max(0, Math.min(1, 1 - Math.abs(scrollY - window.innerHeight * (index + 1.5)) / 400)),
             transform: `translateY(${Math.max(-100, Math.min(100, (scrollY - window.innerHeight * (index + 1.5)) * 0.3))}px)`,
-            transition: 'opacity 0.3s ease-out'
+            transition: 'opacity 0.3s ease-out',
+            letterSpacing: '-0.02em'
           }}>
             {story}
           </h2>
