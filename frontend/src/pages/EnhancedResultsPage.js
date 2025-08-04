@@ -401,8 +401,8 @@ const EnhancedResultsPage = () => {
             <div className="ai-grid" style={{ gap: '2rem' }}>
               {outfitSuggestions.map((outfit, index) => (
                 <AnimatedSection key={outfit.id || index} animationType="slideInUp" delay={600 + (index * 100)}>
-                  <div 
-                    className="voice-card hover-lift" 
+                  <Enhanced3DCard
+                    intensity={0.9}
                     style={{ 
                       padding: '2rem',
                       position: 'relative',
