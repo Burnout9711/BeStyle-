@@ -609,6 +609,11 @@ input:focus, textarea:focus, select:focus {
   100% { left: 100%; }
 }
 
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
 /* Quiz intro section specific styles */
 .quiz-intro-section .btn-primary:hover .arrow-icon {
   transform: translateX(5px);
