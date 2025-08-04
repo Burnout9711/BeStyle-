@@ -8,51 +8,82 @@ const QuizPage = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [sessionId, setSessionId] = useState(null);
+  const [quizSteps, setQuizSteps] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const quizSteps = [
-    {
-      id: 'basic_info',
-      title: 'Basic Info',
-      icon: User,
-      description: 'These help build a user identity.',
-      questions: mockQuizData.basicInfo
-    },
-    {
-      id: 'body_type',
-      title: 'Body Type & Size',
-      icon: Ruler,
-      description: 'Helps in sizing and fit-based recommendations.',
-      questions: mockQuizData.bodyType
-    },
-    {
-      id: 'style_preferences',
-      title: 'Style Preferences',
-      icon: Palette,
-      description: 'These shape their personal style profile.',
-      questions: mockQuizData.stylePreferences
-    },
-    {
-      id: 'lifestyle',
-      title: 'Lifestyle & Occasions',
-      icon: Briefcase,
-      description: 'To tailor outfits based on daily needs.',
-      questions: mockQuizData.lifestyle
-    },
-    {
-      id: 'personality',
-      title: 'Personality & Goals',
-      icon: Heart,
-      description: 'To connect with their deeper identity.',
-      questions: mockQuizData.personality
-    },
-    {
-      id: 'visual_aid',
-      title: 'Visual Aid (Optional)',
-      icon: Camera,
-      description: 'To train the AI visually.',
-      questions: mockQuizData.visualAid
-    }
-  ];
+  // Initialize quiz session and load questions
+  useEffect(() => {
+    const initializeQuiz = async () => {
+      try {
+        setLoading(true);
+        
+        // Start a new quiz session
+        const sessionResponse = await quizAPI.startSession();
+        setSessionId(sessionResponse.session_id);
+        
+        // Get quiz questions
+        const questionsResponse = await quizAPI.getQuestions();
+        
+        // Map API questions to our quiz steps format
+        const mappedSteps = [
+          {
+            id: 'basic_info',
+            title: 'Basic Info',
+            icon: User,
+            description: 'These help build a user identity.',
+            questions: questionsResponse.basic_info || []
+          },
+          {
+            id: 'body_type',
+            title: 'Body Type & Size',
+            icon: Ruler,
+            description: 'Helps in sizing and fit-based recommendations.',
+            questions: questionsResponse.body_type || []
+          },
+          {
+            id: 'style_preferences',
+            title: 'Style Preferences',
+            icon: Palette,
+            description: 'These shape their personal style profile.',
+            questions: questionsResponse.style_preferences || []
+          },
+          {
+            id: 'lifestyle',
+            title: 'Lifestyle & Occasions',
+            icon: Briefcase,
+            description: 'To tailor outfits based on daily needs.',
+            questions: questionsResponse.lifestyle || []
+          },
+          {
+            id: 'personality',
+            title: 'Personality & Goals',
+            icon: Heart,
+            description: 'To connect with their deeper identity.',
+            questions: questionsResponse.personality || []
+          },
+          {
+            id: 'visual_aid',
+            title: 'Visual Aid (Optional)',
+            icon: Camera,
+            description: 'To train the AI visually.',
+            questions: questionsResponse.visual_aid || []
+          }
+        ];
+        
+        setQuizSteps(mappedSteps);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to initialize quiz:', err);
+        setError('Failed to load quiz. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeQuiz();
+  }, []);
 
   const handleAnswer = (questionId, answer) => {
     setAnswers(prev => ({
@@ -61,13 +92,56 @@ const QuizPage = () => {
     }));
   };
 
-  const handleNext = () => {
-    if (currentStep < quizSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Save quiz results and navigate to results
-      localStorage.setItem('quizAnswers', JSON.stringify(answers));
-      navigate('/results');
+  const handleNext = async () => {
+    try {
+      if (currentStep < quizSteps.length - 1) {
+        // Submit current step data to backend
+        const currentStepData = quizSteps[currentStep];
+        const stepAnswers = {};
+        
+        // Collect answers for current step
+        currentStepData.questions.forEach(q => {
+          if (answers[q.id] !== undefined) {
+            stepAnswers[q.id] = answers[q.id];
+          }
+        });
+
+        if (Object.keys(stepAnswers).length > 0) {
+          await quizAPI.submitStep(sessionId, currentStep, stepAnswers);
+        }
+        
+        setCurrentStep(currentStep + 1);
+      } else {
+        // Final step - complete quiz and navigate to results
+        
+        // Submit final step data
+        const currentStepData = quizSteps[currentStep];
+        const stepAnswers = {};
+        
+        currentStepData.questions.forEach(q => {
+          if (answers[q.id] !== undefined) {
+            stepAnswers[q.id] = answers[q.id];
+          }
+        });
+
+        if (Object.keys(stepAnswers).length > 0) {
+          await quizAPI.submitStep(sessionId, currentStep, stepAnswers);
+        }
+        
+        // Complete the quiz
+        await quizAPI.completeQuiz(sessionId);
+        
+        // Navigate to results with session ID
+        navigate(`/results?session=${sessionId}`);
+      }
+    } catch (err) {
+      console.error('Error submitting quiz step:', err);
+      // Don't block navigation on submission errors for now
+      if (currentStep < quizSteps.length - 1) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        navigate(`/results?session=${sessionId}`);
+      }
     }
   };
 
@@ -76,6 +150,67 @@ const QuizPage = () => {
       setCurrentStep(currentStep - 1);
     }
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="quiz-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-primary)' }}>
+          <div style={{ 
+            width: '50px', 
+            height: '50px', 
+            border: '3px solid var(--border-light)',
+            borderTop: '3px solid var(--accent-purple-400)',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <h2>Loading Quiz...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="quiz-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-primary)' }}>
+          <h2>Oops! Something went wrong</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>{error}</p>
+          <button 
+            className="btn-primary" 
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (quizSteps.length === 0) {
+    return (
+      <div className="quiz-page" style={{ 
+        background: 'var(--bg-page)', 
+        minHeight: '100vh'
+      }}>
+        <p>No quiz questions available.</p>
+      </div>
+    );
+  }
 
   const currentStepData = quizSteps[currentStep];
   const IconComponent = currentStepData.icon;
