@@ -33,7 +33,7 @@ class BeStyleBackendTester:
             print(f"Warning: Could not read frontend .env file: {e}")
         
         # Fallback to default
-        return "https://41cc841f-6b92-436a-bc3b-4c3e3646b900.preview.emergentagent.com"
+        return "https://1080f3a8-3d73-4b05-b7b3-727e56d6c9f2.preview.emergentagent.com"
     
     def log_test(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test results"""
