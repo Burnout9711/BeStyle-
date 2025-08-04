@@ -53,8 +53,8 @@ export const quizAPI = {
   submitStep: async (sessionId, stepIndex, stepData) => {
     const response = await api.post('/api/quiz/submit-step', {
       session_id: sessionId,
-      step_index: stepIndex,
-      step_data: stepData
+      step_number: stepIndex,  // Backend expects step_number
+      answers: stepData        // Backend expects answers
     });
     return response.data;
   },
