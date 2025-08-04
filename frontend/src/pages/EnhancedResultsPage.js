@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Download, Share2, Heart, ShoppingBag, Sparkles, Zap, TrendingUp } from 'lucide-react';
 import { quizAPI } from '../services/api';
 import AnimatedSection from '../components/AnimatedSection';
+import Enhanced3DCard from '../components/Enhanced3DCard';
 import SocialShare from '../components/SocialShare';
 import Avatar3D from '../components/Avatar3D';
 import ParticleEffect from '../components/ParticleEffect';
