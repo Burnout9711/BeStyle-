@@ -578,7 +578,7 @@ const EnhancedResultsPage = () => {
                         Shop Look
                       </button>
                     </div>
-                  </div>
+                  </Enhanced3DCard>
                 </AnimatedSection>
               ))}
             </div>
