@@ -372,7 +372,7 @@ class FrontendIntegrationTester:
                             if results_data.get('session_id') == self.session_id:
                                 # Check if the step we just submitted is in the results
                                 quiz_answers = results_data.get('quiz_answers', {})
-                                if 'work_environment' in quiz_answers and quiz_answers['work_environment'] == 'Office':
+                                if 'occupation' in quiz_answers and quiz_answers['occupation'] == 'Software Engineer':
                                     self.log_test("Session Management", True, "Session data persists across frontend requests")
                                 else:
                                     self.log_test("Session Management", False, "Session data not properly persisted")
