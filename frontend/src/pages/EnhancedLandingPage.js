@@ -25,6 +25,14 @@ const EnhancedLandingPage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const handleStartQuiz = (preferences = {}) => {
+    // Store any preferences from the intro section
+    if (preferences.selectedOccasions && preferences.selectedOccasions.length > 0) {
+      localStorage.setItem('preQuizPreferences', JSON.stringify(preferences));
+    }
+    navigate('/quiz');
+  };
+
   const handleWaitlistSubmit = (e) => {
     e.preventDefault();
     // Mock submission with advanced feedback
