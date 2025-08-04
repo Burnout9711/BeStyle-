@@ -180,6 +180,22 @@ const ResultsPage = () => {
             textAlign: 'center'
           }}>
             <h2 className="heading-2" style={{ marginBottom: '1rem' }}>Your Style Profile</h2>
+            
+            {/* AI Confidence Score */}
+            <div style={{ marginBottom: '2rem' }}>
+              <div style={{ 
+                background: 'linear-gradient(135deg, var(--accent-purple-400) 0%, #b08fb5 100%)',
+                borderRadius: '50px',
+                padding: '0.5rem 1.5rem',
+                display: 'inline-block',
+                marginBottom: '1rem'
+              }}>
+                <span style={{ color: 'white', fontWeight: '600' }}>
+                  AI Confidence: {confidence_score}%
+                </span>
+              </div>
+            </div>
+            
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
@@ -189,19 +205,19 @@ const ResultsPage = () => {
               <div>
                 <h4 className="heading-3">Primary Style</h4>
                 <p className="body-small">
-                  {quizAnswers.current_style?.slice(0, 2).join(', ') || 'Smart Casual, Minimalist'}
+                  {style_profile?.primary_styles?.join(', ') || 'Smart Casual, Minimalist'}
                 </p>
               </div>
               <div>
                 <h4 className="heading-3">Body Type</h4>
                 <p className="body-small">
-                  {quizAnswers.body_type || 'Athletic'} • {quizAnswers.clothing_size || 'M'}
+                  {quiz_answers?.body_type || 'Athletic'} • {quiz_answers?.clothing_size || 'M'}
                 </p>
               </div>
               <div>
                 <h4 className="heading-3">Main Goals</h4>
                 <p className="body-small">
-                  {quizAnswers.goals?.join(', ') || 'Look confident, Save time'}
+                  {quiz_answers?.goals?.join(', ') || 'Look confident, Save time'}
                 </p>
               </div>
             </div>
@@ -213,12 +229,12 @@ const ResultsPage = () => {
           </h2>
           
           <div className="ai-grid">
-            {mockOutfitSuggestions.map((outfit) => (
-              <div key={outfit.id} className="voice-card hover-lift" style={{ padding: '1.5rem' }}>
+            {outfitSuggestions.map((outfit, index) => (
+              <div key={outfit.id || index} className="voice-card hover-lift" style={{ padding: '1.5rem' }}>
                 {/* Outfit Image Placeholder */}
                 <div style={{
                   height: '200px',
-                  background: outfit.color,
+                  background: `hsl(${(index * 60) % 360}, 30%, 40%)`, // Generate colors based on index
                   borderRadius: '0.5rem',
                   marginBottom: '1rem',
                   display: 'flex',
@@ -233,51 +249,66 @@ const ResultsPage = () => {
                     fontSize: '0.875rem',
                     fontFamily: 'var(--font-mono)',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.025em'
+                    letterSpacing: '0.025em',
+                    color: 'black'
                   }}>
-                    {outfit.occasion}
+                    {outfit.occasion || `Outfit ${index + 1}`}
                   </div>
                   
                   {/* Save Button */}
                   <button
                     className="btn-nav"
-                    onClick={() => toggleSaveOutfit(outfit.id)}
+                    onClick={() => toggleSaveOutfit(outfit.id || index)}
                     style={{
                       position: 'absolute',
                       top: '10px',
                       right: '10px',
-                      background: savedOutfits.has(outfit.id) ? 'var(--accent-purple-400)' : 'rgba(255,255,255,0.9)',
-                      color: savedOutfits.has(outfit.id) ? 'white' : 'var(--text-primary)'
+                      background: savedOutfits.has(outfit.id || index) ? 'var(--accent-purple-400)' : 'rgba(255,255,255,0.9)',
+                      color: savedOutfits.has(outfit.id || index) ? 'white' : 'var(--text-primary)'
                     }}
                   >
-                    <Heart size={16} fill={savedOutfits.has(outfit.id) ? 'currentColor' : 'none'} />
+                    <Heart size={16} fill={savedOutfits.has(outfit.id || index) ? 'currentColor' : 'none'} />
                   </button>
                 </div>
 
                 {/* Outfit Details */}
                 <h3 className="heading-3" style={{ marginBottom: '0.5rem' }}>
-                  {outfit.title}
+                  {outfit.title || `Outfit ${index + 1}`}
                 </h3>
                 
                 <p className="body-small" style={{ 
                   marginBottom: '1rem',
                   color: 'var(--text-muted)'
                 }}>
-                  {outfit.description}
+                  {outfit.description || 'A stylish outfit curated just for you'}
                 </p>
+
+                {/* Match Score */}
+                {outfit.match_score && (
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ 
+                      background: 'var(--bg-section)',
+                      borderRadius: '0.5rem',
+                      padding: '0.5rem',
+                      textAlign: 'center'
+                    }}>
+                      <span className="caption">Match Score: {outfit.match_score}%</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Outfit Items */}
                 <div style={{ marginBottom: '1.5rem' }}>
-                  {outfit.items.map((item, index) => (
-                    <div key={index} style={{ 
+                  {outfit.items?.map((item, itemIndex) => (
+                    <div key={itemIndex} style={{ 
                       display: 'flex', 
                       justifyContent: 'space-between', 
                       alignItems: 'center',
                       padding: '0.5rem 0',
-                      borderBottom: index < outfit.items.length - 1 ? '1px solid var(--border-light)' : 'none'
+                      borderBottom: itemIndex < outfit.items.length - 1 ? '1px solid var(--border-light)' : 'none'
                     }}>
-                      <span className="body-small">{item.name}</span>
-                      <span className="caption">{item.brand}</span>
+                      <span className="body-small">{item.name || item}</span>
+                      <span className="caption">{item.brand || 'Various'}</span>
                     </div>
                   ))}
                 </div>
