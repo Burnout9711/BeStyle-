@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Download, Share2, Heart, ShoppingBag, Sparkles } from 'lucide-react';
-import { mockOutfitSuggestions } from '../data/mock';
+import { quizAPI } from '../services/api';
 
 const ResultsPage = () => {
   const navigate = useNavigate();
