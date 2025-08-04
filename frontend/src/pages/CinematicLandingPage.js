@@ -81,11 +81,8 @@ const CinematicLandingPage = () => {
             lineHeight: '0.9',
             marginBottom: '2rem',
             letterSpacing: '-0.04em',
-            background: 'linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 60px rgba(255, 255, 255, 0.1)',
+            color: '#FFFFFF',
+            textShadow: '0 0 60px rgba(255, 255, 255, 0.3)',
             animation: 'heroGlow 6s ease-in-out infinite'
           }}>
             AI Meets<br />Your Closet.
@@ -96,8 +93,10 @@ const CinematicLandingPage = () => {
             fontWeight: '400',
             lineHeight: '1.4',
             marginBottom: '4rem',
-            opacity: 0.85,
+            opacity: 0.9,
+            color: '#FFFFFF',
             maxWidth: '800px',
+            textShadow: '0 0 20px rgba(255, 255, 255, 0.2)',
             animation: 'fadeInUp 1s ease-out 0.5s both'
           }}>
             BeStyle.ai suggests what to wear based on your personality, mood, and occasion.
