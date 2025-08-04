@@ -176,6 +176,9 @@ const EnhancedLandingPage = () => {
           </div>
         </section>
 
+        {/* Quiz Introduction Section */}
+        <QuizIntroSection onStartQuiz={handleStartQuiz} />
+
         {/* Enhanced How It Works with Parallax */}
         <section className="pad-2xl" style={{ background: 'var(--bg-section)' }}>
           <div className="container">
