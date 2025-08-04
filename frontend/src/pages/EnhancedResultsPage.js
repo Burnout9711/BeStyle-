@@ -350,7 +350,7 @@ const EnhancedResultsPage = () => {
                       <Zap size={24} style={{ color: 'var(--accent-purple-400)', marginBottom: '0.5rem' }} />
                       <h4 className="heading-3">Primary Style</h4>
                       <p className="body-small">
-                        {quizAnswers.current_style?.slice(0, 2).join(' • ') || 'Smart Casual • Minimalist'}
+                        {quiz_answers?.current_style?.slice(0, 2).join(' • ') || style_profile?.primary_styles?.join(' • ') || 'Smart Casual • Minimalist'}
                       </p>
                     </div>
                     
@@ -364,7 +364,7 @@ const EnhancedResultsPage = () => {
                       <Heart size={24} style={{ color: 'var(--accent-blue-400)', marginBottom: '0.5rem' }} />
                       <h4 className="heading-3">Body Profile</h4>
                       <p className="body-small">
-                        {quizAnswers.body_type || 'Athletic'} • Size {quizAnswers.clothing_size || 'M'}
+                        {quiz_answers?.body_type || 'Athletic'} • Size {quiz_answers?.clothing_size || 'M'}
                       </p>
                     </div>
                     
@@ -378,7 +378,7 @@ const EnhancedResultsPage = () => {
                       <Sparkles size={24} style={{ color: 'var(--accent-orange-400)', marginBottom: '0.5rem' }} />
                       <h4 className="heading-3">Style Goals</h4>
                       <p className="body-small">
-                        {quizAnswers.goals?.slice(0, 2).join(' • ') || 'Look confident • Save time'}
+                        {quiz_answers?.goals?.slice(0, 2).join(' • ') || 'Look confident • Save time'}
                       </p>
                     </div>
                   </div>
