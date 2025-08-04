@@ -254,7 +254,11 @@ const QuizPage = () => {
 
           {/* Current Step */}
           <AnimatedSection animationType="slideInUp">
-            <Enhanced3DCard intensity={0.8} style={{ padding: '2rem' }}>
+            <Enhanced3DCard 
+              intensity={0.2} 
+              enableMouseTracking={false}
+              style={{ padding: '2rem' }}
+            >
               <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <div 
                   className="step-circle pulse-element"
