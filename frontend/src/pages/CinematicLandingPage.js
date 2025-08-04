@@ -346,104 +346,221 @@ const ScrollStorySection = ({ storyRefs, scrollY }) => {
   );
 };
 
-// Quiz Teaser Component
+// Quiz Teaser Component with Mobile Mockup
 const QuizTeaser = ({ onStartQuiz }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   
-  const options = [
-    "A Work Meeting",
-    "A Casual Day Out", 
-    "A Date Night",
-    "A Special Event"
-  ];
-
   return (
     <div style={{
-      background: 'rgba(255, 255, 255, 0.02)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '24px',
-      padding: '3rem',
-      marginBottom: '3rem',
-      backdropFilter: 'blur(10px)'
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '6rem',
+      alignItems: 'center',
+      maxWidth: '1200px',
+      margin: '0 auto'
     }}>
-      <h3 style={{
-        fontSize: '1.5rem',
-        marginBottom: '2rem',
-        fontWeight: '500'
-      }}>
-        What are you dressing for today?
-      </h3>
-      
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '1rem',
-        marginBottom: '2rem'
-      }}>
-        {options.map((option, index) => (
-          <button
-            key={index}
-            onClick={() => setSelectedOption(index)}
-            style={{
-              background: selectedOption === index ? 
-                'rgba(255, 255, 255, 0.1)' : 
-                'rgba(255, 255, 255, 0.03)',
-              border: selectedOption === index ?
-                '1px solid rgba(255, 255, 255, 0.3)' :
-                '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#FFFFFF',
-              padding: '1rem',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              fontSize: '1rem'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = selectedOption === index ? 
-                'rgba(255, 255, 255, 0.1)' : 
-                'rgba(255, 255, 255, 0.03)';
-              e.target.style.borderColor = selectedOption === index ?
-                'rgba(255, 255, 255, 0.3)' :
-                'rgba(255, 255, 255, 0.1)';
-            }}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-      
-      <button
-        onClick={onStartQuiz}
-        style={{
-          background: 'linear-gradient(135deg, #FFFFFF 0%, rgba(255, 255, 255, 0.9) 100%)',
-          color: '#000000',
-          border: 'none',
-          padding: '16px 32px',
-          fontSize: '1.1rem',
-          fontWeight: '600',
-          borderRadius: '50px',
-          cursor: 'pointer',
+      {/* Left side - Text and CTA */}
+      <div style={{ textAlign: 'left' }}>
+        <div style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '10px',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = 'translateY(-2px) scale(1.05)';
-          e.target.style.boxShadow = '0 15px 40px rgba(255, 255, 255, 0.25)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = 'translateY(0px) scale(1)';
-          e.target.style.boxShadow = 'none';
-        }}
-      >
-        <ArrowRight size={18} />
-        Start the Style Quiz
-      </button>
+          gap: '8px',
+          marginBottom: '2rem'
+        }}>
+          <span style={{ fontSize: '2rem' }}>✨</span>
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 4vw, 3.5rem)',
+            fontWeight: '400',
+            lineHeight: '1.1',
+            color: '#FFFFFF',
+            margin: 0,
+            letterSpacing: '-0.02em'
+          }}>
+            Discover<br />Your Look<br />in 60 Seconds
+          </h2>
+        </div>
+        
+        <button
+          onClick={onStartQuiz}
+          style={{
+            background: 'transparent',
+            color: '#FFFFFF',
+            border: 'none',
+            padding: '0',
+            fontSize: '1.3rem',
+            fontWeight: '400',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: 0.8
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateX(8px)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.opacity = '0.8';
+            e.target.style.transform = 'translateX(0px)';
+          }}
+        >
+          <ArrowRight size={20} />
+          Start the Style Quiz
+        </button>
+      </div>
+      
+      {/* Right side - Mobile Mockup */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center',
+        transform: 'perspective(1000px) rotateY(-15deg) rotateX(5deg)'
+      }}>
+        <MobileMockup />
+      </div>
+    </div>
+  );
+};
+
+// Mobile Mockup Component
+const MobileMockup = () => {
+  return (
+    <div style={{
+      width: '320px',
+      height: '640px',
+      background: 'linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%)',
+      borderRadius: '40px',
+      padding: '20px',
+      boxShadow: `
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.05)
+      `,
+      position: 'relative'
+    }}>
+      {/* Screen */}
+      <div style={{
+        width: '100%',
+        height: '100%',
+        background: '#000000',
+        borderRadius: '30px',
+        padding: '40px 24px 24px',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Status bar */}
+        <div style={{
+          position: 'absolute',
+          top: '12px',
+          left: '24px',
+          right: '24px',
+          height: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            fontWeight: '600',
+            color: '#FFFFFF'
+          }}>9:41</div>
+          <div style={{
+            display: 'flex',
+            gap: '4px',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              width: '18px',
+              height: '10px',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              borderRadius: '2px',
+              position: 'relative'
+            }}>
+              <div style={{
+                width: '12px',
+                height: '6px',
+                background: '#FFFFFF',
+                borderRadius: '1px',
+                position: 'absolute',
+                top: '1px',
+                left: '1px'
+              }} />
+            </div>
+          </div>
+        </div>
+        
+        {/* Quiz content */}
+        <div style={{ paddingTop: '20px', color: '#FFFFFF' }}>
+          <h3 style={{
+            fontSize: '20px',
+            fontWeight: '600',
+            marginBottom: '32px',
+            textAlign: 'center',
+            color: '#FFFFFF'
+          }}>
+            What are you<br />dressing for<br />today?
+          </h3>
+          
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            {[
+              'A Work Meeting',
+              'A Casual Day Out',
+              'A Date Night',
+              'A Special Event'
+            ].map((option, index) => (
+              <div
+                key={index}
+                style={{
+                  background: index === 0 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.08)',
+                  border: index === 0 ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  fontSize: '16px',
+                  fontWeight: '400',
+                  color: '#FFFFFF',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {option}
+              </div>
+            ))}
+          </div>
+          
+          <div style={{
+            position: 'absolute',
+            bottom: '40px',
+            left: '24px',
+            right: '24px',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              fontSize: '14px',
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '16px'
+            }}>
+              1/6 Questions Complete
+            </div>
+            <div style={{
+              height: '4px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '2px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: '16.67%',
+                height: '100%',
+                background: 'linear-gradient(90deg, #4F7FFF, #F2546D)',
+                borderRadius: '2px',
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
