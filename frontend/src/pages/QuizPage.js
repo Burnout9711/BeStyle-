@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, User, Ruler, Palette, Briefcase, Heart, Camera } from 'lucide-react';
 import { quizAPI } from '../services/api';
 import AnimatedSection from '../components/AnimatedSection';
+import Enhanced3DCard from '../components/Enhanced3DCard';
 
 const QuizPage = () => {
   const navigate = useNavigate();
