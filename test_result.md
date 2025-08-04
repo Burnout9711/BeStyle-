@@ -464,10 +464,14 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Quiz Integration with Backend API"
+    - "Results Page Backend Integration"
+    - "Waitlist Backend Integration"
+    - "Apple-Style Homepage Animation"
   stuck_tasks: []
-  test_all: true
-  test_priority: "completed"
+  test_all: false
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "testing"
