@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Instagram, Linkedin, Mail } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import ParticleEffect from '../components/ParticleEffect';
-import AppleStyleBackground from '../components/AppleStyleBackground';
+import SophisticatedBackground from '../components/AppleStyleBackground';
 import PerformanceOptimizer from '../components/PerformanceOptimizer';
 import LaunchTeaserSection from '../components/LaunchTeaserSection';
 import QuizIntroSection from '../components/QuizIntroSection';
