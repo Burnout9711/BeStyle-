@@ -573,15 +573,15 @@ const MobileMockup = () => {
 // AI Features Component
 const AIFeatures = () => {
   const features = [
-    { icon: Brain, title: "Personalized suggestions", desc: "AI learns your unique style" },
-    { icon: Calendar, title: "Based on your day", desc: "Perfect fits for every occasion" },
-    { icon: Shirt, title: "Outfit visuals (coming soon)", desc: "See before you wear" }
+    { icon: Brain, title: "🧠 Personalized suggestions", desc: "AI learns your unique style" },
+    { icon: Calendar, title: "📅 Based on your day", desc: "Perfect fits for every occasion" },
+    { icon: Shirt, title: "👗 Outfit visuals (coming soon)", desc: "See before you wear" }
   ];
 
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
       gap: '2rem',
       maxWidth: '1000px',
       margin: '0 auto'
@@ -590,36 +590,40 @@ const AIFeatures = () => {
         <div
           key={index}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '20px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
             padding: '2.5rem 2rem',
             textAlign: 'center',
             transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             cursor: 'pointer'
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.transform = 'translateY(-5px)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.06)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            e.target.style.transform = 'translateY(-8px)';
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.02)';
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            e.target.style.background = 'rgba(255, 255, 255, 0.03)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.08)';
             e.target.style.transform = 'translateY(0px)';
           }}
         >
-          <feature.icon size={48} style={{ marginBottom: '1.5rem', opacity: 0.8 }} />
           <h3 style={{
             fontSize: '1.3rem',
-            fontWeight: '600',
-            marginBottom: '0.5rem'
+            fontWeight: '500',
+            marginBottom: '1rem',
+            color: '#FFFFFF',
+            letterSpacing: '-0.01em'
           }}>
             {feature.title}
           </h3>
           <p style={{
-            opacity: 0.7,
-            fontSize: '1rem'
+            opacity: 0.6,
+            fontSize: '1rem',
+            color: '#FFFFFF',
+            fontWeight: '300',
+            lineHeight: '1.5'
           }}>
             {feature.desc}
           </p>
