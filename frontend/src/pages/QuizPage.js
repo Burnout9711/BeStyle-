@@ -143,9 +143,15 @@ const QuizPage = () => {
       if (currentStep < quizSteps.length - 1) {
         setCurrentStep(currentStep + 1);
       } else {
-        navigate(`/results?session=${sessionId}`);
+        // Show analysis loader even on error, then navigate
+        setShowAnalysisLoader(true);
       }
     }
+  };
+
+  const handleAnalysisComplete = () => {
+    // Navigate to results with session ID after loading animation
+    navigate(`/results?session=${sessionId}`);
   };
 
   const handlePrevious = () => {
