@@ -832,6 +832,20 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
+@keyframes heroShimmer {
+  0%, 100% {
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  25%, 75% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateX(100vw) rotate(45deg);
+    opacity: 0;
+  }
+}
+
 /* Mobile Quiz Mockup Animations */
 @keyframes mobileFloat {
   0%, 100% {
