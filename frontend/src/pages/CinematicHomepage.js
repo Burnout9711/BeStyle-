@@ -327,7 +327,8 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
             textAlign: 'center',
             position: 'relative',
             zIndex: 2,
-            padding: '0 2rem'
+            padding: '0 2rem',
+            backgroundColor: index === 0 ? 'rgba(79, 127, 255, 0.05)' : index === 1 ? 'rgba(242, 84, 109, 0.05)' : 'rgba(255, 255, 255, 0.02)' // Debug backgrounds
           }}
         >
           <div style={{
