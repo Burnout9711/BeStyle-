@@ -326,32 +326,26 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
             justifyContent: 'center',
             textAlign: 'center',
             position: 'relative',
-            zIndex: 2,
-            padding: '0 2rem',
-            backgroundColor: index === 0 ? 'rgba(79, 127, 255, 0.05)' : index === 1 ? 'rgba(242, 84, 109, 0.05)' : 'rgba(255, 255, 255, 0.02)' // Debug backgrounds
+            zIndex: 5, // Increased z-index
+            padding: '0 2rem'
           }}
         >
-          <div style={{
-            position: 'relative',
-            zIndex: 10,
-            textAlign: 'center'
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 7vw, 5rem)',
+            fontWeight: '400',
+            lineHeight: '1.2',
+            maxWidth: '900px',
+            margin: '0 auto',
+            color: '#FFFFFF',
+            textShadow: '2px 2px 8px rgba(0, 0, 0, 0.9)',
+            letterSpacing: '-0.02em',
+            background: 'rgba(0, 0, 0, 0.6)',
+            padding: '3rem 4rem',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
-            <h2 style={{
-              fontSize: 'clamp(2.5rem, 7vw, 5rem)',
-              fontWeight: '600',
-              lineHeight: '1.2',
-              maxWidth: '900px',
-              margin: '0 auto',
-              color: '#FFFFFF',
-              textShadow: '2px 2px 8px rgba(0, 0, 0, 0.8)',
-              letterSpacing: '-0.02em',
-              background: 'rgba(0, 0, 0, 0.4)',
-              padding: '2rem',
-              borderRadius: '20px'
-            }}>
-              {story}
-            </h2>
-          </div>
+            {story}
+          </h2>
         </section>
       ))}
     </div>
