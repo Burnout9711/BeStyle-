@@ -115,7 +115,7 @@ const QuizPage = () => {
         
         setCurrentStep(currentStep + 1);
       } else {
-        // Final step - complete quiz and navigate to results
+        // Final step - complete quiz and show analysis loader
         
         // Submit final step data
         const currentStepData = quizSteps[currentStep];
@@ -134,8 +134,8 @@ const QuizPage = () => {
         // Complete the quiz
         await quizAPI.completeQuiz(sessionId);
         
-        // Navigate to results with session ID
-        navigate(`/results?session=${sessionId}`);
+        // Show loading screen
+        setShowAnalysisLoader(true);
       }
     } catch (err) {
       console.error('Error submitting quiz step:', err);
