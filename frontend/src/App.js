@@ -4,6 +4,7 @@ import './App.css';
 import CinematicHomepage from './pages/CinematicHomepage';
 import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
+import LoaderTestPage from './pages/LoaderTestPage';
 
 function App() {
   return (
