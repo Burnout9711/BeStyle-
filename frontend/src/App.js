@@ -14,6 +14,7 @@ function App() {
           <Route path="/" element={<CinematicHomepage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/results" element={<EnhancedResultsPage />} />
+          <Route path="/loader-test" element={<LoaderTestPage />} />
         </Routes>
       </BrowserRouter>
     </div>
