@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowUp, Instagram, Linkedin, Brain, Calendar, Shirt, RefreshCw } from 'lucide-react';
 import { waitlistAPI } from '../services/api';
+import heroBackground from '../assets/hero-background.png';
 
 const CinematicHomepage = () => {
   const navigate = useNavigate();
