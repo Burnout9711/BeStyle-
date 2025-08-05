@@ -333,31 +333,21 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
         >
           <div style={{
             position: 'relative',
-            zIndex: 2
+            zIndex: 10,
+            textAlign: 'center'
           }}>
-            {/* Glowing Ripple Behind Text */}
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '120%',
-              height: '120%',
-              background: `radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%)`,
-              borderRadius: '50%',
-              animation: `rippleGlow 4s ease-in-out infinite ${index * 0.5}s`
-            }} />
-            
             <h2 style={{
               fontSize: 'clamp(2.5rem, 7vw, 5rem)',
               fontWeight: '600',
               lineHeight: '1.2',
               maxWidth: '900px',
+              margin: '0 auto',
               color: '#FFFFFF',
-              textShadow: '0 0 60px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8)',
+              textShadow: '2px 2px 8px rgba(0, 0, 0, 0.8)',
               letterSpacing: '-0.02em',
-              opacity: 1,
-              transition: 'transform 0.3s ease-out'
+              background: 'rgba(0, 0, 0, 0.4)',
+              padding: '2rem',
+              borderRadius: '20px'
             }}>
               {story}
             </h2>
