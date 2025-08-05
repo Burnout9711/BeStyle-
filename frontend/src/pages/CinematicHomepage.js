@@ -234,7 +234,7 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
         justifyContent: 'center',
         textAlign: 'center',
         position: 'relative',
-        zIndex: 10,
+        zIndex: 2,
         transform: `translateY(${scrollY * 0.2}px)`
       }}
     >
