@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, User, Ruler, Palette, Briefcase, Heart, Camera }
 import { quizAPI } from '../services/api';
 import AnimatedSection from '../components/AnimatedSection';
 import Enhanced3DCard from '../components/Enhanced3DCard';
+import StyleAnalysisLoader from '../components/StyleAnalysisLoader';
 
 const QuizPage = () => {
   const navigate = useNavigate();
