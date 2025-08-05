@@ -14,6 +14,7 @@ const QuizPage = () => {
   const [quizSteps, setQuizSteps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAnalysisLoader, setShowAnalysisLoader] = useState(false);
 
   // Initialize quiz session and load questions
   useEffect(() => {
