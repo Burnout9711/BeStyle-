@@ -888,11 +888,11 @@ input:focus, textarea:focus, select:focus {
 }
 
 @keyframes progressGlow {
-  0%, 100% {
-    box-shadow: 0 0 0 rgba(79, 127, 255, 0.5);
+  0% {
+    transform: translateX(-100%);
   }
-  50% {
-    box-shadow: 0 0 20px rgba(79, 127, 255, 0.8);
+  100% {
+    transform: translateX(100%);
   }
 }
 
