@@ -413,6 +413,13 @@ const QuizPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Style Analysis Loader */}
+      <StyleAnalysisLoader 
+        isVisible={showAnalysisLoader}
+        onComplete={handleAnalysisComplete}
+        duration={3000}
+      />
     </div>
   );
 };
