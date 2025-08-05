@@ -350,13 +350,13 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
             
             <h2 style={{
               fontSize: 'clamp(2.5rem, 7vw, 5rem)',
-              fontWeight: '400',
+              fontWeight: '600',
               lineHeight: '1.2',
               maxWidth: '900px',
               color: '#FFFFFF',
-              textShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
+              textShadow: '0 0 60px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8)',
               letterSpacing: '-0.02em',
-              opacity: 1, // Always visible
+              opacity: 1,
               transition: 'transform 0.3s ease-out'
             }}>
               {story}
