@@ -172,11 +172,11 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
         backgroundRepeat: 'no-repeat',
         transform: `translateY(${scrollY * 0.3}px)`,
         opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
-        filter: 'blur(1px)',
+        filter: 'blur(0.5px)',
         zIndex: 1
       }} />
       
-      {/* Semi-transparent overlay for text readability */}
+      {/* Enhanced overlay for better text readability */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -184,8 +184,8 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
         right: 0,
         height: '100vh',
         background: `
-          linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.4) 100%),
-          radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%)
+          radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 100%),
+          linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.6) 100%)
         `,
         transform: `translateY(${scrollY * 0.3}px)`,
         opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
@@ -202,7 +202,7 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
         background: `linear-gradient(
           ${120 + Math.sin(Date.now() / 4000) * 30}deg, 
           transparent 30%, 
-          rgba(255, 255, 255, 0.1) 50%, 
+          rgba(255, 255, 255, 0.08) 50%, 
           transparent 70%
         )`,
         transform: `translateY(${scrollY * 0.3}px)`,
