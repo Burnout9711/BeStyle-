@@ -159,7 +159,24 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
       zIndex: 0,
       overflow: 'hidden'
     }}>
-      {/* Hero Background Image Placeholder - Replace with uploaded image */}
+      {/* Hero Background Image */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '100vh',
+        backgroundImage: `url(${heroBackground})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        transform: `translateY(${scrollY * 0.3}px)`,
+        opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
+        filter: 'blur(1px)',
+        zIndex: 1
+      }} />
+      
+      {/* Semi-transparent overlay for text readability */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -167,12 +184,31 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
         right: 0,
         height: '100vh',
         background: `
-          radial-gradient(circle at 30% 40%, rgba(79, 127, 255, 0.15) 0%, transparent 50%),
-          radial-gradient(circle at 70% 80%, rgba(242, 84, 109, 0.10) 0%, transparent 50%),
-          linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%)
+          linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.4) 100%),
+          radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%)
         `,
         transform: `translateY(${scrollY * 0.3}px)`,
-        opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5))
+        opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
+        zIndex: 2
+      }} />
+      
+      {/* Shimmer Light Sweep Animation */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '100vh',
+        background: `linear-gradient(
+          ${120 + Math.sin(Date.now() / 4000) * 30}deg, 
+          transparent 30%, 
+          rgba(255, 255, 255, 0.1) 50%, 
+          transparent 70%
+        )`,
+        transform: `translateY(${scrollY * 0.3}px)`,
+        opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
+        animation: 'heroShimmer 12s ease-in-out infinite',
+        zIndex: 3
       }} />
       
       {/* Dynamic Spotlight */}
