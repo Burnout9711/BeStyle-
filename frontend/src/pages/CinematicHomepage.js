@@ -355,9 +355,9 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
               color: '#FFFFFF',
               textShadow: '0 0 40px rgba(255, 255, 255, 0.3)',
               letterSpacing: '-0.02em',
-              transform: `translateY(${Math.max(-50, Math.min(50, (scrollY - window.innerHeight * (index + 2)) * 0.3))}px)`,
-              opacity: Math.max(0.2, Math.min(1, 1 - Math.abs(scrollY - window.innerHeight * (index + 2)) / 400)),
-              transition: 'opacity 0.3s ease-out',
+              transform: `translateY(${Math.max(-50, Math.min(50, (scrollY - window.innerHeight * (index + 2)) * 0.1))}px)`,
+              opacity: 0.9, // Fixed opacity instead of complex calculation
+              transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
               animation: 'storyScaleIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards'
             }}>
               {story}
