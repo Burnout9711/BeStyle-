@@ -342,54 +342,6 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
   );
 });
 
-// Section 2-4: Storytelling Component
-const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
-  const stories = [
-    "Tired of outfit confusion?",
-    "AI learns your style — and evolves with you.",
-    "Your closet now thinks with you."
-  ];
-
-  return (
-    <div>
-      {stories.map((story, index) => (
-        <section
-          key={index}
-          ref={el => sectionsRef.current[index + 1] = el} // Register each section individually with intersection observer
-          className="cinematic-section story-section"
-          style={{
-            height: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            position: 'relative',
-            zIndex: 5,
-            padding: '0 2rem'
-          }}
-        >
-          <h2 style={{
-            fontSize: 'clamp(2.5rem, 7vw, 5rem)',
-            fontWeight: '400',
-            lineHeight: '1.2',
-            maxWidth: '900px',
-            margin: '0 auto',
-            color: '#FFFFFF',
-            textShadow: '2px 2px 8px rgba(0, 0, 0, 0.9)',
-            letterSpacing: '-0.02em',
-            background: 'rgba(0, 0, 0, 0.6)',
-            padding: '3rem 4rem',
-            borderRadius: '20px',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
-          }}>
-            {story}
-          </h2>
-        </section>
-      ))}
-    </div>
-  );
-});
-
 // Section 3: Quiz Preview Component
 const QuizPreviewSection = React.forwardRef(({ scrollY, onStartStyling }, ref) => {
   return (
