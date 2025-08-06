@@ -41,7 +41,10 @@ const CinematicHomepage = () => {
           }
         });
       },
-      { threshold: 0.3, rootMargin: '-100px' }
+      { 
+        threshold: window.innerWidth <= 768 ? 0.1 : 0.3, // Lower threshold for mobile
+        rootMargin: window.innerWidth <= 768 ? '-50px' : '-100px' // Smaller margin for mobile
+      }
     );
 
     // Observe all sections
