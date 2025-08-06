@@ -76,10 +76,40 @@ const CinematicHomepage = () => {
       />
       
       {/* Section 2-4: Storytelling */}
-      <StorytellingSections 
-        ref={el => sectionsRef.current[1] = el}
-        scrollY={scrollY}
-      />
+      {stories.map((story, index) => (
+        <section
+          key={index}
+          ref={el => sectionsRef.current[index + 1] = el}
+          className="cinematic-section story-section"
+          style={{
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 5,
+            padding: '0 2rem'
+          }}
+        >
+          <h2 style={{
+            fontSize: 'clamp(2.5rem, 7vw, 5rem)',
+            fontWeight: '400',
+            lineHeight: '1.2',
+            maxWidth: '900px',
+            margin: '0 auto',
+            color: '#FFFFFF',
+            textShadow: '2px 2px 8px rgba(0, 0, 0, 0.9)',
+            letterSpacing: '-0.02em',
+            background: 'rgba(0, 0, 0, 0.6)',
+            padding: '3rem 4rem',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            {story}
+          </h2>
+        </section>
+      ))}
       
       {/* Section 3: Interactive Quiz Preview */}
       <QuizPreviewSection 
