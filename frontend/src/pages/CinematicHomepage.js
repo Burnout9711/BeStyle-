@@ -41,6 +41,10 @@ const CinematicHomepage = () => {
             if (isInViewport && !section.classList.contains('in-view')) {
               section.classList.add('in-view');
             }
+            // CRITICAL FIX: Remove in-view class when section leaves viewport
+            if (!isInViewport && section.classList.contains('in-view')) {
+              section.classList.remove('in-view');
+            }
           }
         });
       }
