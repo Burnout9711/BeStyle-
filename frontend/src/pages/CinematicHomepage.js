@@ -30,6 +30,20 @@ const CinematicHomepage = () => {
       // Update current viewport
       const newViewport = Math.floor(newScrollY / window.innerHeight);
       setCurrentViewport(newViewport);
+      
+      // Mobile fallback: Force visibility for sections that should be visible
+      if (window.innerWidth <= 768) {
+        sectionsRef.current.forEach((section, index) => {
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+            
+            if (isInViewport && !section.classList.contains('in-view')) {
+              section.classList.add('in-view');
+            }
+          }
+        });
+      }
     };
 
     // Intersection Observer for section animations
