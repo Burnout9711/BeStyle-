@@ -259,6 +259,15 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
 
 // Section 1: Hero Component
 const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <section 
       ref={ref}
@@ -272,7 +281,7 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
         textAlign: 'center',
         position: 'relative',
         zIndex: 2,
-        transform: `translateY(${scrollY * 0.2}px)`
+        transform: isMobile ? 'none' : `translateY(${scrollY * 0.2}px)` // Disable parallax on mobile
       }}
     >
       <div style={{
