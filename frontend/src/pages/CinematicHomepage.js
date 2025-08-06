@@ -314,10 +314,11 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
   ];
 
   return (
-    <div ref={ref}>
+    <div>
       {stories.map((story, index) => (
         <section
           key={index}
+          ref={el => sectionsRef.current[index + 1] = el} // Register each section individually with intersection observer
           className="cinematic-section story-section"
           style={{
             height: '100vh',
@@ -326,7 +327,7 @@ const StorytellingSections = React.forwardRef(({ scrollY }, ref) => {
             justifyContent: 'center',
             textAlign: 'center',
             position: 'relative',
-            zIndex: 5, // Increased z-index
+            zIndex: 5,
             padding: '0 2rem'
           }}
         >
