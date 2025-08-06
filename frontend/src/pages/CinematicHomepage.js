@@ -120,26 +120,26 @@ const CinematicHomepage = () => {
       
       {/* Section 3: Interactive Quiz Preview */}
       <QuizPreviewSection 
-        ref={el => sectionsRef.current[2] = el}
+        ref={el => sectionsRef.current[4] = el}
         scrollY={scrollY}
         onStartStyling={() => navigate('/quiz')}
       />
       
       {/* Section 4: Why BeStyle */}
       <WhyBeStyleSection 
-        ref={el => sectionsRef.current[3] = el}
+        ref={el => sectionsRef.current[5] = el}
         scrollY={scrollY}
       />
       
       {/* Section 5: Waitlist */}
       <WaitlistSection 
-        ref={el => sectionsRef.current[4] = el}
+        ref={el => sectionsRef.current[6] = el}
         scrollY={scrollY}
       />
       
       {/* Section 6: Footer */}
       <FooterSection 
-        ref={el => sectionsRef.current[5] = el}
+        ref={el => sectionsRef.current[7] = el}
         scrollY={scrollY}
       />
       
