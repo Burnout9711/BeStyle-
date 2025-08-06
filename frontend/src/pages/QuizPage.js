@@ -30,50 +30,22 @@ const QuizPage = () => {
         const questionsResponse = await quizAPI.getQuestions();
         
         // Map API questions to our quiz steps format
-        const mappedSteps = [
-          {
-            id: 'basic_info',
-            title: 'Basic Info',
-            icon: User,
-            description: 'These help build a user identity.',
-            questions: questionsResponse.basic_info || []
-          },
-          {
-            id: 'body_type',
-            title: 'Body Type & Size',
-            icon: Ruler,
-            description: 'Helps in sizing and fit-based recommendations.',
-            questions: questionsResponse.body_type || []
-          },
-          {
-            id: 'style_preferences',
-            title: 'Style Preferences',
-            icon: Palette,
-            description: 'These shape their personal style profile.',
-            questions: questionsResponse.style_preferences || []
-          },
-          {
-            id: 'lifestyle',
-            title: 'Lifestyle & Occasions',
-            icon: Briefcase,
-            description: 'To tailor outfits based on daily needs.',
-            questions: questionsResponse.lifestyle || []
-          },
-          {
-            id: 'personality',
-            title: 'Personality & Goals',
-            icon: Heart,
-            description: 'To connect with their deeper identity.',
-            questions: questionsResponse.personality || []
-          },
-          {
-            id: 'visual_aid',
-            title: 'Visual Aid (Optional)',
-            icon: Camera,
-            description: 'To train the AI visually.',
-            questions: questionsResponse.visual_aid || []
-          }
-        ];
+        const iconMap = {
+          'basic_info': User,
+          'body_type': Ruler,
+          'style_preferences': Palette,
+          'lifestyle': Briefcase,
+          'personality': Heart,
+          'visual_aid': Camera
+        };
+        
+        const mappedSteps = questionsResponse.steps.map(step => ({
+          id: step.id,
+          title: step.title,
+          icon: iconMap[step.id] || User,
+          description: step.description,
+          questions: step.questions || []
+        }));
         
         setQuizSteps(mappedSteps);
         setError(null);
