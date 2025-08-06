@@ -12,6 +12,13 @@ const CinematicHomepage = () => {
   const sectionsRef = useRef([]);
   const observerRef = useRef(null);
 
+  // Story texts for storytelling sections
+  const stories = [
+    "Tired of outfit confusion?",
+    "AI learns your style — and evolves with you.",
+    "Your closet now thinks with you."
+  ];
+
   useEffect(() => {
     const handleScroll = () => {
       const newScrollY = window.scrollY;
