@@ -184,6 +184,15 @@ const CinematicHomepage = () => {
 
 // Cinematic Background Effects Component
 const CinematicBackground = ({ scrollY, currentViewport }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div style={{
       position: 'fixed',
@@ -207,8 +216,8 @@ const CinematicBackground = ({ scrollY, currentViewport }) => {
           radial-gradient(circle at 70% 80%, rgba(242, 84, 109, 0.10) 0%, transparent 50%),
           linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%)
         `,
-        transform: `translateY(${scrollY * 0.3}px)`,
-        opacity: Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
+        transform: isMobile ? 'none' : `translateY(${scrollY * 0.3}px)`, // Disable parallax on mobile
+        opacity: isMobile ? 1 : Math.max(0, 1 - scrollY / (window.innerHeight * 1.5)),
         zIndex: 1
       }} />
       
