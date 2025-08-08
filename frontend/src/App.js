@@ -11,14 +11,17 @@ import ProfilePage from './pages/ProfilePage';
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<CinematicHomepage />} />
-          <Route path="/quiz" element={<QuizPage />} />
-          <Route path="/results" element={<EnhancedResultsPage />} />
-          <Route path="/loader-test" element={<LoaderTestPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<CinematicHomepage />} />
+            <Route path="/quiz" element={<QuizPage />} />
+            <Route path="/results" element={<EnhancedResultsPage />} />
+            <Route path="/loader-test" element={<LoaderTestPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
