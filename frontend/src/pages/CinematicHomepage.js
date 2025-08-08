@@ -357,55 +357,39 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
           Outfits chosen by your personality, mood, and the moment.
         </p>
         
-        {/* Action Buttons Container */}
-        <div style={{
-          display: 'flex',
-          gap: '1.5rem',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          marginTop: '2rem'
-        }}>
-          <button
-            onClick={onTakeQuiz}
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#FFFFFF',
-              padding: '20px 40px',
-              fontSize: '1.3rem',
-              fontWeight: '500',
-              borderRadius: '50px',
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '12px',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              backdropFilter: 'blur(20px)'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-              e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 0 40px rgba(255, 255, 255, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = 'none';
-            }}
-          >
-            <ArrowRight size={24} />
-            Take the Quiz
-          </button>
-          
-          {/* Social Login Button */}
-          <SocialLogin 
-            buttonText="Login / Sign Up" 
-            showText={true}
-          />
-        </div>
+        <button
+          onClick={onTakeQuiz}
+          style={{
+            background: 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            color: '#FFFFFF',
+            padding: '20px 40px',
+            fontSize: '1.3rem',
+            fontWeight: '500',
+            borderRadius: '50px',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            backdropFilter: 'blur(20px)'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.boxShadow = '0 0 40px rgba(255, 255, 255, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+            e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            e.target.style.transform = 'scale(1)';
+            e.target.style.boxShadow = 'none';
+          }}
+        >
+          <ArrowRight size={24} />
+          Take the Quiz
+        </button>
       </div>
     </section>
   );
