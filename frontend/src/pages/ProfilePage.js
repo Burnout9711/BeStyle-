@@ -14,6 +14,7 @@ const ProfilePage = () => {
   const [processing, setProcessing] = useState(false);
   const [detailedProfile, setDetailedProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true); // Prevent premature redirects
 
   useEffect(() => {
     // Check if we have a session ID in the URL from Emergent redirect
