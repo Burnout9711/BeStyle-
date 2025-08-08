@@ -152,6 +152,7 @@ export const redirectToSocialLogin = () => {
 export default {
   loginWithSocial,
   getUserProfile,
+  getDetailedProfile,
   verifySession,
   logout,
   redirectToSocialLogin,
