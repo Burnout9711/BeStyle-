@@ -738,11 +738,11 @@ frontend:
 
   - task: "Authentication Flow Integration"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/components/SocialLogin.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "testing"
@@ -750,6 +750,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ PASSED - Authentication flow integration working perfectly. Login button positioned correctly in homepage upper-right corner with proper styling and hover effects. Redirect flow to Emergent social login (https://auth.emergentagent.com) implemented with correct redirect URL to /profile. Session management through AuthContext with proper state handling. Backend API integration confirmed - auth endpoints responding correctly (health: healthy, auth verify: valid=false for unauthenticated). Profile creation flow implemented with session ID parsing from URL fragment."
+      - working: false
+        agent: "main"
+        comment: "❌ FAILED - User reports login shows loading screen briefly then redirects to homepage still showing login button. Login state not persisting. Investigation needed: ProfilePage.js line 56 has hardcoded '/api/auth/profile/detailed' missing REACT_APP_BACKEND_URL, causing fetch failure. Session state management issue suspected."
 
   - task: "Profile Visual Design and Branding"
     implemented: true
