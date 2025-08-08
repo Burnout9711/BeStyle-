@@ -316,6 +316,18 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
         transform: isMobile ? 'none' : `translateY(${scrollY * 0.2}px)` // Disable parallax on mobile
       }}
     >
+      {/* Login Button - Upper Right Corner */}
+      <div style={{
+        position: 'absolute',
+        top: '2rem',
+        right: '2rem',
+        zIndex: 10
+      }}>
+        <SocialLogin 
+          buttonText="Login" 
+          showText={true}
+        />
+      </div>
       <div style={{
         animation: 'heroFadeIn 2s ease-out 1.5s both'
       }}>
