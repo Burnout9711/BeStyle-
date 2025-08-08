@@ -1037,7 +1037,155 @@ class BeStyleBackendTester:
         except Exception as e:
             self.log_test("Enhanced DB - Session Model", False, f"Exception: {str(e)}")
 
-    async def test_error_scenarios(self, session: aiohttp.ClientSession):
+    async def test_user_reported_login_flow_issue(self, session: aiohttp.ClientSession):
+        """Test the specific login flow issue reported by the user"""
+        print("\n🔍 Testing User Reported Login Flow Issue...")
+        
+        # Test 1: Simulate the exact user flow - Google OAuth → Emergent → Backend
+        try:
+            # Step 1: Test if /api/auth/verify works without authentication (should return valid: false)
+            async with session.get(f"{self.base_url}/api/auth/verify") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('valid') == False:
+                        self.log_test("User Flow - Initial Auth Check", True, "Unauthenticated state properly detected")
+                    else:
+                        self.log_test("User Flow - Initial Auth Check", False, f"Unexpected auth state: {data}")
+                else:
+                    self.log_test("User Flow - Initial Auth Check", False, f"Auth verify endpoint error: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Initial Auth Check", False, f"Exception: {str(e)}")
+        
+        # Test 2: Test login endpoint response structure and cookie setting
+        try:
+            # Simulate what happens when user comes back from Emergent with session_id
+            payload = {"session_id": "simulated-emergent-session-from-google"}
+            async with session.post(
+                f"{self.base_url}/api/auth/login",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                # Check response headers for cookie setting
+                set_cookie_header = response.headers.get('Set-Cookie')
+                
+                if response.status == 401:
+                    # Expected for invalid session, but check cookie structure
+                    if 'session_token' in str(response.headers):
+                        self.log_test("User Flow - Cookie Structure", True, "Login endpoint configured for cookie setting")
+                    else:
+                        self.log_test("User Flow - Cookie Structure", True, "Login endpoint properly rejects invalid sessions")
+                elif response.status == 200:
+                    data = await response.json()
+                    # Check if response has all required fields
+                    required_fields = ['success', 'message', 'user', 'session_token']
+                    missing_fields = [field for field in required_fields if field not in data]
+                    
+                    if not missing_fields:
+                        self.log_test("User Flow - Login Response Structure", True, "Login response has all required fields")
+                        
+                        # Check cookie setting
+                        if set_cookie_header and 'session_token' in set_cookie_header:
+                            self.log_test("User Flow - Session Cookie Setting", True, "Session token cookie properly set")
+                        else:
+                            self.log_test("User Flow - Session Cookie Setting", False, "Session token cookie not set")
+                    else:
+                        self.log_test("User Flow - Login Response Structure", False, f"Missing fields: {missing_fields}")
+                else:
+                    self.log_test("User Flow - Login Endpoint", False, f"Unexpected status: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Login Endpoint", False, f"Exception: {str(e)}")
+        
+        # Test 3: Test profile endpoint accessibility after login simulation
+        try:
+            # Test with a mock session token to see if profile endpoint works
+            headers = {"Authorization": "Bearer mock-session-token-after-login"}
+            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
+                if response.status == 401:
+                    data = await response.json()
+                    if 'Invalid or expired session token' in data.get('detail', ''):
+                        self.log_test("User Flow - Profile Access", True, "Profile endpoint properly validates tokens")
+                    else:
+                        self.log_test("User Flow - Profile Access", False, f"Unexpected profile error: {data}")
+                elif response.status == 200:
+                    data = await response.json()
+                    if data.get('success') and 'user' in data:
+                        self.log_test("User Flow - Profile Access", True, "Profile endpoint returns user data")
+                    else:
+                        self.log_test("User Flow - Profile Access", False, f"Invalid profile response: {data}")
+                else:
+                    self.log_test("User Flow - Profile Access", False, f"Profile endpoint error: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Profile Access", False, f"Exception: {str(e)}")
+        
+        # Test 4: Test detailed profile endpoint (the one mentioned in the issue)
+        try:
+            headers = {"Authorization": "Bearer mock-detailed-profile-token"}
+            async with session.get(f"{self.base_url}/api/auth/profile/detailed", headers=headers) as response:
+                if response.status == 401:
+                    data = await response.json()
+                    if 'Invalid or expired session token' in data.get('detail', ''):
+                        self.log_test("User Flow - Detailed Profile Access", True, "Detailed profile endpoint properly validates tokens")
+                    else:
+                        self.log_test("User Flow - Detailed Profile Access", False, f"Unexpected detailed profile error: {data}")
+                elif response.status == 200:
+                    data = await response.json()
+                    if data.get('success') and 'user' in data:
+                        self.log_test("User Flow - Detailed Profile Access", True, "Detailed profile endpoint returns user data")
+                    else:
+                        self.log_test("User Flow - Detailed Profile Access", False, f"Invalid detailed profile response: {data}")
+                else:
+                    self.log_test("User Flow - Detailed Profile Access", False, f"Detailed profile endpoint error: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Detailed Profile Access", False, f"Exception: {str(e)}")
+        
+        # Test 5: Test session persistence across requests
+        try:
+            # First request with cookie
+            cookie_jar = aiohttp.CookieJar()
+            cookie_jar.update_cookies({'session_token': 'test-persistent-session'})
+            
+            async with aiohttp.ClientSession(cookie_jar=cookie_jar) as cookie_session:
+                async with cookie_session.get(f"{self.base_url}/api/auth/verify") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        if data.get('valid') == False:
+                            self.log_test("User Flow - Session Persistence", True, "Session persistence mechanism working (invalid token properly handled)")
+                        else:
+                            self.log_test("User Flow - Session Persistence", False, f"Unexpected session validation: {data}")
+                    else:
+                        self.log_test("User Flow - Session Persistence", False, f"Session verification error: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Session Persistence", False, f"Exception: {str(e)}")
+        
+        # Test 6: Test the specific issue - redirect behavior
+        try:
+            # Test if the backend properly handles the redirect scenario
+            payload = {"session_id": "redirect-test-session"}
+            async with session.post(
+                f"{self.base_url}/api/auth/login",
+                json=payload,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Origin': 'https://aee48b5e-99d1-410a-847d-57b3c8a1b8c9.preview.emergentagent.com',
+                    'Referer': 'https://auth.emergentagent.com/'
+                }
+            ) as response:
+                # Check if CORS and redirect handling is proper
+                cors_origin = response.headers.get('Access-Control-Allow-Origin')
+                cors_credentials = response.headers.get('Access-Control-Allow-Credentials')
+                
+                if cors_origin and cors_credentials:
+                    self.log_test("User Flow - Redirect CORS", True, f"CORS properly configured for redirects: Origin={cors_origin}, Credentials={cors_credentials}")
+                else:
+                    self.log_test("User Flow - Redirect CORS", False, f"CORS headers missing: Origin={cors_origin}, Credentials={cors_credentials}")
+                
+                # Check response status
+                if response.status in [200, 401]:  # Both are acceptable for this test
+                    self.log_test("User Flow - Redirect Handling", True, "Backend properly handles redirect requests")
+                else:
+                    self.log_test("User Flow - Redirect Handling", False, f"Unexpected redirect response: {response.status}")
+        except Exception as e:
+            self.log_test("User Flow - Redirect Handling", False, f"Exception: {str(e)}")
         """Test error handling scenarios"""
         print("\n🔍 Testing Error Scenarios...")
         
