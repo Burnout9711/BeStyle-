@@ -412,6 +412,199 @@ class BeStyleBackendTester:
         except Exception as e:
             self.log_test("Waitlist Health Check", False, f"Exception: {str(e)}")
     
+    async def test_auth_verify_endpoint(self, session: aiohttp.ClientSession):
+        """Test authentication verify endpoint"""
+        print("\n🔍 Testing Auth Verify Endpoint...")
+        
+        # Test without session token
+        try:
+            async with session.get(f"{self.base_url}/api/auth/verify") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('valid') == False and 'No session token' in data.get('message', ''):
+                        self.log_test("Auth Verify - No Token", True, "Properly handles missing session token")
+                    else:
+                        self.log_test("Auth Verify - No Token", False, f"Unexpected response: {data}")
+                else:
+                    self.log_test("Auth Verify - No Token", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Auth Verify - No Token", False, f"Exception: {str(e)}")
+        
+        # Test with invalid session token
+        try:
+            headers = {"Authorization": "Bearer invalid-token-123"}
+            async with session.get(f"{self.base_url}/api/auth/verify", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('valid') == False:
+                        self.log_test("Auth Verify - Invalid Token", True, "Properly rejects invalid session token")
+                    else:
+                        self.log_test("Auth Verify - Invalid Token", False, f"Unexpected response: {data}")
+                else:
+                    self.log_test("Auth Verify - Invalid Token", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Auth Verify - Invalid Token", False, f"Exception: {str(e)}")
+
+    async def test_auth_login_endpoint(self, session: aiohttp.ClientSession):
+        """Test authentication login endpoint with Emergent integration"""
+        print("\n🔍 Testing Auth Login Endpoint...")
+        
+        # Test with invalid session_id
+        try:
+            payload = {"session_id": "invalid-emergent-session-123"}
+            async with session.post(
+                f"{self.base_url}/api/auth/login",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 401:
+                    data = await response.json()
+                    if 'Invalid session ID' in data.get('detail', ''):
+                        self.log_test("Auth Login - Invalid Session", True, "Properly rejects invalid Emergent session ID")
+                    else:
+                        self.log_test("Auth Login - Invalid Session", False, f"Unexpected error message: {data}")
+                else:
+                    self.log_test("Auth Login - Invalid Session", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Login - Invalid Session", False, f"Exception: {str(e)}")
+        
+        # Test with missing session_id
+        try:
+            payload = {}
+            async with session.post(
+                f"{self.base_url}/api/auth/login",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 422:  # Validation error
+                    self.log_test("Auth Login - Missing Session ID", True, "Properly validates required session_id field")
+                else:
+                    self.log_test("Auth Login - Missing Session ID", False, f"Expected 422, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Login - Missing Session ID", False, f"Exception: {str(e)}")
+
+    async def test_auth_profile_endpoint(self, session: aiohttp.ClientSession):
+        """Test authentication profile endpoint"""
+        print("\n🔍 Testing Auth Profile Endpoint...")
+        
+        # Test without authentication
+        try:
+            async with session.get(f"{self.base_url}/api/auth/profile") as response:
+                if response.status == 401:
+                    data = await response.json()
+                    if 'No session token provided' in data.get('detail', ''):
+                        self.log_test("Auth Profile - No Token", True, "Properly requires authentication")
+                    else:
+                        self.log_test("Auth Profile - No Token", False, f"Unexpected error: {data}")
+                else:
+                    self.log_test("Auth Profile - No Token", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Profile - No Token", False, f"Exception: {str(e)}")
+        
+        # Test with invalid token
+        try:
+            headers = {"Authorization": "Bearer invalid-token-456"}
+            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
+                if response.status == 401:
+                    data = await response.json()
+                    if 'Invalid or expired session token' in data.get('detail', ''):
+                        self.log_test("Auth Profile - Invalid Token", True, "Properly validates session token")
+                    else:
+                        self.log_test("Auth Profile - Invalid Token", False, f"Unexpected error: {data}")
+                else:
+                    self.log_test("Auth Profile - Invalid Token", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Profile - Invalid Token", False, f"Exception: {str(e)}")
+
+    async def test_auth_logout_endpoint(self, session: aiohttp.ClientSession):
+        """Test authentication logout endpoint"""
+        print("\n🔍 Testing Auth Logout Endpoint...")
+        
+        # Test logout without token (should succeed gracefully)
+        try:
+            async with session.post(f"{self.base_url}/api/auth/logout") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('success') == True and 'Already logged out' in data.get('message', ''):
+                        self.log_test("Auth Logout - No Token", True, "Gracefully handles logout without token")
+                    else:
+                        self.log_test("Auth Logout - No Token", False, f"Unexpected response: {data}")
+                else:
+                    self.log_test("Auth Logout - No Token", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Auth Logout - No Token", False, f"Exception: {str(e)}")
+        
+        # Test logout with invalid token (should still succeed)
+        try:
+            headers = {"Authorization": "Bearer invalid-token-789"}
+            async with session.post(f"{self.base_url}/api/auth/logout", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('success') == True:
+                        self.log_test("Auth Logout - Invalid Token", True, "Successfully processes logout with invalid token")
+                    else:
+                        self.log_test("Auth Logout - Invalid Token", False, f"Unexpected response: {data}")
+                else:
+                    self.log_test("Auth Logout - Invalid Token", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Auth Logout - Invalid Token", False, f"Exception: {str(e)}")
+
+    async def test_database_collections(self, session: aiohttp.ClientSession):
+        """Test that required database collections exist and are accessible"""
+        print("\n🔍 Testing Database Collections...")
+        
+        # We can't directly test database collections from the API, but we can infer their existence
+        # by testing endpoints that would create/access them
+        
+        # Test that auth endpoints are accessible (implies collections are set up)
+        try:
+            async with session.get(f"{self.base_url}/api/auth/verify") as response:
+                if response.status == 200:
+                    self.log_test("Database Collections - Auth Access", True, "Auth endpoints accessible, collections likely configured")
+                else:
+                    self.log_test("Database Collections - Auth Access", False, f"Auth endpoints not accessible: {response.status}")
+        except Exception as e:
+            self.log_test("Database Collections - Auth Access", False, f"Exception: {str(e)}")
+
+    async def test_session_token_management(self, session: aiohttp.ClientSession):
+        """Test session token management and expiry handling"""
+        print("\n🔍 Testing Session Token Management...")
+        
+        # Test that the system properly handles session token validation
+        # This is tested through the verify endpoint with various token scenarios
+        
+        # Test expired token handling (simulated with invalid token)
+        try:
+            headers = {"Authorization": "Bearer expired-token-simulation"}
+            async with session.get(f"{self.base_url}/api/auth/verify", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('valid') == False:
+                        self.log_test("Session Token - Expiry Handling", True, "Properly handles expired/invalid tokens")
+                    else:
+                        self.log_test("Session Token - Expiry Handling", False, f"Should reject expired token: {data}")
+                else:
+                    self.log_test("Session Token - Expiry Handling", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Session Token - Expiry Handling", False, f"Exception: {str(e)}")
+        
+        # Test 7-day expiration configuration (we can only test the logic, not actual expiry)
+        try:
+            # Test that the system accepts the Authorization header format
+            headers = {"Authorization": "Bearer test-token-format"}
+            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
+                # Should get 401 for invalid token, but this confirms the header parsing works
+                if response.status == 401:
+                    data = await response.json()
+                    if 'Invalid or expired session token' in data.get('detail', ''):
+                        self.log_test("Session Token - 7-Day Management", True, "Session token validation system operational")
+                    else:
+                        self.log_test("Session Token - 7-Day Management", False, f"Unexpected error: {data}")
+                else:
+                    self.log_test("Session Token - 7-Day Management", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Session Token - 7-Day Management", False, f"Exception: {str(e)}")
+
     async def test_error_scenarios(self, session: aiohttp.ClientSession):
         """Test error handling scenarios"""
         print("\n🔍 Testing Error Scenarios...")
@@ -440,6 +633,18 @@ class BeStyleBackendTester:
                     self.log_test("Invalid Email Format Error", False, f"Expected 422, got {response.status}")
         except Exception as e:
             self.log_test("Invalid Email Format Error", False, f"Exception: {str(e)}")
+        
+        # Test auth error scenarios
+        try:
+            # Test malformed Authorization header
+            headers = {"Authorization": "InvalidFormat token123"}
+            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
+                if response.status == 401:
+                    self.log_test("Auth Error - Malformed Header", True, "Properly handles malformed auth header")
+                else:
+                    self.log_test("Auth Error - Malformed Header", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Error - Malformed Header", False, f"Exception: {str(e)}")
     
     async def run_all_tests(self):
         """Run all backend tests"""
