@@ -26,19 +26,22 @@ const ProfilePage = () => {
       
       // Login with the session ID
       handleSocialLogin(sessionId);
+    } else {
+      // No session ID, allow authentication state checks
+      setIsInitializing(false);
     }
   }, []); // Remove dependencies to prevent race condition
 
   useEffect(() => {
     // Handle authentication state changes
-    if (!isLoading && !isAuthenticated && !authAPI.parseSessionIdFromUrl()) {
-      // Only redirect if not loading, not authenticated, and no session_id in URL
+    if (!isInitializing && !isLoading && !isAuthenticated) {
+      // Only redirect if not initializing, not loading, not authenticated
       navigate('/');
     } else if (isAuthenticated && user) {
       // Load detailed profile information when authenticated
       loadDetailedProfile();
     }
-  }, [isAuthenticated, isLoading, navigate, user]);
+  }, [isAuthenticated, isLoading, navigate, user, isInitializing]);
 
   const handleSocialLogin = async (sessionId) => {
     setProcessing(true);
