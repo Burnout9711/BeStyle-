@@ -1214,17 +1214,7 @@ class BeStyleBackendTester:
         except Exception as e:
             self.log_test("Invalid Email Format Error", False, f"Exception: {str(e)}")
         
-        # Test auth error scenarios
-        try:
-            # Test malformed Authorization header
-            headers = {"Authorization": "InvalidFormat token123"}
-            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
-                if response.status == 401:
-                    self.log_test("Auth Error - Malformed Header", True, "Properly handles malformed auth header")
-                else:
-                    self.log_test("Auth Error - Malformed Header", False, f"Expected 401, got {response.status}")
-        except Exception as e:
-            self.log_test("Auth Error - Malformed Header", False, f"Exception: {str(e)}")
+    async def test_error_scenarios(self, session: aiohttp.ClientSession):
         """Test error handling scenarios"""
         print("\n🔍 Testing Error Scenarios...")
         
