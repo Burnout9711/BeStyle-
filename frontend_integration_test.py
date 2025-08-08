@@ -30,7 +30,7 @@ class FrontendIntegrationTester:
             print(f"Warning: Could not read frontend .env file: {e}")
         
         # Fallback to default
-        return "https://1080f3a8-3d73-4b05-b7b3-727e56d6c9f2.preview.emergentagent.com"
+        return "https://aee48b5e-99d1-410a-847d-57b3c8a1b8c9.preview.emergentagent.com"
     
     def log_test(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test results"""
