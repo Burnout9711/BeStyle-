@@ -1282,6 +1282,7 @@ class BeStyleBackendTester:
             await self.test_auth_login_endpoint(session)
             await self.test_complete_login_flow_simulation(session)
             await self.test_session_persistence_and_expiry(session)
+            await self.test_user_reported_login_flow_issue(session)
             await self.test_auth_profile_endpoint(session)
             await self.test_auth_detailed_profile_endpoint(session)
             await self.test_auth_profile_update_endpoint(session)
