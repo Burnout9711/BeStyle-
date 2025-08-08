@@ -864,6 +864,47 @@ class BeStyleBackendTester:
                     self.log_test("Enhanced DB - Session Model", False, f"HTTP {response.status}")
         except Exception as e:
             self.log_test("Enhanced DB - Session Model", False, f"Exception: {str(e)}")
+
+    async def test_error_scenarios(self, session: aiohttp.ClientSession):
+        """Test error handling scenarios"""
+        print("\n🔍 Testing Error Scenarios...")
+        
+        # Test invalid session ID for quiz results
+        try:
+            async with session.get(f"{self.base_url}/api/quiz/results/invalid-session-id") as response:
+                if response.status == 404:
+                    self.log_test("Invalid Session ID Error", True, "Properly returns 404 for invalid session")
+                else:
+                    self.log_test("Invalid Session ID Error", False, f"Expected 404, got {response.status}")
+        except Exception as e:
+            self.log_test("Invalid Session ID Error", False, f"Exception: {str(e)}")
+        
+        # Test invalid email format
+        try:
+            payload = {"email": "invalid-email", "source": "test"}
+            async with session.post(
+                f"{self.base_url}/api/waitlist/subscribe",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 422:  # Validation error
+                    self.log_test("Invalid Email Format Error", True, "Properly validates email format")
+                else:
+                    self.log_test("Invalid Email Format Error", False, f"Expected 422, got {response.status}")
+        except Exception as e:
+            self.log_test("Invalid Email Format Error", False, f"Exception: {str(e)}")
+        
+        # Test auth error scenarios
+        try:
+            # Test malformed Authorization header
+            headers = {"Authorization": "InvalidFormat token123"}
+            async with session.get(f"{self.base_url}/api/auth/profile", headers=headers) as response:
+                if response.status == 401:
+                    self.log_test("Auth Error - Malformed Header", True, "Properly handles malformed auth header")
+                else:
+                    self.log_test("Auth Error - Malformed Header", False, f"Expected 401, got {response.status}")
+        except Exception as e:
+            self.log_test("Auth Error - Malformed Header", False, f"Exception: {str(e)}")
         """Test error handling scenarios"""
         print("\n🔍 Testing Error Scenarios...")
         
