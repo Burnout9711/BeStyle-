@@ -53,13 +53,13 @@ const ProfilePage = () => {
   const loadDetailedProfile = async () => {
     setProfileLoading(true);
     try {
-      const response = await fetch('/api/auth/profile/detailed', {
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setDetailedProfile(data);
+      const result = await authAPI.getUserProfile();
+      if (result.success) {
+        // Also get detailed profile information
+        const detailedResult = await authAPI.getDetailedProfile();
+        if (detailedResult.success) {
+          setDetailedProfile(detailedResult.data);
+        }
       }
     } catch (error) {
       console.error('Error loading detailed profile:', error);
