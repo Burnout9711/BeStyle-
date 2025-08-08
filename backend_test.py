@@ -915,12 +915,16 @@ class BeStyleBackendTester:
             # Health checks
             await self.test_health_endpoints(session)
             
-            # Authentication API testing (NEW)
+            # Enhanced Authentication API testing
             await self.test_auth_verify_endpoint(session)
+            await self.test_enhanced_session_verification(session)
             await self.test_auth_login_endpoint(session)
             await self.test_auth_profile_endpoint(session)
+            await self.test_auth_detailed_profile_endpoint(session)
+            await self.test_auth_profile_update_endpoint(session)
             await self.test_auth_logout_endpoint(session)
             await self.test_database_collections(session)
+            await self.test_database_enhanced_structure(session)
             await self.test_session_token_management(session)
             
             # Quiz API testing
