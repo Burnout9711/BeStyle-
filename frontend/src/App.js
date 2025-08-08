@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import { AuthProvider } from './contexts/AuthContext';
 import CinematicHomepage from './pages/CinematicHomepage';
 import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
 import LoaderTestPage from './pages/LoaderTestPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
