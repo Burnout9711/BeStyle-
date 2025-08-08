@@ -326,6 +326,7 @@ const HeroSection = React.forwardRef(({ scrollY, onTakeQuiz }, ref) => {
         <SocialLogin 
           buttonText="Login" 
           showText={true}
+          compact={true}
         />
       </div>
       <div style={{
