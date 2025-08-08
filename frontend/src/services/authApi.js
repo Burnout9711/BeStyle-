@@ -83,6 +83,26 @@ export const getUserProfile = async () => {
 };
 
 /**
+ * Get detailed user profile
+ */
+export const getDetailedProfile = async () => {
+  try {
+    const response = await authAPI.get('/api/auth/profile/detailed');
+    
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.error('Get detailed profile error:', error);
+    return {
+      success: false,
+      error: error.response?.data?.detail || 'Failed to get detailed profile'
+    };
+  }
+};
+
+/**
  * Verify current session
  */
 export const verifySession = async () => {
