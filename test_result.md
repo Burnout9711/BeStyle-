@@ -755,7 +755,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Enhanced Profile Page Layout"
+    - "Social Media Integration Display"
+    - "Profile Statistics and Activity Display"
+    - "Login History Timeline"
+    - "Authentication Flow Integration"
+    - "Profile Visual Design and Branding"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
