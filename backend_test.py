@@ -709,6 +709,9 @@ class BeStyleBackendTester:
         # Check critical functionality
         critical_tests = [
             "Root Health Check",
+            "Auth Verify - No Token",
+            "Auth Login - Invalid Session", 
+            "Auth Profile - No Token",
             "Quiz Start", 
             "AI Recommendations Generation",
             "Waitlist Subscription"
