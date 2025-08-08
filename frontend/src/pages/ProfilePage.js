@@ -45,6 +45,7 @@ const ProfilePage = () => {
 
   const handleSocialLogin = async (sessionId) => {
     setProcessing(true);
+    setIsInitializing(false); // Allow authentication state changes now
     setAuthError('');
     
     try {
