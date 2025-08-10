@@ -9,7 +9,8 @@ const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 const authAPI = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
-  withCredentials: true, // Include cookies for session management
+  // Remove withCredentials to fix CORS issue in localhost development
+  // withCredentials: true, // Include cookies for session management
   headers: {
     'Content-Type': 'application/json'
   }
