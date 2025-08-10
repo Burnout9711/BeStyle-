@@ -37,15 +37,26 @@ const ProfilePage = () => {
 
   useEffect(() => {
     // Handle authentication state changes
+    console.log('Auth state check:', {
+      isInitializing,
+      isLoading,
+      isAuthenticated,
+      processing,
+      hasUser: !!user
+    });
+    
     if (!isInitializing && !isLoading && !isAuthenticated && !processing) {
       // Only redirect if not initializing, not loading, not authenticated, and not processing login
       const hasSessionId = authAPI.parseSessionIdFromUrl();
+      console.log('Considering redirect, hasSessionId:', hasSessionId);
       if (!hasSessionId) {
         // No session ID and not authenticated, safe to redirect
+        console.log('Redirecting to homepage');
         navigate('/');
       }
     } else if (isAuthenticated && user) {
       // Load detailed profile information when authenticated
+      console.log('User authenticated, loading detailed profile');
       loadDetailedProfile();
     }
   }, [isAuthenticated, isLoading, navigate, user, isInitializing, processing]);
