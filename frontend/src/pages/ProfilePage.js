@@ -48,26 +48,18 @@ const ProfilePage = () => {
   }, [isAuthenticated, isLoading, navigate, user, isInitializing, processing]);
 
   const handleSocialLogin = async (sessionId) => {
-    console.log('handleSocialLogin called with sessionId:', sessionId);
     setProcessing(true);
     setIsInitializing(false); // Allow authentication state changes now
     setAuthError('');
     
     try {
-      console.log('Calling AuthContext.login...');
       const result = await login(sessionId);
-      console.log('Login result:', result);
       if (!result.success) {
-        console.error('Login failed:', result.error);
         setAuthError(result.error || 'Login failed');
-      } else {
-        console.log('Login successful!');
       }
     } catch (error) {
-      console.error('Login error:', error);
       setAuthError('Login failed. Please try again.');
     } finally {
-      console.log('Setting processing to false');
       setProcessing(false);
     }
   };
