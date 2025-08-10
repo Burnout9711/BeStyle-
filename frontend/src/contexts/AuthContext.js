@@ -62,8 +62,6 @@ export const AuthProvider = ({ children }) => {
       if (result.success) {
         setUser(result.data.user);
         setIsAuthenticated(true);
-        // After successful OAuth login, check auth status to ensure everything is synced
-        setTimeout(() => checkAuthStatus(), 100);
         return { success: true };
       } else {
         return { success: false, error: result.error };
