@@ -19,15 +19,18 @@ const ProfilePage = () => {
   useEffect(() => {
     // Check if we have a session ID in the URL from Emergent redirect
     const sessionId = authAPI.parseSessionIdFromUrl();
+    console.log('ProfilePage initialized with sessionId:', sessionId);
     
     if (sessionId) {
       // Clear the URL fragment
       window.history.replaceState({}, document.title, window.location.pathname);
       
       // Login with the session ID
+      console.log('Starting social login with sessionId:', sessionId);
       handleSocialLogin(sessionId);
     } else {
       // No session ID, allow authentication state checks
+      console.log('No sessionId found, allowing auth state checks');
       setIsInitializing(false);
     }
   }, []); // Remove dependencies to prevent race condition
