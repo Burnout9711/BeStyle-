@@ -34,14 +34,18 @@ const ProfilePage = () => {
 
   useEffect(() => {
     // Handle authentication state changes
-    if (!isInitializing && !isLoading && !isAuthenticated) {
-      // Only redirect if not initializing, not loading, not authenticated
-      navigate('/');
+    if (!isInitializing && !isLoading && !isAuthenticated && !processing) {
+      // Only redirect if not initializing, not loading, not authenticated, and not processing login
+      const hasSessionId = authAPI.parseSessionIdFromUrl();
+      if (!hasSessionId) {
+        // No session ID and not authenticated, safe to redirect
+        navigate('/');
+      }
     } else if (isAuthenticated && user) {
       // Load detailed profile information when authenticated
       loadDetailedProfile();
     }
-  }, [isAuthenticated, isLoading, navigate, user, isInitializing]);
+  }, [isAuthenticated, isLoading, navigate, user, isInitializing, processing]);
 
   const handleSocialLogin = async (sessionId) => {
     setProcessing(true);
