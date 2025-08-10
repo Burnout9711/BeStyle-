@@ -37,10 +37,10 @@ const ProfilePage = () => {
   useEffect(() => {
     // Handle authentication state changes
     if (!isInitializing && !isLoading && !isAuthenticated && !processing) {
-      // Only redirect if not initializing, not loading, not authenticated, and not processing login
+      // Additional guard: don't redirect if we have a session_id (OAuth still might be processing)
       const hasSessionId = authAPI.parseSessionIdFromUrl();
       if (!hasSessionId) {
-        // No session ID and not authenticated, safe to redirect
+        // Only redirect if no session ID and not authenticated, safe to redirect
         navigate('/');
       }
     } else if (isAuthenticated && user) {
