@@ -104,7 +104,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     redirectToLogin,
-    checkAuthStatus
+    checkAuthStatus,
+    finishOAuthProcessing
   };
 
   return (
