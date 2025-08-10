@@ -27,8 +27,13 @@ const ProfilePage = () => {
       // Login with the session ID
       handleSocialLogin(sessionId);
     } else {
-      // No session ID, allow authentication state checks
+      // No session ID, allow authentication state checks and set loading to false
       setIsInitializing(false);
+      // If AuthContext skipped loading check, we need to set it false here
+      if (isLoading) {
+        // Give AuthContext a moment to complete if it's still checking, then force false
+        setTimeout(() => setIsInitializing(false), 100);
+      }
     }
   }, []); // Remove dependencies to prevent race condition
 
