@@ -9,7 +9,7 @@ import { ArrowLeft, User, Mail, Calendar, LogOut, Shield, Activity, Clock, Users
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading, login, logout, checkAuthStatus } = useAuth();
+  const { user, isAuthenticated, isLoading, login, logout, checkAuthStatus, finishOAuthProcessing } = useAuth();
   const [authError, setAuthError] = useState('');
   const [processing, setProcessing] = useState(false);
   const [detailedProfile, setDetailedProfile] = useState(null);
