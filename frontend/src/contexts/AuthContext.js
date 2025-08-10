@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
     
     if (currentPath === '/profile' && hasSessionId) {
       // Skip initial auth check - let ProfilePage handle OAuth flow first
-      console.log('Skipping initial auth check - OAuth redirect detected');
       setIsLoading(false);
       return;
     }
