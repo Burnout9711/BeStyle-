@@ -21,6 +21,18 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated on app load
   useEffect(() => {
+    // Don't check auth status if we're on profile page with session_id (OAuth redirect)
+    const currentPath = window.location.pathname;
+    const hasSessionId = window.location.hash.includes('session_id=');
+    
+    if (currentPath === '/profile' && hasSessionId) {
+      // Skip initial auth check - let ProfilePage handle OAuth flow first
+      console.log('Skipping initial auth check - OAuth redirect detected');
+      setIsLoading(false);
+      return;
+    }
+    
+    // Normal auth status check for other cases
     checkAuthStatus();
   }, []);
 
