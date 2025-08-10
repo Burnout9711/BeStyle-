@@ -51,16 +51,21 @@ const ProfilePage = () => {
 
   const handleSocialLogin = async (sessionId) => {
     setProcessing(true);
-    setIsInitializing(false); // Allow authentication state changes now
     setAuthError('');
     
     try {
       const result = await login(sessionId);
-      if (!result.success) {
+      if (result.success) {
+        // Only set isInitializing false AFTER successful login
+        setIsInitializing(false);
+      } else {
         setAuthError(result.error || 'Login failed');
+        // Also set false on error so user can see the error
+        setIsInitializing(false);
       }
     } catch (error) {
       setAuthError('Login failed. Please try again.');
+      setIsInitializing(false);
     } finally {
       setProcessing(false);
       // Signal AuthContext that OAuth processing is complete
