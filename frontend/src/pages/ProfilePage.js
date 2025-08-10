@@ -63,6 +63,8 @@ const ProfilePage = () => {
       setAuthError('Login failed. Please try again.');
     } finally {
       setProcessing(false);
+      // Signal AuthContext that OAuth processing is complete
+      finishOAuthProcessing();
     }
   };
 
