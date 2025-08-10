@@ -26,8 +26,7 @@ export const AuthProvider = ({ children }) => {
     const hasSessionId = window.location.hash.includes('session_id=');
     
     if (currentPath === '/profile' && hasSessionId) {
-      // Skip initial auth check - let ProfilePage handle OAuth flow first
-      setIsLoading(false);
+      // Keep loading state true - let ProfilePage handle OAuth and set loading false after
       return;
     }
     
