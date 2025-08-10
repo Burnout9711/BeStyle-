@@ -88,6 +88,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const finishOAuthProcessing = () => {
+    // Called by ProfilePage when OAuth processing is complete
+    setIsLoading(false);
+  };
+
   const redirectToLogin = () => {
     authAPI.redirectToSocialLogin();
   };
