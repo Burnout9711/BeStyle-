@@ -196,12 +196,25 @@ const ProfilePage = () => {
     );
   }
 
-  // Render authenticated profile page
+  // Authenticated user - render profile
+  console.info('ProfilePage: Rendering authenticated profile');
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-          <h1 className="text-3xl font-bold text-white mb-8">Your Profile</h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-white">Your Profile</h1>
+            <button
+              onClick={() => {
+                // Clear any stored redirect
+                localStorage.removeItem('post_login');
+                window.location.href = '/';
+              }}
+              className="bg-red-600/20 hover:bg-red-600/30 text-red-300 hover:text-red-200 px-4 py-2 rounded-lg border border-red-500/30 transition duration-200"
+            >
+              Sign Out
+            </button>
+          </div>
           
           {user && (
             <div className="space-y-6">
