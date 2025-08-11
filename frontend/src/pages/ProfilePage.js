@@ -114,7 +114,7 @@ const ProfilePage = () => {
   // Load detailed profile when authenticated
   useEffect(() => {
     if (isAuthenticated && user && !oauthInFlight) {
-      console.log('ProfilePage: User authenticated, loading detailed profile');
+      console.info('ProfilePage: User authenticated - loading detailed profile');
       loadDetailedProfile();
     }
   }, [isAuthenticated, user, oauthInFlight]);
