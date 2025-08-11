@@ -9,7 +9,7 @@ const ProfilePage = () => {
   const [detailedProfile, setDetailedProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
 
-  // Handle OAuth redirect from Emergent
+  // OAuth landing logic - /profile is public OAuth landing page
   useEffect(() => {
     const sessionId = authAPI.parseSessionIdFromUrl();
     console.log('ProfilePage: useEffect triggered', { 
