@@ -31,13 +31,12 @@ export const getLoginUrl = () => {
 };
 
 /**
- * Parse session ID from URL fragment
- * Expected format: /profile#session_id=60b77a6f-9458-4a4c-83d6-aa55a51af7c8
+ * Parse session ID from URL (supports both hash and query parameters)
  */
 export const parseSessionIdFromUrl = () => {
-  const hash = window.location.hash;
-  const match = hash.match(/session_id=([^&]+)/);
-  return match ? match[1] : null;
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const qs = new URLSearchParams(window.location.search);
+  return hash.get("session_id") || qs.get("session_id") || null;
 };
 
 /**
