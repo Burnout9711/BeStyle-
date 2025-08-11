@@ -277,10 +277,10 @@ const ProfilePage = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="text-gray-300 text-sm">Profile Completion</label>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 mt-1">
                         <div className="flex-1 bg-gray-700 rounded-full h-2">
                           <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-500" 
                             style={{ width: `${detailedProfile.profile_completion || 0}%` }}
                           ></div>
                         </div>
@@ -293,11 +293,14 @@ const ProfilePage = () => {
                         <label className="text-gray-300 text-sm">Connected Accounts</label>
                         <div className="mt-2 space-y-2">
                           {detailedProfile.social_profiles.map((profile, index) => (
-                            <div key={index} className="flex items-center space-x-2">
-                              <span className="text-white capitalize">{profile.provider}</span>
-                              <span className="text-gray-300 text-sm">
-                                Connected on {new Date(profile.connected_at).toLocaleDateString()}
-                              </span>
+                            <div key={index} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                              <div className="flex items-center space-x-3">
+                                <span className="text-white capitalize font-medium">{profile.provider}</span>
+                                <span className="text-gray-300 text-sm">
+                                  Connected {new Date(profile.connected_at).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                             </div>
                           ))}
                         </div>
