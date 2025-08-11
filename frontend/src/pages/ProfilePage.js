@@ -226,21 +226,4 @@ const ProfilePage = () => {
     </div>
   );
 };
-};
-
-// Add CSS animation for spinner
-const styles = `
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-`;
-
-// Inject styles
-if (typeof document !== 'undefined') {
-  const styleSheet = document.createElement('style');
-  styleSheet.textContent = styles;
-  document.head.appendChild(styleSheet);
-}
-
 export default ProfilePage;
