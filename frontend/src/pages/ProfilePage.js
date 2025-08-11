@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import authAPI from '../services/authApi';
+import RedirectGuard from '../components/RedirectGuard';
 
 const ProfilePage = () => {
   const { user, isAuthenticated, isInitializing, oauthInFlight, setOauthInFlight, login } = useAuth();
