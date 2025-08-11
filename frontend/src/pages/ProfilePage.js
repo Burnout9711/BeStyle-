@@ -89,10 +89,10 @@ const ProfilePage = () => {
     })();
 
     return () => {
-      console.log('ProfilePage: Cleanup - setting cancelled to true');
+      console.info('ProfilePage: OAuth cleanup - setting cancelled=true');
       cancelled = true;
     };
-  }, []); // Empty dependency array to run only once
+  }, []); // Empty dependency array - run only once
 
   const loadDetailedProfile = async () => {
     setProfileLoading(true);
