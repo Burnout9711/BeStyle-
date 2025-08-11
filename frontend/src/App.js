@@ -19,9 +19,8 @@ function App() {
             <Route path="/quiz" element={<QuizPage />} />
             <Route path="/results" element={<EnhancedResultsPage />} />
             <Route path="/loader-test" element={<LoaderTestPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
+            {/* /profile is PUBLIC - OAuth landing page */}
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
