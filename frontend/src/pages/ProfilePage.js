@@ -1,20 +1,12 @@
-/**
- * Enhanced Profile page for authenticated users with comprehensive profile overview
- */
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import authAPI from '../services/authApi';
-import { ArrowLeft, User, Mail, Calendar, LogOut, Shield, Activity, Clock, Users, ArrowRight, Settings, CheckCircle } from 'lucide-react';
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading, login, logout, checkAuthStatus, finishOAuthProcessing } = useAuth();
+  const { user, isAuthenticated, isInitializing, oauthInFlight, setOauthInFlight, login } = useAuth();
   const [authError, setAuthError] = useState('');
-  const [processing, setProcessing] = useState(false);
   const [detailedProfile, setDetailedProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true); // Prevent premature redirects
 
   useEffect(() => {
     // Check if we have a session ID in the URL from Emergent redirect
