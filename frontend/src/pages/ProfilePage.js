@@ -220,7 +220,7 @@ const ProfilePage = () => {
             <div className="space-y-6">
               {/* Basic Profile Info */}
               <div className="bg-white/5 rounded-xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Basic Information</h2>
+                <h2 className="text-xl font-semibold text-white mb-4">Profile Information</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-gray-300 text-sm">Name</label>
@@ -229,6 +229,33 @@ const ProfilePage = () => {
                   <div>
                     <label className="text-gray-300 text-sm">Email</label>
                     <p className="text-white font-medium">{user.email || 'Not provided'}</p>
+                  </div>
+                  {user.picture && (
+                    <div className="md:col-span-2">
+                      <label className="text-gray-300 text-sm">Profile Picture</label>
+                      <div className="mt-2">
+                        <img
+                          src={user.picture}
+                          alt="Profile"
+                          className="w-16 h-16 rounded-full border-2 border-white/20"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* OAuth Success Confirmation */}
+              <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-green-400 font-semibold">Authentication Successful</h3>
+                    <p className="text-green-300/80 text-sm">You have successfully signed in via Google OAuth</p>
                   </div>
                 </div>
               </div>
