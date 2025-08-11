@@ -12,17 +12,21 @@ const ProfilePage = () => {
   // OAuth landing logic - /profile is public OAuth landing page
   useEffect(() => {
     const sessionId = authAPI.parseSessionIdFromUrl();
-    console.log('ProfilePage: useEffect triggered', { 
-      sessionId, 
+    const timestamp = performance.now();
+    
+    console.info('ProfilePage: OAuth landing check', { 
+      sessionId: sessionId ? '***' : null,
+      hasSessionId: !!sessionId,
       isInitializing, 
       oauthInFlight,
       currentPath: window.location.pathname,
       currentHash: window.location.hash,
-      currentSearch: window.location.search
+      currentSearch: window.location.search,
+      timestamp: Math.round(timestamp)
     });
     
     if (!sessionId) {
-      console.log('ProfilePage: No session ID found in URL');
+      console.info('ProfilePage: No session ID found - not an OAuth landing');
       return;
     }
 
