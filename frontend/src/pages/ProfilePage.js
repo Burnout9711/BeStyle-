@@ -31,7 +31,7 @@ const ProfilePage = () => {
     }
 
     let cancelled = false;
-    console.log('ProfilePage: Starting OAuth flow, setting oauthInFlight to true');
+    console.info('ProfilePage: Starting OAuth processing - setting oauthInFlight=true');
     setOauthInFlight(true);
 
     (async () => {
