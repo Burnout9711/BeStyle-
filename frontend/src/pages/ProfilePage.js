@@ -175,23 +175,24 @@ const ProfilePage = () => {
     );
   }
 
-  // Show login required state if not authenticated and no OAuth in progress
+  // Use RedirectGuard for unauthenticated access to profile
   if (!isAuthenticated) {
+    console.info('ProfilePage: User not authenticated - using RedirectGuard');
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
-        <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-white/10 max-w-md w-full mx-4">
-          <div className="text-center">
-            <h2 className="text-xl font-bold text-white mb-4">Access Required</h2>
-            <p className="text-gray-300 mb-6">Please log in to view your profile.</p>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
-            >
-              Back to Home
-            </button>
+      <RedirectGuard
+        onAllow={() => {
+          // Allow redirect to home if no OAuth in progress
+          window.location.href = '/';
+          return null;
+        }}
+      >
+        {/* This should not render if RedirectGuard is working */}
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
+          <div className="text-center text-white">
+            <p>Access not authorized</p>
           </div>
         </div>
-      </div>
+      </RedirectGuard>
     );
   }
 
