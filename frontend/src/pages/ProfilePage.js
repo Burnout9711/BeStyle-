@@ -95,488 +95,137 @@ const ProfilePage = () => {
     }
   }, [isAuthenticated, user, oauthInFlight]);
 
-  // Show loading state
-  if (isLoading || processing) {
+  // Show loading screen during OAuth processing or initialization
+  if (isInitializing || oauthInFlight) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '50px',
-            height: '50px',
-            border: '3px solid rgba(79, 127, 255, 0.3)',
-            borderTop: '3px solid #4F7FFF',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }} />
-          <p style={{ fontSize: '18px', opacity: 0.8 }}>
-            {processing ? 'Setting up your profile...' : 'Loading your profile...'}
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">
+            {oauthInFlight ? 'Finalizing sign-in...' : 'Loading...'}
           </p>
         </div>
       </div>
     );
   }
 
-  // Show error state
+  // Show error state if OAuth failed
   if (authError && !isAuthenticated) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        padding: '2rem'
-      }}>
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          padding: '2rem',
-          borderRadius: '20px',
-          textAlign: 'center',
-          maxWidth: '400px'
-        }}>
-          <h2 style={{ color: '#ff6b6b', marginBottom: '1rem' }}>Login Error</h2>
-          <p style={{ marginBottom: '2rem', opacity: 0.8 }}>{authError}</p>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              background: '#4F7FFF',
-              color: 'white',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
-          >
-            Back to Home
-          </button>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
+        <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-red-500/20 max-w-md w-full mx-4">
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-red-400 mb-4">Login Error</h2>
+            <p className="text-gray-300 mb-6">{authError}</p>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+            >
+              Back to Home
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Show authenticated profile
-  if (isAuthenticated && user) {
+  // Show login required state if not authenticated and no OAuth in progress
+  if (!isAuthenticated) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        color: 'white'
-      }}>
-        {/* Header */}
-        <header style={{
-          padding: '1rem 2rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
+        <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-white/10 max-w-md w-full mx-4">
+          <div className="text-center">
+            <h2 className="text-xl font-bold text-white mb-4">Access Required</h2>
+            <p className="text-gray-300 mb-6">Please log in to view your profile.</p>
             <button
-              onClick={() => navigate('/')}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'white',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.5rem',
-                borderRadius: '8px',
-                transition: 'background 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-              onMouseLeave={(e) => e.target.style.background = 'transparent'}
+              onClick={() => window.location.href = '/'}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
             >
-              <ArrowLeft size={20} />
               Back to Home
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render authenticated profile page
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+          <h1 className="text-3xl font-bold text-white mb-8">Your Profile</h1>
           
-          <div style={{ fontSize: '20px', fontWeight: '600' }}>
-            BeStyle.AI Profile
-          </div>
-          
-          <button
-            onClick={handleLogout}
-            disabled={processing}
-            style={{
-              background: 'rgba(255, 107, 107, 0.2)',
-              border: '1px solid #ff6b6b',
-              color: '#ff6b6b',
-              cursor: processing ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.5rem 1rem',
-              borderRadius: '8px',
-              transition: 'all 0.3s ease',
-              opacity: processing ? 0.5 : 1
-            }}
-          >
-            <LogOut size={16} />
-            Logout
-          </button>
-        </header>
-
-        {/* Profile Content */}
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '2rem',
-          display: 'grid',
-          gap: '2rem',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))'
-        }}>
-          {/* Main Profile Card */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderRadius: '20px',
-            padding: '2rem',
-            gridColumn: 'span 2'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2rem',
-              marginBottom: '2rem'
-            }}>
-              {/* Profile Picture */}
-              {user.picture ? (
-                <img
-                  src={user.picture}
-                  alt={user.name}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
-                    border: '3px solid #4F7FFF',
-                    objectFit: 'cover'
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: '100px',
-                  height: '100px',
-                  borderRadius: '50%',
-                  border: '3px solid #4F7FFF',
-                  background: 'linear-gradient(135deg, #4F7FFF 0%, #B084F7 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <User size={40} color="white" />
-                </div>
-              )}
-
-              {/* User Info */}
-              <div style={{ flex: 1 }}>
-                <h1 style={{
-                  fontSize: '2rem',
-                  fontWeight: '600',
-                  marginBottom: '0.5rem',
-                  color: 'white'
-                }}>
-                  {user.name}
-                </h1>
-
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  marginBottom: '1rem',
-                  opacity: 0.8
-                }}>
-                  <Mail size={16} />
-                  {user.email}
-                  {user.email_verified && (
-                    <CheckCircle size={16} style={{ color: '#4ade80' }} />
-                  )}
-                </div>
-
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  opacity: 0.6
-                }}>
-                  <Calendar size={16} />
-                  Member since {new Date(user.created_at).toLocaleDateString()}
-                </div>
-              </div>
-
-              {/* Profile Completion */}
-              <div style={{
-                background: 'rgba(79, 127, 255, 0.1)',
-                borderRadius: '15px',
-                padding: '1.5rem',
-                textAlign: 'center',
-                minWidth: '150px'
-              }}>
-                <div style={{
-                  fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#4F7FFF',
-                  marginBottom: '0.5rem'
-                }}>
-                  {detailedProfile?.profile_completion || 0}%
-                </div>
-                <div style={{ fontSize: '0.9rem', opacity: 0.7 }}>
-                  Profile Complete
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{
-              display: 'flex',
-              gap: '1rem',
-              flexWrap: 'wrap'
-            }}>
-              <button
-                onClick={() => navigate('/quiz')}
-                style={{
-                  background: 'linear-gradient(135deg, #4F7FFF 0%, #B084F7 100%)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '14px 28px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'transform 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-              >
-                Take Style Quiz
-                <ArrowRight size={18} />
-              </button>
-
-              <button
-                onClick={() => navigate('/')}
-                style={{
-                  background: 'transparent',
-                  color: 'white',
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  padding: '14px 28px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = '#4F7FFF';
-                  e.target.style.background = 'rgba(79, 127, 255, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                  e.target.style.background = 'transparent';
-                }}
-              >
-                Explore BeStyle.AI
-              </button>
-            </div>
-          </div>
-
-          {/* Social Accounts Card */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderRadius: '20px',
-            padding: '2rem'
-          }}>
-            <h3 style={{
-              fontSize: '1.5rem',
-              fontWeight: '600',
-              marginBottom: '1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              <Shield size={24} />
-              Connected Accounts
-            </h3>
-
-            {user.social_profiles && user.social_profiles.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {user.social_profiles.map((profile, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      padding: '1rem',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      borderRadius: '10px'
-                    }}
-                  >
-                    <div style={{ color: '#4F7FFF' }}>
-                      {getProviderIcon(profile.provider)}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: '600', textTransform: 'capitalize' }}>
-                        {profile.provider}
-                      </div>
-                      <div style={{ fontSize: '0.9rem', opacity: 0.7 }}>
-                        Connected {new Date(profile.connected_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                    {user.primary_provider === profile.provider && (
-                      <div style={{
-                        background: 'rgba(79, 127, 255, 0.2)',
-                        color: '#4F7FFF',
-                        padding: '0.3rem 0.8rem',
-                        borderRadius: '15px',
-                        fontSize: '0.8rem',
-                        fontWeight: '600'
-                      }}>
-                        Primary
-                      </div>
-                    )}
+          {user && (
+            <div className="space-y-6">
+              {/* Basic Profile Info */}
+              <div className="bg-white/5 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-white mb-4">Basic Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-gray-300 text-sm">Name</label>
+                    <p className="text-white font-medium">{user.name || 'Not provided'}</p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ opacity: 0.7 }}>No connected social accounts</p>
-            )}
-          </div>
-
-          {/* Activity Stats Card */}
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            borderRadius: '20px',
-            padding: '2rem'
-          }}>
-            <h3 style={{
-              fontSize: '1.5rem',
-              fontWeight: '600',
-              marginBottom: '1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              <Activity size={24} />
-              Account Activity
-            </h3>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '10px'
-              }}>
-                <span>Total Logins</span>
-                <span style={{ fontWeight: '600' }}>{user.login_count || 0}</span>
+                  <div>
+                    <label className="text-gray-300 text-sm">Email</label>
+                    <p className="text-white font-medium">{user.email || 'Not provided'}</p>
+                  </div>
+                </div>
               </div>
 
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '10px'
-              }}>
-                <span>Last Login</span>
-                <span style={{ fontWeight: '600' }}>
-                  {user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}
-                </span>
-              </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '1rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '10px'
-              }}>
-                <span>Account Age</span>
-                <span style={{ fontWeight: '600' }}>
-                  {detailedProfile?.login_stats?.account_age_days || 0} days
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Login History */}
-          {detailedProfile?.recent_logins && detailedProfile.recent_logins.length > 0 && (
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              borderRadius: '20px',
-              padding: '2rem',
-              gridColumn: 'span 2'
-            }}>
-              <h3 style={{
-                fontSize: '1.5rem',
-                fontWeight: '600',
-                marginBottom: '1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <Clock size={24} />
-                Recent Login History
-              </h3>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {detailedProfile.recent_logins.slice(0, 5).map((login, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '0.8rem',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      borderRadius: '8px'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div style={{ color: '#4F7FFF' }}>
-                        {getProviderIcon(login.provider)}
+              {/* Detailed Profile Info */}
+              {profileLoading ? (
+                <div className="bg-white/5 rounded-xl p-6">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-white/10 rounded w-1/4 mb-4"></div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-white/10 rounded w-full"></div>
+                      <div className="h-3 bg-white/10 rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ) : detailedProfile ? (
+                <div className="bg-white/5 rounded-xl p-6">
+                  <h2 className="text-xl font-semibold text-white mb-4">Profile Details</h2>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-gray-300 text-sm">Profile Completion</label>
+                      <div className="flex items-center space-x-2">
+                        <div className="flex-1 bg-gray-700 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full" 
+                            style={{ width: `${detailedProfile.profile_completion || 0}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-white text-sm">{detailedProfile.profile_completion || 0}%</span>
                       </div>
+                    </div>
+                    
+                    {detailedProfile.social_profiles && detailedProfile.social_profiles.length > 0 && (
                       <div>
-                        <div style={{ fontWeight: '600', textTransform: 'capitalize' }}>
-                          {login.provider}
+                        <label className="text-gray-300 text-sm">Connected Accounts</label>
+                        <div className="mt-2 space-y-2">
+                          {detailedProfile.social_profiles.map((profile, index) => (
+                            <div key={index} className="flex items-center space-x-2">
+                              <span className="text-white capitalize">{profile.provider}</span>
+                              <span className="text-gray-300 text-sm">
+                                Connected on {new Date(profile.connected_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                        <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                          {new Date(login.login_time).toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                    {login.ip_address && (
-                      <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                        {login.ip_address}
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
+                </div>
+              ) : null}
             </div>
           )}
         </div>
       </div>
-    );
-  }
-
-  // Fallback
-  return null;
+    </div>
+  );
+};
 };
 
 // Add CSS animation for spinner
