@@ -8,62 +8,66 @@ const ProfilePage = () => {
   const [detailedProfile, setDetailedProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
 
+  // Handle OAuth redirect from Emergent
   useEffect(() => {
-    // Check if we have a session ID in the URL from Emergent redirect
     const sessionId = authAPI.parseSessionIdFromUrl();
+    console.log('ProfilePage: useEffect triggered', { 
+      sessionId, 
+      isInitializing, 
+      oauthInFlight,
+      currentPath: window.location.pathname,
+      currentHash: window.location.hash,
+      currentSearch: window.location.search
+    });
     
-    if (sessionId) {
-      // Clear the URL fragment
-      window.history.replaceState({}, document.title, window.location.pathname);
-      
-      // Login with the session ID
-      handleSocialLogin(sessionId);
-    } else {
-      // No session ID, allow authentication state checks
-      setIsInitializing(false);
-      // Signal AuthContext that OAuth processing is complete (even though there was no OAuth)
-      finishOAuthProcessing();
+    if (!sessionId) {
+      console.log('ProfilePage: No session ID found in URL');
+      return;
     }
-  }, []); // Remove dependencies to prevent race condition
 
-  useEffect(() => {
-    // Handle authentication state changes
-    if (!isInitializing && !isLoading && !isAuthenticated && !processing) {
-      // Additional guard: don't redirect if we have a session_id (OAuth still might be processing)
-      const hasSessionId = authAPI.parseSessionIdFromUrl();
-      if (!hasSessionId) {
-        // Only redirect if no session ID and not authenticated, safe to redirect
-        navigate('/');
-      }
-    } else if (isAuthenticated && user) {
-      // Load detailed profile information when authenticated
-      loadDetailedProfile();
-    }
-  }, [isAuthenticated, isLoading, navigate, user, isInitializing, processing]);
+    let cancelled = false;
+    console.log('ProfilePage: Starting OAuth flow, setting oauthInFlight to true');
+    setOauthInFlight(true);
 
-  const handleSocialLogin = async (sessionId) => {
-    setProcessing(true);
-    setAuthError('');
-    
-    try {
-      const result = await login(sessionId);
-      if (result.success) {
-        // Only set isInitializing false AFTER successful login
-        setIsInitializing(false);
-      } else {
-        setAuthError(result.error || 'Login failed');
-        // Also set false on error so user can see the error
-        setIsInitializing(false);
+    (async () => {
+      try {
+        console.log('ProfilePage: Calling login() with sessionId:', sessionId);
+        const result = await login(sessionId);
+        
+        if (cancelled) {
+          console.log('ProfilePage: OAuth flow was cancelled');
+          return;
+        }
+        
+        if (result?.success) {
+          console.log('ProfilePage: OAuth login successful, cleaning URL');
+          // Remove session_id from URL
+          window.history.replaceState({}, document.title, "/profile");
+          setAuthError('');
+        } else {
+          console.error('ProfilePage: OAuth login failed:', result?.error);
+          setAuthError(result?.error || 'Login failed');
+          // Stay on page, show error UI; do NOT navigate away
+        }
+      } catch (error) {
+        console.error('ProfilePage: OAuth login exception:', error);
+        if (!cancelled) {
+          setAuthError('Login failed. Please try again.');
+          // Stay on page, show error UI
+        }
+      } finally {
+        if (!cancelled) {
+          console.log('ProfilePage: Setting oauthInFlight to false');
+          setOauthInFlight(false);
+        }
       }
-    } catch (error) {
-      setAuthError('Login failed. Please try again.');
-      setIsInitializing(false);
-    } finally {
-      setProcessing(false);
-      // Signal AuthContext that OAuth processing is complete
-      finishOAuthProcessing();
-    }
-  };
+    })();
+
+    return () => {
+      console.log('ProfilePage: Cleanup - setting cancelled to true');
+      cancelled = true;
+    };
+  }, []); // Empty dependency array to run only once
 
   const loadDetailedProfile = async () => {
     setProfileLoading(true);
