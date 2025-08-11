@@ -37,43 +37,62 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Check if user is authenticated on app load
+  // App boot: load token → set isAuthenticated → finally isInitializing=false
   useEffect(() => {
     (async () => {
       try {
-        console.log('AuthContext: Initial auth check starting');
+        const timestamp = performance.now();
+        console.info('AuthContext: App boot started', { timestamp: Math.round(timestamp) });
+        
         // Don't check auth status if we're on profile page with session_id (OAuth redirect)
         const currentPath = window.location.pathname;
         const hasSessionId = !!authAPI.parseSessionIdFromUrl();
         
-        console.log('AuthContext: Initial check', { currentPath, hasSessionId });
+        console.info('AuthContext: Boot check', { 
+          currentPath, 
+          hasSessionId,
+          timestamp: Math.round(timestamp)
+        });
         
         if (currentPath === '/profile' && hasSessionId) {
           // Skip initial auth check - OAuth will handle authentication
-          console.log('AuthContext: Skipping initial auth check - OAuth redirect detected');
+          console.info('AuthContext: Skipping boot auth check - OAuth redirect detected');
           return;
         }
         
         // Normal auth status check for other cases
         await checkAuthStatus();
+        console.info('AuthContext: Boot auth check completed');
       } finally {
-        console.log('AuthContext: Setting isInitializing to false');
+        const timestamp = performance.now();
+        console.info('AuthContext: Setting isInitializing to false', { timestamp: Math.round(timestamp) });
         setIsInitializing(false);
       }
     })();
   }, []);
 
   const login = async (sessionId) => {
-    console.log('AuthContext: login() called with sessionId:', sessionId);
+    const timestamp = performance.now();
+    console.info('AuthContext: login() called', { sessionId, timestamp: Math.round(timestamp) });
+    
     try {
       const result = await authAPI.loginWithSocial(sessionId);
-      console.log('AuthContext: login() result:', result);
+      console.info('AuthContext: login() result', { 
+        success: result.success, 
+        timestamp: Math.round(performance.now())
+      });
       
       if (result.success) {
+        // Await token persistence before setting authenticated
+        if (authAPI.persistToken && result.token) {
+          await authAPI.persistToken(result.token);
+          console.info('AuthContext: Token persisted');
+        }
+        
         setUser(result.data.user);
         setIsAuthenticated(true);
-        console.log('AuthContext: Authentication successful, user set');
-        return { success: true };
+        console.info('AuthContext: Authentication successful, user set');
+        return { success: true, token: result.token };
       } else {
         console.error('AuthContext: Login failed:', result.error);
         return { success: false, error: result.error };
