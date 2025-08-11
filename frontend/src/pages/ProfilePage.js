@@ -99,7 +99,6 @@ const ProfilePage = () => {
     try {
       const result = await authAPI.getUserProfile();
       if (result.success) {
-        // Also get detailed profile information
         const detailedResult = await authAPI.getDetailedProfile();
         if (detailedResult.success) {
           setDetailedProfile(detailedResult.data);
