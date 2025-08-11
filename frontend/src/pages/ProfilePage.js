@@ -143,20 +143,32 @@ const ProfilePage = () => {
     );
   }
 
-  // Show error state if OAuth failed
+  // Show error state if OAuth failed (DO NOT redirect)
   if (authError && !isAuthenticated) {
+    console.info('ProfilePage: Showing error state - staying on page');
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900 flex items-center justify-center">
         <div className="bg-black/30 backdrop-blur-md rounded-2xl p-8 border border-red-500/20 max-w-md w-full mx-4">
           <div className="text-center">
-            <h2 className="text-xl font-bold text-red-400 mb-4">Login Error</h2>
+            <h2 className="text-xl font-bold text-red-400 mb-4">Authentication Error</h2>
             <p className="text-gray-300 mb-6">{authError}</p>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
-            >
-              Back to Home
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={() => {
+                  setAuthError('');
+                  window.location.href = '/';
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200"
+              >
+                Back to Home
+              </button>
+            </div>
           </div>
         </div>
       </div>
