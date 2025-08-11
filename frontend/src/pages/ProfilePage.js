@@ -36,33 +36,53 @@ const ProfilePage = () => {
 
     (async () => {
       try {
-        console.log('ProfilePage: Calling login() with sessionId:', sessionId);
+        const startTime = performance.now();
+        console.info('ProfilePage: Calling login() with sessionId', { 
+          timestamp: Math.round(startTime) 
+        });
+        
         const result = await login(sessionId);
+        const endTime = performance.now();
         
         if (cancelled) {
-          console.log('ProfilePage: OAuth flow was cancelled');
+          console.info('ProfilePage: OAuth flow was cancelled');
           return;
         }
         
+        console.info('ProfilePage: login() completed', {
+          success: result?.success,
+          duration: Math.round(endTime - startTime),
+          timestamp: Math.round(endTime)
+        });
+        
         if (result?.success) {
-          console.log('ProfilePage: OAuth login successful, cleaning URL');
-          // Remove session_id from URL
+          console.info('ProfilePage: OAuth login successful - cleaning URL');
+          
+          // Clean URL AFTER success
           window.history.replaceState({}, document.title, "/profile");
           setAuthError('');
+          
+          // Optional: implement postLoginRedirect from storage
+          const postLoginRedirect = localStorage.getItem('post_login') || '/profile';
+          console.info('ProfilePage: Post-login redirect target', { postLoginRedirect });
+          
         } else {
           console.error('ProfilePage: OAuth login failed:', result?.error);
           setAuthError(result?.error || 'Login failed');
-          // Stay on page, show error UI; do NOT navigate away
+          // Show error UI; DO NOT navigate away
         }
       } catch (error) {
         console.error('ProfilePage: OAuth login exception:', error);
         if (!cancelled) {
           setAuthError('Login failed. Please try again.');
-          // Stay on page, show error UI
+          // Show error UI; DO NOT navigate away
         }
       } finally {
         if (!cancelled) {
-          console.log('ProfilePage: Setting oauthInFlight to false');
+          const finalTime = performance.now();
+          console.info('ProfilePage: Setting oauthInFlight=false', { 
+            timestamp: Math.round(finalTime) 
+          });
           setOauthInFlight(false);
         }
       }
