@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import CinematicHomepage from './pages/CinematicHomepage';
 import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
@@ -18,7 +19,9 @@ function App() {
             <Route path="/quiz" element={<QuizPage />} />
             <Route path="/results" element={<EnhancedResultsPage />} />
             <Route path="/loader-test" element={<LoaderTestPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
