@@ -47,13 +47,13 @@ const AnimatedSection = ({ children, animationType = 'slideInUp', delay = 0, cla
 const getInitialTransform = (type) => {
   switch (type) {
     case 'slideInUp':
-      return 'perspective(1000px) translateY(60px) rotateX(-10deg) translateZ(-20px)';
+      return 'translateY(40px)';  // simple slide up
     case 'slideInLeft':
-      return 'perspective(1000px) translateX(-60px) rotateY(15deg) translateZ(-20px)';
+      return 'translateX(-40px)'; // simple slide from left
     case 'slideInRight':
-      return 'perspective(1000px) translateX(60px) rotateY(-15deg) translateZ(-20px)';
+      return 'translateX(40px)';  // simple slide from right
     default:
-      return 'perspective(1000px) translateY(60px) rotateX(-10deg) translateZ(-20px)';
+      return 'translateY(40px)';
   }
 };
 

@@ -1,6 +1,4 @@
-Folder PATH listing for volume Acer
-Volume serial number is 8462-CE92
-C:.
+
 ¦   App.css
 ¦   App.js
 ¦   index.css
