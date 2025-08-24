@@ -134,6 +134,32 @@ const RestructuredLandingPage = () => {
             >
               Try Quiz
             </button>
+            <button 
+              onClick={() => navigate('/login')}
+              style={{
+                background: '#FFFFFF',
+                color: '#000000',
+                border: 'none',
+                borderRadius: '25px',
+                padding: '10px 20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#000000';
+                e.target.style.color = '#FFFFFF';
+                e.target.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#FFFFFF';
+                e.target.style.color = '#000000';
+                e.target.style.transform = 'scale(1)';
+              }}
+            >
+              Log in
+            </button>
           </div>
         </header>
 

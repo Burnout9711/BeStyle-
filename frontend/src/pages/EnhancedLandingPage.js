@@ -70,6 +70,12 @@ const EnhancedLandingPage = () => {
             <button className="btn-secondary hover-scale" onClick={() => handleStartQuiz()}>
               Try Quiz
             </button>
+            <button 
+              className="btn-secondary hover-scale"
+              onClick={() => navigate('/login')}
+            >
+              Login
+            </button>
           </div>
         </header>
 

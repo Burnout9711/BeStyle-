@@ -82,11 +82,7 @@ const EnhancedResultsPage = () => {
         <ParticleEffect particleCount={20} color="#987D9C" size={2} />
         
         {/* Enhanced Header */}
-        <header className="header-nav" style={{
-          background: 'rgba(255, 249, 242, 0.95)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }}>
+        <header className="header-nav" >
           <div className="logo" style={{
             background: 'linear-gradient(135deg, #987D9C 0%, #768597 100%)',
             backgroundClip: 'text',
