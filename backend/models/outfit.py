@@ -1,23 +1,35 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, BeforeValidator, field_serializer
 from bson import ObjectId
+from typing_extensions import Annotated
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+# class PyObjectId(ObjectId):
+#     @classmethod
+#     def __get_validators__(cls):
+#         yield cls.validate
 
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
+#     @classmethod
+#     def validate(cls, v):
+#         if not ObjectId.is_valid(v):
+#             raise ValueError("Invalid objectid")
+#         return ObjectId(v)
+
+#     @classmethod
+#     def __get_pydantic_json_schema__(cls, field_schema):
+#         field_schema.update(type="string")
+#         return field_schema
+def _coerce_object_id(v):
+    if isinstance(v, ObjectId):
+        return v
+    if isinstance(v, str) and ObjectId.is_valid(v):
         return ObjectId(v)
+    if v is None:
+        return ObjectId()
+    raise ValueError("Invalid ObjectId")
 
-    @classmethod
-    def __get_pydantic_json_schema__(cls, field_schema):
-        field_schema.update(type="string")
-        return field_schema
+PyObjectId = Annotated[ObjectId, BeforeValidator(_coerce_object_id)]
+
 
 class OutfitItem(BaseModel):
     name: str
@@ -61,3 +73,16 @@ class RecommendationResponse(BaseModel):
     outfits: List[OutfitRecommendation]
     confidence_score: int
     style_profile: dict
+
+# Mongo collection metadata for auto-creation / indexing
+class OutfitMeta:
+    collection = "outfits"
+    indexes = [
+        {"keys": [("occasion", 1)]},
+        {"keys": [("style_types", 1)]},
+        {"keys": [("is_active", 1)]},
+        {"keys": [("created_at", 1)]},
+        # If you’ll query by body_types or seasons, add them too:
+        # {"keys": [("body_types", 1)]},
+        # {"keys": [("seasons", 1)]},
+    ]

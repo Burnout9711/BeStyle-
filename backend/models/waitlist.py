@@ -47,3 +47,11 @@ class WaitlistStats(BaseModel):
     total_subscribers: int
     recent_signups: int  # Last 24 hours
     growth_rate: float  # Weekly growth percentage
+
+class WaitlistMeta:
+    collection = "waitlist"
+    indexes = [
+        {"keys": [("email", 1)], "unique": True},
+        {"keys": [("created_at", 1)]},
+        {"keys": [("source", 1)]},
+    ]

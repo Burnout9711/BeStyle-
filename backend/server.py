@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 # Import routes
 from routes.quiz_routes import router as quiz_router
 from routes.waitlist_routes import router as waitlist_router
+from routes.outfit_routes import router as outfit_router
 from database import connect_to_mongo, close_mongo_connection
 
 ROOT_DIR = Path(__file__).parent
@@ -68,6 +69,7 @@ async def health_check():
 app.include_router(quiz_router)
 app.include_router(waitlist_router)
 app.include_router(api_router)
+app.include_router(outfit_router)
 
 # CORS middleware
 app.add_middleware(

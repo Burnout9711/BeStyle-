@@ -102,3 +102,11 @@ class QuizResultsResponse(BaseModel):
     style_profile: StyleProfile
     recommendations: List[Dict[str, Any]]
     confidence_score: int
+
+class QuizMeta:
+    collection = "quiz_sessions"
+    indexes = [
+        {"keys": [("session_id", 1)], "unique": True},
+        {"keys": [("created_at", 1)]},
+        {"keys": [("is_completed", 1)]},
+    ]
