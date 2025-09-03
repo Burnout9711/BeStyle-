@@ -1,24 +1,35 @@
 from datetime import datetime
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel, Field
+import secrets
+from typing import Annotated, List, Optional, Dict, Any
+from pydantic import BaseModel, BeforeValidator, Field
 from bson import ObjectId
 import uuid
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+# class PyObjectId(ObjectId):
+#     @classmethod
+#     def __get_validators__(cls):
+#         yield cls.validate
 
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
+#     @classmethod
+#     def validate(cls, v):
+#         if not ObjectId.is_valid(v):
+#             raise ValueError("Invalid objectid")
+#         return ObjectId(v)
+
+#     @classmethod
+#     def __get_pydantic_json_schema__(cls, field_schema):
+#         field_schema.update(type="string")
+#         return field_schema
+def _coerce_object_id(v):
+    if isinstance(v, ObjectId):
+        return v
+    if isinstance(v, str) and ObjectId.is_valid(v):
         return ObjectId(v)
+    if v is None:
+        return ObjectId()
+    raise ValueError("Invalid ObjectId")
 
-    @classmethod
-    def __get_pydantic_json_schema__(cls, field_schema):
-        field_schema.update(type="string")
-        return field_schema
+PyObjectId = Annotated[ObjectId, BeforeValidator(_coerce_object_id)]
 
 class QuizResponses(BaseModel):
     # Basic Info
@@ -59,7 +70,7 @@ class QuizResponses(BaseModel):
 
 class QuizSession(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    session_id: str = Field(default_factory=lambda: secrets.token_urlsafe(16))
     user_id: Optional[str] = None
     responses: QuizResponses = Field(default_factory=QuizResponses)
     current_step: int = 0
@@ -76,6 +87,10 @@ class QuizSession(BaseModel):
 class QuizStepSubmission(BaseModel):
     session_id: str
     step_number: int
+    answers: Dict[str, Any]
+
+class QuizStepSubmissionIn(BaseModel):
+    step_number: int = Field(..., ge=0)
     answers: Dict[str, Any]
 
 class QuizStartResponse(BaseModel):

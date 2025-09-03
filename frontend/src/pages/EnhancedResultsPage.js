@@ -7,6 +7,9 @@ import SocialShare from '../components/SocialShare';
 import Avatar3D from '../components/Avatar3D';
 import ParticleEffect from '../components/ParticleEffect';
 import PerformanceOptimizer from '../components/PerformanceOptimizer';
+import axios from 'axios';
+
+const QUIZ_ANSWERS_KEY = 'quizAnswers';
 
 const EnhancedResultsPage = () => {
   const navigate = useNavigate();
@@ -15,9 +18,15 @@ const EnhancedResultsPage = () => {
   const [shareModalOutfit, setShareModalOutfit] = useState(null);
   const [selectedOutfit, setSelectedOutfit] = useState(null);
   const [confidenceScore, setConfidenceScore] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [geminiOutfits, setGeminiOutfits] = useState([]);
+
+  axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    const savedAnswers = localStorage.getItem('quizAnswers');
+    let cancelled = false;
+    const savedAnswers = localStorage.getItem(QUIZ_ANSWERS_KEY);
+    console.log("Retrieved quiz answers:", savedAnswers);
     if (savedAnswers) {
       setQuizAnswers(JSON.parse(savedAnswers));
       // Animate confidence score
@@ -29,6 +38,27 @@ const EnhancedResultsPage = () => {
           if (score >= 94) clearInterval(interval);
         }, 50);
       }, 1000);
+
+      async function fetchRecommendations() {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("http://localhost:8000/api/quiz/results");
+        if (cancelled) return;
+        setGeminiOutfits(data?.outfits ?? []);
+        setStyleProfile(data?.style_profile ?? null);
+      } catch (err) {
+        if (!cancelled) {
+          toast.error(err.message || "Failed to generate outfits");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    fetchRecommendations();
     } else {
       navigate('/quiz');
     }
@@ -52,11 +82,19 @@ const EnhancedResultsPage = () => {
     setSelectedOutfit(outfit);
   };
 
+  const fetchQuizResults = async () => {
+    const session_id = localStorage.getItem('quizSessionId');
+    const { data } = await axios.get('http://localhost:8000/api/quiz/results');
+    // Use data.style_profile, data.outfits, etc.
+    console.log(data);
+    
+  };
+
   const downloadResults = () => {
     // Create a comprehensive PDF or image with results
     const dataStr = JSON.stringify({
       profile: quizAnswers,
-      outfits: mockOutfitSuggestions,
+      outfits: geminiOutfits,
       saved: Array.from(savedOutfits),
       confidence: confidenceScore
     }, null, 2);

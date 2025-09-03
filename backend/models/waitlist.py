@@ -1,23 +1,33 @@
 from datetime import datetime
-from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field, EmailStr
+from typing import Annotated, Optional, Dict, Any
+from pydantic import BaseModel, BeforeValidator, Field, EmailStr
 from bson import ObjectId
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+# class PyObjectId(ObjectId):
+#     @classmethod
+#     def __get_validators__(cls):
+#         yield cls.validate
 
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
+#     @classmethod
+#     def validate(cls, v):
+#         if not ObjectId.is_valid(v):
+#             raise ValueError("Invalid objectid")
+#         return ObjectId(v)
+
+#     @classmethod
+#     def __get_pydantic_json_schema__(cls, field_schema):
+#         field_schema.update(type="string")
+#         return field_schema
+def _coerce_object_id(v):
+    if isinstance(v, ObjectId):
+        return v
+    if isinstance(v, str) and ObjectId.is_valid(v):
         return ObjectId(v)
+    if v is None:
+        return ObjectId()
+    raise ValueError("Invalid ObjectId")
 
-    @classmethod
-    def __get_pydantic_json_schema__(cls, field_schema):
-        field_schema.update(type="string")
-        return field_schema
+PyObjectId = Annotated[ObjectId, BeforeValidator(_coerce_object_id)]
 
 class WaitlistEntry(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")

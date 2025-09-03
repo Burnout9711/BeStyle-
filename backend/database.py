@@ -66,6 +66,14 @@ async def create_indexes():
         await db.outfits.create_index("style_types")
         await db.outfits.create_index("is_active")
         await db.outfits.create_index("created_at")
+
+        # add:
+        await db.sessions.create_index("session_id", unique=True)
+        await db.sessions.create_index("user_id")
+        await db.sessions.create_index("last_seen_at", -1)
+        # TTL: expire by 'expires_at'
+        await db.sessions.create_index("expires_at", expireAfterSeconds=0)
+
         
         logger.info("Database indexes created successfully")
         
@@ -78,7 +86,7 @@ def get_database() -> AsyncIOMotorDatabase:
         raise Exception("Database not initialized")
     return db_instance.database
 
-async def get_collection(collection_name: str):
+def get_collection(collection_name: str):
     """Get a specific collection"""
     db = get_database()
     return db[collection_name]

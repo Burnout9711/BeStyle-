@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, User, Ruler, Palette, Briefcase, Heart, Camera } from 'lucide-react';
 import { mockQuizData } from '../data/mock';
 import AnimatedSection from '../components/AnimatedSection';
+import axios from 'axios'; 
 
 const QuizPage = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [quizSessionId, setQuizSessionId] = useState(null);
+
+  useEffect(() => {
+    startQuizSession();
+    // fetchQuizQuestions();
+  }, []);
 
   const quizSteps = [
     {
@@ -61,11 +68,72 @@ const QuizPage = () => {
     }));
   };
 
-  const handleNext = () => {
+
+  const startQuizSession = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+      const res = await axios.post('http://localhost:8000/api/quiz/start');
+      console.log("Quiz session started:", res.data.session_id);
+      setQuizSessionId(res.data.session_id);
+      localStorage.setItem('quizSessionId', res.data.session_id);
+      return res.data.session_id;
+    } catch (error) {
+      console.error("In frontend Error starting quiz session:", error);
+      return null;
+    }
+  };
+
+  const fetchQuizQuestions = async () => {
+    const { data } = await axios.get('http://localhost:8000/api/quiz/questions');
+    // Use data to render quiz steps/questions
+  };
+
+  const submitQuizStep = async (stepAnswers) => {
+    const session_id = localStorage.getItem('quizSessionId');
+    const { data } = await axios.post('http://localhost:8000/api/quiz/submit-step', {
+      session_id,
+      answers: stepAnswers
+    });
+    // Handle next step or errors
+  };
+
+  const completeQuiz = async () => {
+    const session_id = localStorage.getItem('quizSessionId');
+    const { data } = await axios.post('http://localhost:8000/api/quiz/complete', { session_id });
+    // Handle completion, maybe navigate to results
+  };
+
+  const handleNext = async () => {
     if (currentStep < quizSteps.length - 1) {
+      try {
+        // 2. Frontend: Send data to the backend to generate outfits
+        const response = await axios.post('http://localhost:8000/api/quiz/submit-step', {
+          step_number: currentStep + 1,
+          answers
+        });
+        // 3. Frontend: Receive and render the response
+        // setResult(response.data.stylistAdvice);
+      } catch (err) {
+        console.error("Error saving step:", err);
+        // setError("Failed to get a response. Please try again later.");
+      } finally {
+        // setIsLoading(false);
+      }
       setCurrentStep(currentStep + 1);
     } else {
       // Save quiz results and navigate to results
+      try {
+          // 2. Frontend: Send data to the backend to generate outfits
+          const response = await axios.post('http://localhost:8000/api/quiz/complete', answers);
+
+          // 3. Frontend: Receive and render the response
+          // setResult(response.data.stylistAdvice);
+      } catch (err) {
+          console.error("Error completing quiz:", err);
+          // setError("Failed to get a response. Please try again later.");
+      } finally {
+          // setIsLoading(false);
+      }
       localStorage.setItem('quizAnswers', JSON.stringify(answers));
       navigate('/results');
     }

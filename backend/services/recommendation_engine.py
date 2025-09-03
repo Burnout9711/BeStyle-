@@ -1,8 +1,16 @@
+import json
 from typing import Dict, Any, List
 from models.quiz import QuizResponses, StyleProfile
 from models.outfit import Outfit, OutfitItem
 import logging
 import asyncio
+from google import genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv() # Load environment variables
+
+client = genai.Client(api_key="AIzaSyCpHd796BqhFipMfhhKzAdnKSy1PFuR4sA")
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +77,7 @@ class RecommendationEngine:
     async def calculate_confidence_score(self, quiz_responses: QuizResponses) -> int:
         """Calculate AI confidence score based on completeness and consistency of responses"""
         try:
+            logger.debug(f"Calculating confidence score for quiz responses: {quiz_responses.dict()}")
             score = 60  # Base score
             
             # Completeness bonus
@@ -291,3 +300,61 @@ class RecommendationEngine:
         return [
             {**outfit, 'match_score': 85} for outfit in outfits[:6]
         ]
+    
+    async def get_gemini_recommendations(self, style_profile: StyleProfile) -> Dict[str, Any]:
+        """
+        Interacts with the Gemini API to get personalized recommendations
+        and advice based on the user's style profile.
+        """
+        try:
+            logger.info("Generating recommendations using Gemini API...")
+            
+            # --- Prompt Engineering: This is crucial ---
+            prompt = f"""
+            You are a professional fashion stylist. Your goal is to provide personalized and stylish outfit recommendations based on a user's style profile.
+
+            The user's profile is as follows:
+            - Primary Styles: {', '.join(style_profile.primary_style)}
+            - Body Type Advice: {style_profile.body_type_advice}
+            - Color Palette: {', '.join(style_profile.color_palette)}
+            - Occasion Priority: {', '.join(style_profile.occasion_priority)}
+            - Confidence Score: {style_profile.confidence_score} (This score indicates how confident we are in the user's preferences. A higher score means more precise recommendations are possible.)
+
+            Please generate a JSON object containing:
+            1.  A "personal_advice" string: A brief, friendly paragraph of styling advice.
+            2.  An "outfit_recommendations" list: A list of 3-5 distinct outfits. Each outfit object must have:
+                - "title": A descriptive name for the outfit.
+                - "occasion": The occasion for the outfit (e.g., "Work", "Casual", "Date").
+                - "description": A short description of the outfit and its vibe.
+                - "items": A list of dicts, where each dict has "name" and "brand" keys for individual clothing items.
+
+            Ensure the entire response is a single, valid JSON object. Do not include any text before or after the JSON.
+            """
+            response = client.models.generate_content(
+                model="gemini-1.5-pro-latest", contents=prompt
+                )
+            logger.debug(f"Gemini API response: {response.text}")
+            # Extract and parse the JSON content from the response
+            # Note: The model may return a response object that needs careful handling.
+            # You might need to check if the content exists and is properly formatted.
+            response_text = response.text.replace('```json', '').replace('```', '').strip()
+            
+            return json.loads(response_text)
+
+        except Exception as e:
+            logger.error(f"Error calling Gemini API: {str(e)}")
+            # Fallback to a predefined or default recommendation
+            return {
+                "personal_advice": "I'm sorry, I couldn't generate a personalized recommendation right now. Here are some classic looks.",
+                "outfit_recommendations": [
+                    {
+                        "title": "Default Smart Casual",
+                        "occasion": "Casual daily wear",
+                        "description": "A versatile and comfortable outfit for any day.",
+                        "items": [
+                            {"name": "Plain T-shirt", "brand": "Uniqlo"},
+                            {"name": "Jeans", "brand": "Levi's"}
+                        ]
+                    }
+                ]
+            }

@@ -1,6 +1,9 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from models.quiz import QuizStepSubmission, QuizStartResponse, QuizStepResponse, QuizResultsResponse
+from dependencies.session_dep import get_or_create_session
+from models.session import SessionDoc
+from models.quiz import QuizStepSubmission, QuizStartResponse, QuizStepResponse, QuizResultsResponse, QuizStepSubmissionIn
 from services.quiz_service import QuizService
 from database import get_database
 import logging
@@ -15,11 +18,12 @@ def get_quiz_service(db: AsyncIOMotorDatabase = Depends(get_database)):
 @router.post("/start", response_model=QuizStartResponse)
 async def start_quiz(
     request: Request,
-    quiz_service: QuizService = Depends(get_quiz_service)
+    quiz_service: QuizService = Depends(get_quiz_service),
+    session: SessionDoc = Depends(get_or_create_session),
 ):
-    """Start a new quiz session"""
+    """Start (or resume) a quiz session bound to the anonymous sid cookie."""
     try:
-        result = await quiz_service.start_quiz_session()
+        result = await quiz_service.start_quiz_session(session.session_id)
         return QuizStartResponse(**result)
     except Exception as e:
         logger.error(f"Error starting quiz: {str(e)}")
@@ -27,11 +31,20 @@ async def start_quiz(
 
 @router.post("/submit-step", response_model=QuizStepResponse)
 async def submit_quiz_step(
-    submission: QuizStepSubmission,
-    quiz_service: QuizService = Depends(get_quiz_service)
+    body: QuizStepSubmissionIn,
+    quiz_service: QuizService = Depends(get_quiz_service),
+    session: SessionDoc = Depends(get_or_create_session),
 ):
-    """Submit answers for a quiz step"""
+    """Submit a step; bind to cookie session no matter what client sends."""
+    
     try:
+        # force the cookie session_id
+        # submission.session_id = session.session_id
+        submission = QuizStepSubmission(
+            session_id=session.session_id,
+            step_number=body.step_number,
+            answers=body.answers,
+        )
         result = await quiz_service.submit_quiz_step(submission)
         return QuizStepResponse(**result)
     except Exception as e:
@@ -40,29 +53,31 @@ async def submit_quiz_step(
 
 @router.post("/complete")
 async def complete_quiz(
-    request: dict,  # Expecting {"session_id": "..."}
-    quiz_service: QuizService = Depends(get_quiz_service)
+    payload: Optional[dict] = None,   # backward compat; not required
+    quiz_service: QuizService = Depends(get_quiz_service),
+    session: SessionDoc = Depends(get_or_create_session),
+
 ):
+    logger.info("Completing quiz for session")
     """Complete quiz and generate recommendations"""
     try:
-        session_id = request.get("session_id")
-        if not session_id:
+        if not session.session_id:
             raise HTTPException(status_code=400, detail="Session ID is required")
-        
-        result = await quiz_service.complete_quiz(session_id)
+        logger.info(f"Completing quiz for session ID: {session.session_id}")
+        result = await quiz_service.complete_quiz(session.session_id)
         return result
     except Exception as e:
         logger.error(f"Error completing quiz: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to complete quiz")
 
-@router.get("/results/{session_id}")
+@router.get("/results")
 async def get_quiz_results(
-    session_id: str,
-    quiz_service: QuizService = Depends(get_quiz_service)
+    quiz_service: QuizService = Depends(get_quiz_service),
+    session: SessionDoc = Depends(get_or_create_session),
 ):
-    """Get quiz results for a session"""
+    """Get results for the current cookie session (no session_id in URL)."""
     try:
-        result = await quiz_service.get_quiz_results(session_id)
+        result = await quiz_service.get_quiz_results(session.session_id)
         return result
     except Exception as e:
         logger.error(f"Error getting quiz results: {str(e)}")
