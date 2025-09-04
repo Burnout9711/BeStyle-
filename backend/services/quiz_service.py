@@ -150,8 +150,17 @@ class QuizService:
     #     except Exception as e:
     #         logger.error(f"Error getting quiz results: {str(e)}")
     #         raise Exception("Failed to get quiz results")
-    async def get_quiz_results(self, quiz_responses: QuizResponses):
+    async def get_quiz_results(self, session_id: str):
         try:
+            session = await self.db.quiz_sessions.find_one({"session_id": session_id})
+            if not session:
+                raise Exception("Quiz session not found")
+
+            if not session.get("is_completed", False):
+                raise Exception("Quiz not completed yet")
+
+            quiz_responses = QuizResponses(**session.get("responses", {}))
+
             # 1. Analyze user responses to create a structured profile
             style_profile = await self.recommendation_engine.analyze_style_profile(quiz_responses)
 

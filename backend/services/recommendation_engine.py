@@ -325,15 +325,20 @@ class RecommendationEngine:
             2.  An "outfit_recommendations" list: A list of 3-5 distinct outfits. Each outfit object must have:
                 - "title": A descriptive name for the outfit.
                 - "occasion": The occasion for the outfit (e.g., "Work", "Casual", "Date").
+                - "confidence": A confidence score (0-100) indicating how well this outfit matches the user's profile.
                 - "description": A short description of the outfit and its vibe.
                 - "items": A list of dicts, where each dict has "name" and "brand" keys for individual clothing items.
-
+                - "color": A hex color code or gradient that represents the outfit's overall color scheme.
+                - "style_types": A list of style tags that best describe the outfit (e.g., ["Smart Casual", "Minimalist"]).
+                - "body_types": A list of body types this outfit is suitable for (e.g., ["All", "Curvy"]).
+                - "seasons": A list of seasons this outfit is appropriate for (e.g., ["Spring", "Fall"]).
+                
             Ensure the entire response is a single, valid JSON object. Do not include any text before or after the JSON.
             """
-            response = client.models.generate_content(
-                model="gemini-1.5-pro-latest", contents=prompt
+            response = await client.aio.models.generate_content(
+                model="gemini-2.5-flash", contents=prompt
                 )
-            logger.debug(f"Gemini API response: {response.text}")
+            logger.debug(f" we are caling Gemini API response: {response.text}")
             # Extract and parse the JSON content from the response
             # Note: The model may return a response object that needs careful handling.
             # You might need to check if the content exists and is properly formatted.

@@ -44,11 +44,12 @@ const EnhancedResultsPage = () => {
         setLoading(true);
         const { data } = await axios.get("http://localhost:8000/api/quiz/results");
         if (cancelled) return;
-        setGeminiOutfits(data?.outfits ?? []);
-        setStyleProfile(data?.style_profile ?? null);
+        setGeminiOutfits(data?.outfit_recommendations ?? []);
+        // setStyleProfile(data?.style_profile ?? null);
       } catch (err) {
         if (!cancelled) {
-          toast.error(err.message || "Failed to generate outfits");
+          // toast.error(err.message || "Failed to generate outfits");
+          console.error(err);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -319,7 +320,7 @@ const EnhancedResultsPage = () => {
             </AnimatedSection>
             
             <div className="ai-grid" style={{ gap: '2rem' }}>
-              {mockOutfitSuggestions.map((outfit, index) => (
+              {geminiOutfits.map((outfit, index) => (
                 <AnimatedSection key={outfit.id} animationType="slideInUp" delay={600 + (index * 100)}>
                   <div 
                     className="voice-card hover-lift" 
