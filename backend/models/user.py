@@ -1,28 +1,87 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import List, Optional
+# models/user.py
 from datetime import datetime
+from typing import Optional, List, Dict, Any
+from bson import ObjectId
+from pydantic import BaseModel, Field, EmailStr, ConfigDict, BeforeValidator, field_serializer
+from typing_extensions import Annotated
+
+# --- ObjectId support for Pydantic v2 ---
+def _coerce_object_id(v):
+    if isinstance(v, ObjectId):
+        return v
+    if v is None:
+        return ObjectId()
+    if isinstance(v, str) and ObjectId.is_valid(v):
+        return ObjectId(v)
+    raise ValueError("Invalid ObjectId")
+
+PyObjectId = Annotated[ObjectId, BeforeValidator(_coerce_object_id)]
+# ----------------------------------------
+
+# 🔑 Authentication info (can extend for OAuth, etc.)
+class AuthInfo(BaseModel):
+    provider: str = "password"        # e.g., "password", "google", "apple"
+    password_hash: Optional[str] = None
+    oauth_id: Optional[str] = None
+
+class Measurements(BaseModel):
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    chest_cm: Optional[float] = None
+    waist_cm: Optional[float] = None
+    hip_cm: Optional[float] = None
+    shoulder_cm: Optional[float] = None
+    inseam_cm: Optional[float] = None
+
+class Sizes(BaseModel):
+    top: Optional[str] = None
+    bottom: Optional[str] = None
+    shoe: Optional[str] = None
+
+class Profile(BaseModel):
+    location: Optional[str] = None
+    timezone: Optional[str] = None
+    units: Dict[str, str] = Field(default_factory=lambda: {"length": "cm", "weight": "kg"})
+    measurements: Measurements = Field(default_factory=Measurements)
+    sizes: Sizes = Field(default_factory=Sizes)
+    fit_preferences: List[str] = Field(default_factory=list)
+
+class Style(BaseModel):
+    current: List[str] = Field(default_factory=list)
+    interested: List[str] = Field(default_factory=list)
+    favorite_colors: List[str] = Field(default_factory=list)
+    avoid_colors: List[str] = Field(default_factory=list)
+    inspiration: Optional[str] = None
+    goals: List[str] = Field(default_factory=list)
+
+class Lifestyle(BaseModel):
+    occupation: Optional[str] = None
+    typical_week: List[str] = Field(default_factory=list)
+    priority_occasions: List[str] = Field(default_factory=list)
+
+class Notifications(BaseModel):
+    channels: List[str] = Field(default_factory=lambda: ["in_app"])
+    frequency: str = "weekly"         # daily | weekly | special
+    product_alerts: bool = True
 
 class User(BaseModel):
-    id: Optional[str] = Field(None, alias="_id")
-    name: str
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    id: PyObjectId = Field(default_factory=ObjectId, alias="_id")
     email: EmailStr
-    password_hash: str
-    outfits_list: List[str] = []
-    quiz_data: Optional[dict] = None
+    email_verified: bool = False
+    name: Optional[str] = None
+    avatar_url: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+    auth: AuthInfo = Field(default_factory=AuthInfo)
+    profile: Profile = Field(default_factory=Profile)
+    style: Style = Field(default_factory=Style)
+    lifestyle: Lifestyle = Field(default_factory=Lifestyle)
+    notifications: Notifications = Field(default_factory=Notifications)
 
-class UserMeta:
-    collection = "users"
-    indexes = [
-        {"keys": [("email", 1)], "unique": True},
-        {"keys": [("created_at", 1)]},
-        {"keys": [("name", 1)]},
-        {"keys": [("updated_at", 1)]},
-        {"keys": [("outfits_list", 1)]},
-        {"keys": [("quiz_data", 1)]},
-        {"keys": [("outfits_list", 1)]},  # Added index for outfits_list and name
-    ]
+    # --- Serialization: turn ObjectId into str ---
+    @field_serializer("id", when_used="json")
+    def serialize_id(self, v: ObjectId):
+        return str(v)

@@ -1,0 +1,36 @@
+{
+  "_id": "65f71d0a13f45a8a5f4bcd99",
+  "email": "abhishek@example.com",
+  "email_verified": true,
+  "name": "Abhishek",
+  "avatar_url": null,
+  "created_at": "2025-09-07T18:45:00Z",
+  "updated_at": "2025-09-07T18:45:00Z",
+  "auth": { "provider": "password", "password_hash": "hashed_pw" },
+  "profile": {
+    "location": "Dubai",
+    "timezone": "Asia/Dubai",
+    "units": { "length": "cm", "weight": "kg" },
+    "measurements": { "height_cm": 185, "weight_kg": 83 },
+    "sizes": { "top": "L", "bottom": "32", "shoe": "44" },
+    "fit_preferences": ["Regular fit"]
+  },
+  "style": {
+    "current": ["Minimalist", "Smart Casual"],
+    "interested": ["Trendy"],
+    "favorite_colors": ["Black", "Navy"],
+    "avoid_colors": ["Yellow"],
+    "inspiration": "Timothée Chalamet",
+    "goals": ["Upgrade my wardrobe"]
+  },
+  "lifestyle": {
+    "occupation": "Digital Marketing Manager",
+    "typical_week": ["Mostly work", "Social outings"],
+    "priority_occasions": ["Work/office", "Dates", "Travel"]
+  },
+  "notifications": {
+    "channels": ["in_app", "email"],
+    "frequency": "weekly",
+    "product_alerts": true
+  }
+}

@@ -10,6 +10,8 @@ from contextlib import asynccontextmanager
 from routes.quiz_routes import router as quiz_router
 from routes.waitlist_routes import router as waitlist_router
 from routes.outfit_routes import router as outfit_router
+from routes.user_routes import router as user_router
+from routes.auth_routes import router as auth_router
 from database import connect_to_mongo, close_mongo_connection
 
 ROOT_DIR = Path(__file__).parent
@@ -70,12 +72,14 @@ app.include_router(quiz_router)
 app.include_router(waitlist_router)
 app.include_router(api_router)
 app.include_router(outfit_router)
+app.include_router(auth_router)
+app.include_router(user_router)
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],  # Configure properly for production
+    allow_origins=["http://localhost:3000", os.environ.get("CORS_ORIGINS")],  # Configure properly for production
     allow_methods=["*"],
     allow_headers=["*"],
 )

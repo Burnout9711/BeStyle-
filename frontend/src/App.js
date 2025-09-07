@@ -6,6 +6,8 @@ import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
 import AuthPage from './pages/AuthPage';
 import SignupPage from './pages/SignupPage';
+import RequireAuth from './components/RequireAuth';
+import Dashboard from './pages//Dashboard';
 
 function App() {
   return (
@@ -14,8 +16,17 @@ function App() {
         <Routes>
           <Route path="/" element={<RestructuredLandingPage />} />
           <Route path="/quiz" element={<QuizPage />} />
-          <Route path="/results" element={<EnhancedResultsPage />} />
           <Route path="/login" element={<AuthPage />} />
+          <Route path="/dashboard" element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          } />
+          <Route path="/results" element={
+            <RequireAuth>
+              <EnhancedResultsPage />
+            </RequireAuth>
+          } />
           {/* <Route path="/login" element={<SignupPage />} /> */}
         </Routes>
       </BrowserRouter>

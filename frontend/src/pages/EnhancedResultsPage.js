@@ -137,6 +137,9 @@ const EnhancedResultsPage = () => {
             <button className="btn-secondary hover-scale" onClick={() => navigate('/')}>
               <ArrowLeft size={16} style={{ marginRight: '0.5rem' }} />
               Home
+            </button><button className="btn-secondary hover-scale" onClick={() => navigate('/dashboard')}>
+              <ArrowLeft size={16} style={{ marginRight: '0.5rem' }} />
+              Profile
             </button>
           </div>
         </header>

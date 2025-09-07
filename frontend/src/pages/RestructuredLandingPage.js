@@ -8,6 +8,7 @@ import LaunchTeaserSection from '../components/LaunchTeaserSection';
 import QuizIntroSection from '../components/QuizIntroSection';
 import WaitlistSection from '../components/WaitlistSection';
 import FeatureHighlights from '../components/FeatureHighlights';
+import NavBar from "@/components/NavBar";
 
 const RestructuredLandingPage = () => {
   const navigate = useNavigate();
@@ -162,6 +163,7 @@ const RestructuredLandingPage = () => {
             </button>
           </div>
         </header>
+        {/* <NavBar transparent showTryQuiz /> */}
 
         {/* 1. Hero Section */}
         <section style={{

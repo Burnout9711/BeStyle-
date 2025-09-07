@@ -74,6 +74,12 @@ async def create_indexes():
         # TTL: expire by 'expires_at'
         await db.sessions.create_index("expires_at", expireAfterSeconds=0)
 
+        # Users indexes
+        await db.users.create_index("email", unique=True)
+        await db.users.create_index("created_at")
+        await db.users.create_index("style.current")
+        await db.users.create_index("lifestyle.priority_occasions")
+
         
         logger.info("Database indexes created successfully")
         
