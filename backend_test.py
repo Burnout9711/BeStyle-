@@ -1913,6 +1913,15 @@ class BeStyleBackendTester:
             
             # Error scenarios
             await self.test_error_scenarios(session)
+            
+            # NEW: Outfit Recommendation API tests
+            await self.test_outfit_recommendation_generate(session)
+            await self.test_outfit_user_outfits(session)
+            await self.test_outfit_save_outfit(session)
+            await self.test_outfit_remove_outfit(session)
+            await self.test_outfit_popular_outfits(session)
+            await self.test_outfit_routes_integration(session)
+            await self.test_recommendation_engine_integration(session)
         
         # Print summary
         self.print_summary()
