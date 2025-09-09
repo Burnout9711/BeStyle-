@@ -70,6 +70,7 @@ async def health_check():
 app.include_router(quiz_router)
 app.include_router(waitlist_router)
 app.include_router(auth_router)
+app.include_router(outfit_router)
 app.include_router(api_router)
 
 # CORS middleware
