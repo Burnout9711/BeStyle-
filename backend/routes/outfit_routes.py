@@ -3,9 +3,9 @@ from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 from datetime import datetime
 import uuid
-from ..models.outfit import OutfitRecommendation
-from ..models.user import User
-from ..services.recommendation_engine import RecommendationEngine
+from models.outfit import OutfitRecommendation
+from models.user import User
+from services.recommendation_engine import RecommendationEngine
 
 router = APIRouter()
 
