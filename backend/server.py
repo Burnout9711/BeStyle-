@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager
 from routes.quiz_routes import router as quiz_router
 from routes.waitlist_routes import router as waitlist_router
 from routes.auth_routes import router as auth_router
+from routes.outfit_routes import router as outfit_router
 from database import connect_to_mongo, close_mongo_connection
 
 ROOT_DIR = Path(__file__).parent
