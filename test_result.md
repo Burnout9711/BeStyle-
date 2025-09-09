@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the newly implemented social media authentication system with Emergent integration including auth endpoints, session management, database collections, and error handling."
+user_problem_statement: "Create a comprehensive User Profile Section with login redirect, profile page layout showing user details/outfit recommendations/favorites, 'Get New Outfit Suggestion' button flow, new outfit suggestion page with questions and dynamic results, and header/navigation bar for easy navigation."
 
 backend:
   - task: "Health Check Endpoints"
