@@ -96,6 +96,9 @@ const CinematicHomepage = () => {
       overflow: 'hidden auto',
       position: 'relative'
     }}>
+      {/* Header Navigation */}
+      <Header />
+      
       {/* Global Background Effects */}
       <CinematicBackground scrollY={scrollY} currentViewport={currentViewport} />
       
