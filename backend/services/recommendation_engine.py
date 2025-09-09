@@ -103,6 +103,30 @@ class RecommendationEngine:
             logger.error(f"Error calculating confidence score: {str(e)}")
             return 85
     
+    async def get_personalized_recommendations(self, user_preferences: Dict[str, Any], count: int = 3) -> List[Dict[str, Any]]:
+        """Generate personalized outfit recommendations based on simple preferences"""
+        try:
+            # Get curated outfit database
+            outfits = await self._get_outfit_database()
+            
+            # Score each outfit based on user preferences
+            scored_outfits = []
+            for outfit in outfits:
+                score = await self._calculate_outfit_score_simple(outfit, user_preferences)
+                if score > 50:  # Only include relevant outfits
+                    scored_outfits.append({
+                        **outfit,
+                        'match_score': score
+                    })
+            
+            # Sort by score and return top count
+            scored_outfits.sort(key=lambda x: x['match_score'], reverse=True)
+            return scored_outfits[:count]
+            
+        except Exception as e:
+            logger.error(f"Error generating personalized recommendations: {str(e)}")
+            return await self._get_default_recommendations()
+
     async def generate_recommendations(self, quiz_responses: QuizResponses) -> List[Dict[str, Any]]:
         """Generate personalized outfit recommendations"""
         try:
