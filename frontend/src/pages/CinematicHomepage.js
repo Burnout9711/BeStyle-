@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowUp, Instagram, Linkedin, Brain, Calendar, Shirt, RefreshCw } from 'lucide-react';
 import { waitlistAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import Header from '../components/Header';
 import SocialLogin from '../components/SocialLogin';
 
 const CinematicHomepage = () => {
