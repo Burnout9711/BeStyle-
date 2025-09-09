@@ -7,7 +7,8 @@ import CinematicHomepage from './pages/CinematicHomepage';
 import QuizPage from './pages/QuizPage';
 import EnhancedResultsPage from './pages/EnhancedResultsPage';
 import LoaderTestPage from './pages/LoaderTestPage';
-import ProfilePage from './pages/ProfilePage';
+import EnhancedProfilePage from './pages/EnhancedProfilePage';
+import OutfitSuggestionsPage from './pages/OutfitSuggestionsPage';
 
 function App() {
   return (
@@ -19,8 +20,13 @@ function App() {
             <Route path="/quiz" element={<QuizPage />} />
             <Route path="/results" element={<EnhancedResultsPage />} />
             <Route path="/loader-test" element={<LoaderTestPage />} />
-            {/* /profile is PUBLIC - OAuth landing page */}
-            <Route path="/profile" element={<ProfilePage />} />
+            {/* /profile is PUBLIC - OAuth landing page but shows enhanced profile when authenticated */}
+            <Route path="/profile" element={<EnhancedProfilePage />} />
+            {/* Protected routes - require authentication */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/outfits" element={<EnhancedProfilePage />} />
+              <Route path="/outfit-suggestions" element={<OutfitSuggestionsPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
