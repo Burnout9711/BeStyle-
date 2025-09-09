@@ -99,6 +99,36 @@ export const waitlistAPI = {
   }
 };
 
+// Recommendation API methods
+export const recommendationAPI = {
+  // Get personalized recommendations based on user preferences
+  getRecommendations: async (preferences = {}) => {
+    const response = await api.post('/api/recommendations/generate', preferences);
+    return response.data;
+  },
+  
+  // Get user's saved outfit recommendations
+  getUserOutfits: async () => {
+    const response = await api.get('/api/recommendations/user-outfits');
+    return response.data;
+  },
+  
+  // Save an outfit as favorite
+  saveOutfit: async (outfitId, sessionId = null) => {
+    const response = await api.post('/api/recommendations/save-outfit', {
+      outfit_id: outfitId,
+      session_id: sessionId
+    });
+    return response.data;
+  },
+  
+  // Remove outfit from favorites
+  removeOutfit: async (outfitId) => {
+    const response = await api.delete(`/api/recommendations/remove-outfit/${outfitId}`);
+    return response.data;
+  }
+};
+
 // Health check API
 export const healthAPI = {
   // General health check
