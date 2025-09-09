@@ -151,6 +151,61 @@ class RecommendationEngine:
             logger.error(f"Error generating recommendations: {str(e)}")
             return await self._get_default_recommendations()
     
+    async def _calculate_outfit_score_simple(self, outfit: Dict[str, Any], user_preferences: Dict[str, Any]) -> int:
+        """Calculate how well an outfit matches simple user preferences"""
+        score = 50  # Base score
+        
+        try:
+            # Occasion matching
+            user_occasion = user_preferences.get('occasion', '').lower()
+            outfit_occasion = outfit.get('occasion', '').lower()
+            
+            occasion_mapping = {
+                'work': ['work', 'professional', 'business'],
+                'casual': ['casual', 'weekend', 'daily'],
+                'date': ['date', 'evening', 'romantic'],
+                'event': ['party', 'event', 'social'],
+                'travel': ['travel', 'comfortable'],
+                'gym': ['gym', 'athletic', 'sporty']
+            }
+            
+            if user_occasion in occasion_mapping:
+                if outfit_occasion in occasion_mapping[user_occasion]:
+                    score += 25
+            
+            # Style preference matching
+            user_styles = user_preferences.get('style_preference', [])
+            outfit_styles = outfit.get('style_types', [])
+            
+            if user_styles and outfit_styles:
+                style_overlap = len(set([s.lower() for s in user_styles]).intersection(
+                    set([s.lower() for s in outfit_styles])
+                ))
+                if style_overlap > 0:
+                    score += 20
+            
+            # Mood matching (simple heuristic)
+            user_mood = user_preferences.get('mood', '').lower()
+            if user_mood == 'confident' and outfit.get('confidence', 0) > 90:
+                score += 15
+            elif user_mood == 'comfortable' and 'casual' in outfit_occasion:
+                score += 15
+            elif user_mood == 'elegant' and outfit.get('confidence', 0) > 85:
+                score += 15
+            
+            # Budget consideration (simple implementation)
+            user_budget = user_preferences.get('budget', 'moderate').lower()
+            if user_budget == 'budget':
+                score += 5  # All outfits are suitable for budget
+            elif user_budget == 'premium':
+                score += 10  # Premium users get higher scores
+            
+            return min(score, 100)  # Cap at 100
+            
+        except Exception as e:
+            logger.error(f"Error calculating simple outfit score: {str(e)}")
+            return 50
+
     async def _calculate_outfit_score(self, outfit: Dict[str, Any], quiz_responses: QuizResponses) -> int:
         """Calculate how well an outfit matches user preferences"""
         score = 50  # Base score
