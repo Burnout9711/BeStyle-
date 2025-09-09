@@ -1255,6 +1255,624 @@ class BeStyleBackendTester:
         except Exception as e:
             self.log_test("Auth Error - Malformed Header", False, f"Exception: {str(e)}")
     
+    async def test_outfit_recommendation_generate(self, session: aiohttp.ClientSession):
+        """Test POST /api/recommendations/generate endpoint"""
+        print("\n🔍 Testing Outfit Recommendation Generate Endpoint...")
+        
+        # Test 1: Basic recommendation generation with all preferences
+        try:
+            payload = {
+                "occasion": "work",
+                "mood": "confident",
+                "colors": ["black", "navy", "white"],
+                "style_preference": ["smart casual", "minimalist"],
+                "budget": "moderate"
+            }
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/generate",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    # Validate response structure
+                    if data.get('success') and 'data' in data:
+                        response_data = data['data']
+                        required_fields = ['recommendations', 'preferences', 'generated_at']
+                        missing_fields = [field for field in required_fields if field not in response_data]
+                        
+                        if not missing_fields:
+                            recommendations = response_data['recommendations']
+                            if isinstance(recommendations, list) and len(recommendations) > 0:
+                                self.log_test("Generate Recommendations - Full Preferences", True, 
+                                            f"Generated {len(recommendations)} recommendations")
+                                
+                                # Validate first recommendation structure
+                                first_rec = recommendations[0]
+                                rec_fields = ['title', 'items', 'match_score', 'confidence']
+                                if all(field in first_rec for field in rec_fields):
+                                    self.log_test("Recommendation Structure Validation", True, 
+                                                f"First rec: '{first_rec['title']}' (score: {first_rec.get('match_score', 'N/A')})")
+                                else:
+                                    self.log_test("Recommendation Structure Validation", False, 
+                                                f"Missing fields in recommendation: {first_rec}")
+                            else:
+                                self.log_test("Generate Recommendations - Full Preferences", False, 
+                                            f"Invalid recommendations array: {recommendations}")
+                        else:
+                            self.log_test("Generate Recommendations - Full Preferences", False, 
+                                        f"Missing response fields: {missing_fields}")
+                    else:
+                        self.log_test("Generate Recommendations - Full Preferences", False, 
+                                    f"Invalid response structure: {data}")
+                else:
+                    self.log_test("Generate Recommendations - Full Preferences", False, 
+                                f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Generate Recommendations - Full Preferences", False, f"Exception: {str(e)}")
+        
+        # Test 2: Empty preferences (should use defaults)
+        try:
+            payload = {}
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/generate",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('success') and data.get('data', {}).get('recommendations'):
+                        self.log_test("Generate Recommendations - Empty Preferences", True, 
+                                    "Handles empty preferences with defaults")
+                    else:
+                        self.log_test("Generate Recommendations - Empty Preferences", False, 
+                                    f"Failed with empty preferences: {data}")
+                else:
+                    self.log_test("Generate Recommendations - Empty Preferences", False, 
+                                f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Generate Recommendations - Empty Preferences", False, f"Exception: {str(e)}")
+        
+        # Test 3: Different preference combinations
+        test_combinations = [
+            {
+                "name": "Date Night",
+                "payload": {"occasion": "date", "mood": "elegant", "colors": ["black", "red"], "budget": "premium"}
+            },
+            {
+                "name": "Gym Session", 
+                "payload": {"occasion": "gym", "mood": "comfortable", "style_preference": ["sporty"], "budget": "budget"}
+            },
+            {
+                "name": "Casual Weekend",
+                "payload": {"occasion": "casual", "mood": "fun", "colors": ["blue", "white"], "style_preference": ["trendy"]}
+            }
+        ]
+        
+        for test_case in test_combinations:
+            try:
+                async with session.post(
+                    f"{self.base_url}/api/recommendations/generate",
+                    json=test_case["payload"],
+                    headers={'Content-Type': 'application/json'}
+                ) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        if data.get('success') and data.get('data', {}).get('recommendations'):
+                            self.log_test(f"Generate Recommendations - {test_case['name']}", True, 
+                                        f"Successfully generated recommendations for {test_case['name'].lower()}")
+                        else:
+                            self.log_test(f"Generate Recommendations - {test_case['name']}", False, 
+                                        f"Failed to generate recommendations: {data}")
+                    else:
+                        self.log_test(f"Generate Recommendations - {test_case['name']}", False, 
+                                    f"HTTP {response.status}")
+            except Exception as e:
+                self.log_test(f"Generate Recommendations - {test_case['name']}", False, f"Exception: {str(e)}")
+
+    async def test_outfit_user_outfits(self, session: aiohttp.ClientSession):
+        """Test GET /api/recommendations/user-outfits endpoint"""
+        print("\n🔍 Testing User Outfits Endpoint...")
+        
+        # Test 1: Get user outfits without user_id
+        try:
+            async with session.get(f"{self.base_url}/api/recommendations/user-outfits") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if data.get('success') and 'data' in data:
+                        response_data = data['data']
+                        if 'outfits' in response_data and 'total' in response_data:
+                            outfits = response_data['outfits']
+                            total = response_data['total']
+                            
+                            if isinstance(outfits, list) and isinstance(total, int):
+                                self.log_test("User Outfits - Basic Retrieval", True, 
+                                            f"Retrieved {total} outfits")
+                                
+                                # Validate outfit structure
+                                if len(outfits) > 0:
+                                    first_outfit = outfits[0]
+                                    required_fields = ['id', 'title', 'occasion', 'description', 'confidence', 
+                                                     'color', 'items', 'match_score', 'created_at', 'is_favorite']
+                                    missing_fields = [field for field in required_fields if field not in first_outfit]
+                                    
+                                    if not missing_fields:
+                                        self.log_test("User Outfits - Structure Validation", True, 
+                                                    f"All required fields present in outfit data")
+                                        
+                                        # Validate items structure
+                                        items = first_outfit.get('items', [])
+                                        if isinstance(items, list) and len(items) > 0:
+                                            first_item = items[0]
+                                            item_fields = ['name', 'brand', 'price']
+                                            if all(field in first_item for field in item_fields):
+                                                self.log_test("User Outfits - Items Structure", True, 
+                                                            f"Items include name, brand, price: {first_item}")
+                                            else:
+                                                self.log_test("User Outfits - Items Structure", False, 
+                                                            f"Missing item fields: {first_item}")
+                                        else:
+                                            self.log_test("User Outfits - Items Structure", False, 
+                                                        "No items found in outfit")
+                                    else:
+                                        self.log_test("User Outfits - Structure Validation", False, 
+                                                    f"Missing outfit fields: {missing_fields}")
+                            else:
+                                self.log_test("User Outfits - Basic Retrieval", False, 
+                                            f"Invalid data types: outfits={type(outfits)}, total={type(total)}")
+                        else:
+                            self.log_test("User Outfits - Basic Retrieval", False, 
+                                        f"Missing outfits or total in response: {response_data}")
+                    else:
+                        self.log_test("User Outfits - Basic Retrieval", False, 
+                                    f"Invalid response structure: {data}")
+                else:
+                    self.log_test("User Outfits - Basic Retrieval", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("User Outfits - Basic Retrieval", False, f"Exception: {str(e)}")
+        
+        # Test 2: Get user outfits with user_id parameter
+        try:
+            test_user_id = "test-user-123"
+            async with session.get(f"{self.base_url}/api/recommendations/user-outfits?user_id={test_user_id}") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('success') and data.get('data', {}).get('outfits'):
+                        self.log_test("User Outfits - With User ID", True, 
+                                    f"Successfully retrieved outfits for user {test_user_id}")
+                    else:
+                        self.log_test("User Outfits - With User ID", False, 
+                                    f"Failed to retrieve outfits: {data}")
+                else:
+                    self.log_test("User Outfits - With User ID", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("User Outfits - With User ID", False, f"Exception: {str(e)}")
+
+    async def test_outfit_save_outfit(self, session: aiohttp.ClientSession):
+        """Test POST /api/recommendations/save-outfit endpoint"""
+        print("\n🔍 Testing Save Outfit Endpoint...")
+        
+        # Test 1: Save outfit with valid outfit_id
+        try:
+            payload = {
+                "outfit_id": "test-outfit-123",
+                "session_id": "test-session-456"
+            }
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/save-outfit",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if data.get('success') and 'data' in data:
+                        response_data = data['data']
+                        required_fields = ['outfit_id', 'saved_at', 'message']
+                        missing_fields = [field for field in required_fields if field not in response_data]
+                        
+                        if not missing_fields:
+                            if response_data['outfit_id'] == payload['outfit_id']:
+                                self.log_test("Save Outfit - Valid Request", True, 
+                                            f"Outfit saved successfully: {response_data['message']}")
+                                
+                                # Validate timestamp format
+                                saved_at = response_data['saved_at']
+                                try:
+                                    from datetime import datetime
+                                    datetime.fromisoformat(saved_at.replace('Z', '+00:00'))
+                                    self.log_test("Save Outfit - Timestamp Format", True, 
+                                                f"Valid ISO timestamp: {saved_at}")
+                                except ValueError:
+                                    self.log_test("Save Outfit - Timestamp Format", False, 
+                                                f"Invalid timestamp format: {saved_at}")
+                            else:
+                                self.log_test("Save Outfit - Valid Request", False, 
+                                            f"Outfit ID mismatch in response")
+                        else:
+                            self.log_test("Save Outfit - Valid Request", False, 
+                                        f"Missing response fields: {missing_fields}")
+                    else:
+                        self.log_test("Save Outfit - Valid Request", False, 
+                                    f"Invalid response structure: {data}")
+                else:
+                    self.log_test("Save Outfit - Valid Request", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Save Outfit - Valid Request", False, f"Exception: {str(e)}")
+        
+        # Test 2: Save outfit without session_id (optional field)
+        try:
+            payload = {"outfit_id": "test-outfit-no-session"}
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/save-outfit",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('success') and data.get('data', {}).get('outfit_id') == payload['outfit_id']:
+                        self.log_test("Save Outfit - No Session ID", True, 
+                                    "Successfully saved outfit without session_id")
+                    else:
+                        self.log_test("Save Outfit - No Session ID", False, 
+                                    f"Failed to save outfit: {data}")
+                else:
+                    self.log_test("Save Outfit - No Session ID", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Save Outfit - No Session ID", False, f"Exception: {str(e)}")
+        
+        # Test 3: Invalid request (missing outfit_id)
+        try:
+            payload = {"session_id": "test-session-only"}
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/save-outfit",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 422:  # Validation error expected
+                    self.log_test("Save Outfit - Missing Outfit ID", True, 
+                                "Properly validates required outfit_id field")
+                elif response.status == 500:
+                    # Some implementations might return 500 for missing required fields
+                    self.log_test("Save Outfit - Missing Outfit ID", True, 
+                                "Handles missing outfit_id with error response")
+                else:
+                    self.log_test("Save Outfit - Missing Outfit ID", False, 
+                                f"Unexpected status for missing outfit_id: {response.status}")
+        except Exception as e:
+            self.log_test("Save Outfit - Missing Outfit ID", False, f"Exception: {str(e)}")
+
+    async def test_outfit_remove_outfit(self, session: aiohttp.ClientSession):
+        """Test DELETE /api/recommendations/remove-outfit/{outfit_id} endpoint"""
+        print("\n🔍 Testing Remove Outfit Endpoint...")
+        
+        # Test 1: Remove outfit with valid outfit_id
+        try:
+            test_outfit_id = "test-outfit-to-remove-123"
+            
+            async with session.delete(f"{self.base_url}/api/recommendations/remove-outfit/{test_outfit_id}") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if data.get('success') and 'data' in data:
+                        response_data = data['data']
+                        required_fields = ['outfit_id', 'removed_at', 'message']
+                        missing_fields = [field for field in required_fields if field not in response_data]
+                        
+                        if not missing_fields:
+                            if response_data['outfit_id'] == test_outfit_id:
+                                self.log_test("Remove Outfit - Valid Request", True, 
+                                            f"Outfit removed successfully: {response_data['message']}")
+                                
+                                # Validate timestamp format
+                                removed_at = response_data['removed_at']
+                                try:
+                                    from datetime import datetime
+                                    datetime.fromisoformat(removed_at.replace('Z', '+00:00'))
+                                    self.log_test("Remove Outfit - Timestamp Format", True, 
+                                                f"Valid ISO timestamp: {removed_at}")
+                                except ValueError:
+                                    self.log_test("Remove Outfit - Timestamp Format", False, 
+                                                f"Invalid timestamp format: {removed_at}")
+                            else:
+                                self.log_test("Remove Outfit - Valid Request", False, 
+                                            f"Outfit ID mismatch in response")
+                        else:
+                            self.log_test("Remove Outfit - Valid Request", False, 
+                                        f"Missing response fields: {missing_fields}")
+                    else:
+                        self.log_test("Remove Outfit - Valid Request", False, 
+                                    f"Invalid response structure: {data}")
+                else:
+                    self.log_test("Remove Outfit - Valid Request", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Remove Outfit - Valid Request", False, f"Exception: {str(e)}")
+        
+        # Test 2: Remove outfit with different outfit_id formats
+        test_ids = ["uuid-format-123e4567-e89b-12d3-a456-426614174000", "simple-id-456", "numeric-789"]
+        
+        for outfit_id in test_ids:
+            try:
+                async with session.delete(f"{self.base_url}/api/recommendations/remove-outfit/{outfit_id}") as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        if data.get('success') and data.get('data', {}).get('outfit_id') == outfit_id:
+                            self.log_test(f"Remove Outfit - ID Format ({outfit_id[:10]}...)", True, 
+                                        f"Successfully handles outfit ID format")
+                        else:
+                            self.log_test(f"Remove Outfit - ID Format ({outfit_id[:10]}...)", False, 
+                                        f"Failed to remove outfit: {data}")
+                    else:
+                        self.log_test(f"Remove Outfit - ID Format ({outfit_id[:10]}...)", False, 
+                                    f"HTTP {response.status}")
+            except Exception as e:
+                self.log_test(f"Remove Outfit - ID Format ({outfit_id[:10]}...)", False, f"Exception: {str(e)}")
+
+    async def test_outfit_popular_outfits(self, session: aiohttp.ClientSession):
+        """Test GET /api/recommendations/popular endpoint"""
+        print("\n🔍 Testing Popular Outfits Endpoint...")
+        
+        # Test 1: Get popular outfits
+        try:
+            async with session.get(f"{self.base_url}/api/recommendations/popular") as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if data.get('success') and 'data' in data:
+                        response_data = data['data']
+                        if 'outfits' in response_data and 'total' in response_data:
+                            outfits = response_data['outfits']
+                            total = response_data['total']
+                            
+                            if isinstance(outfits, list) and isinstance(total, int):
+                                self.log_test("Popular Outfits - Basic Retrieval", True, 
+                                            f"Retrieved {total} popular outfits")
+                                
+                                # Validate popular outfit structure
+                                if len(outfits) > 0:
+                                    first_outfit = outfits[0]
+                                    required_fields = ['id', 'title', 'occasion', 'description', 'confidence', 
+                                                     'color', 'items', 'match_score', 'created_at', 'popularity_score']
+                                    missing_fields = [field for field in required_fields if field not in first_outfit]
+                                    
+                                    if not missing_fields:
+                                        popularity_score = first_outfit.get('popularity_score')
+                                        if isinstance(popularity_score, (int, float)) and 0 <= popularity_score <= 100:
+                                            self.log_test("Popular Outfits - Popularity Score", True, 
+                                                        f"Valid popularity score: {popularity_score}")
+                                        else:
+                                            self.log_test("Popular Outfits - Popularity Score", False, 
+                                                        f"Invalid popularity score: {popularity_score}")
+                                        
+                                        self.log_test("Popular Outfits - Structure Validation", True, 
+                                                    f"All required fields present including popularity_score")
+                                    else:
+                                        self.log_test("Popular Outfits - Structure Validation", False, 
+                                                    f"Missing outfit fields: {missing_fields}")
+                            else:
+                                self.log_test("Popular Outfits - Basic Retrieval", False, 
+                                            f"Invalid data types: outfits={type(outfits)}, total={type(total)}")
+                        else:
+                            self.log_test("Popular Outfits - Basic Retrieval", False, 
+                                        f"Missing outfits or total in response: {response_data}")
+                    else:
+                        self.log_test("Popular Outfits - Basic Retrieval", False, 
+                                    f"Invalid response structure: {data}")
+                else:
+                    self.log_test("Popular Outfits - Basic Retrieval", False, f"HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Popular Outfits - Basic Retrieval", False, f"Exception: {str(e)}")
+
+    async def test_outfit_routes_integration(self, session: aiohttp.ClientSession):
+        """Test integration between outfit recommendation routes"""
+        print("\n🔍 Testing Outfit Routes Integration...")
+        
+        # Test 1: Verify all outfit routes are registered in server.py
+        outfit_endpoints = [
+            "/api/recommendations/generate",
+            "/api/recommendations/user-outfits", 
+            "/api/recommendations/save-outfit",
+            "/api/recommendations/popular"
+        ]
+        
+        registered_endpoints = []
+        for endpoint in outfit_endpoints:
+            try:
+                # Test with appropriate HTTP method
+                if endpoint == "/api/recommendations/generate" or endpoint == "/api/recommendations/save-outfit":
+                    async with session.post(f"{self.base_url}{endpoint}", json={}) as response:
+                        if response.status != 404:  # Not found means not registered
+                            registered_endpoints.append(endpoint)
+                else:
+                    async with session.get(f"{self.base_url}{endpoint}") as response:
+                        if response.status != 404:
+                            registered_endpoints.append(endpoint)
+            except Exception:
+                pass  # Endpoint might have other issues but is registered
+        
+        if len(registered_endpoints) == len(outfit_endpoints):
+            self.log_test("Outfit Routes - Registration", True, 
+                        f"All {len(outfit_endpoints)} outfit routes properly registered")
+        else:
+            missing = set(outfit_endpoints) - set(registered_endpoints)
+            self.log_test("Outfit Routes - Registration", False, 
+                        f"Missing routes: {missing}")
+        
+        # Test 2: CORS configuration for outfit endpoints
+        try:
+            headers = {
+                'Origin': 'https://aee48b5e-99d1-410a-847d-57b3c8a1b8c9.preview.emergentagent.com',
+                'Content-Type': 'application/json'
+            }
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/generate",
+                json={"occasion": "work"},
+                headers=headers
+            ) as response:
+                cors_origin = response.headers.get('Access-Control-Allow-Origin')
+                cors_credentials = response.headers.get('Access-Control-Allow-Credentials')
+                
+                if cors_origin and cors_credentials:
+                    self.log_test("Outfit Routes - CORS Configuration", True, 
+                                f"CORS properly configured for outfit endpoints")
+                else:
+                    self.log_test("Outfit Routes - CORS Configuration", False, 
+                                "CORS headers missing for outfit endpoints")
+        except Exception as e:
+            self.log_test("Outfit Routes - CORS Configuration", False, f"Exception: {str(e)}")
+        
+        # Test 3: Error handling consistency across outfit routes
+        error_test_cases = [
+            {
+                "endpoint": "/api/recommendations/generate",
+                "method": "POST",
+                "payload": {"invalid_field": "test"}
+            },
+            {
+                "endpoint": "/api/recommendations/save-outfit", 
+                "method": "POST",
+                "payload": {"invalid_field": "test"}
+            }
+        ]
+        
+        consistent_error_handling = True
+        for test_case in error_test_cases:
+            try:
+                if test_case["method"] == "POST":
+                    async with session.post(
+                        f"{self.base_url}{test_case['endpoint']}",
+                        json=test_case["payload"],
+                        headers={'Content-Type': 'application/json'}
+                    ) as response:
+                        # Should return proper HTTP status codes (not 500 for validation errors)
+                        if response.status in [400, 422, 500]:  # Acceptable error codes
+                            data = await response.json()
+                            if 'detail' in data or 'message' in data:
+                                continue  # Good error structure
+                        consistent_error_handling = False
+                        break
+            except Exception:
+                consistent_error_handling = False
+                break
+        
+        if consistent_error_handling:
+            self.log_test("Outfit Routes - Error Handling", True, 
+                        "Consistent error handling across outfit endpoints")
+        else:
+            self.log_test("Outfit Routes - Error Handling", False, 
+                        "Inconsistent error handling in outfit endpoints")
+
+    async def test_recommendation_engine_integration(self, session: aiohttp.ClientSession):
+        """Test recommendation engine integration with outfit routes"""
+        print("\n🔍 Testing Recommendation Engine Integration...")
+        
+        # Test 1: Verify recommendation engine produces valid outfit data
+        try:
+            payload = {
+                "occasion": "work",
+                "mood": "confident", 
+                "colors": ["black", "navy"],
+                "style_preference": ["smart casual"],
+                "budget": "moderate"
+            }
+            
+            async with session.post(
+                f"{self.base_url}/api/recommendations/generate",
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    recommendations = data.get('data', {}).get('recommendations', [])
+                    
+                    if len(recommendations) > 0:
+                        # Check if recommendations have proper match scores
+                        match_scores = [rec.get('match_score', 0) for rec in recommendations]
+                        valid_scores = all(isinstance(score, (int, float)) and 0 <= score <= 100 for score in match_scores)
+                        
+                        if valid_scores:
+                            self.log_test("Recommendation Engine - Match Scores", True, 
+                                        f"Valid match scores: {match_scores}")
+                        else:
+                            self.log_test("Recommendation Engine - Match Scores", False, 
+                                        f"Invalid match scores: {match_scores}")
+                        
+                        # Check if recommendations are sorted by relevance
+                        if len(match_scores) > 1:
+                            is_sorted = all(match_scores[i] >= match_scores[i+1] for i in range(len(match_scores)-1))
+                            if is_sorted:
+                                self.log_test("Recommendation Engine - Sorting", True, 
+                                            "Recommendations properly sorted by match score")
+                            else:
+                                self.log_test("Recommendation Engine - Sorting", False, 
+                                            f"Recommendations not sorted: {match_scores}")
+                        
+                        # Validate outfit items structure
+                        first_rec = recommendations[0]
+                        items = first_rec.get('items', [])
+                        if isinstance(items, list) and len(items) > 0:
+                            item_has_required_fields = all(
+                                'name' in item and 'brand' in item 
+                                for item in items
+                            )
+                            if item_has_required_fields:
+                                self.log_test("Recommendation Engine - Item Structure", True, 
+                                            f"Outfit items have required fields (name, brand)")
+                            else:
+                                self.log_test("Recommendation Engine - Item Structure", False, 
+                                            "Outfit items missing required fields")
+                        else:
+                            self.log_test("Recommendation Engine - Item Structure", False, 
+                                        "No items found in recommendations")
+                    else:
+                        self.log_test("Recommendation Engine - Integration", False, 
+                                    "No recommendations generated by engine")
+                else:
+                    self.log_test("Recommendation Engine - Integration", False, 
+                                f"Engine integration failed: HTTP {response.status}")
+        except Exception as e:
+            self.log_test("Recommendation Engine - Integration", False, f"Exception: {str(e)}")
+        
+        # Test 2: Test different preference combinations produce different results
+        try:
+            test_cases = [
+                {"occasion": "work", "mood": "confident"},
+                {"occasion": "casual", "mood": "comfortable"},
+                {"occasion": "date", "mood": "elegant"}
+            ]
+            
+            results = []
+            for i, preferences in enumerate(test_cases):
+                async with session.post(
+                    f"{self.base_url}/api/recommendations/generate",
+                    json=preferences,
+                    headers={'Content-Type': 'application/json'}
+                ) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        recommendations = data.get('data', {}).get('recommendations', [])
+                        if recommendations:
+                            results.append(recommendations[0].get('title', f'Result_{i}'))
+            
+            # Check if different preferences produce different recommendations
+            if len(set(results)) > 1:
+                self.log_test("Recommendation Engine - Personalization", True, 
+                            f"Different preferences produce different results: {len(set(results))} unique")
+            else:
+                self.log_test("Recommendation Engine - Personalization", False, 
+                            "Same recommendations for different preferences")
+                
+        except Exception as e:
+            self.log_test("Recommendation Engine - Personalization", False, f"Exception: {str(e)}")
+    
     async def run_all_tests(self):
         """Run all backend tests"""
         print(f"🚀 Starting BeStyle.AI Backend API Testing")
