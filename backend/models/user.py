@@ -85,3 +85,11 @@ class User(BaseModel):
     @field_serializer("id", when_used="json")
     def serialize_id(self, v: ObjectId):
         return str(v)
+
+class AuthResponse(BaseModel):
+    """Response model for authentication endpoints"""
+    success: bool
+    message: str
+    user: Optional[User] = None
+    session_token: Optional[str] = None
+    is_new_user: bool = False

@@ -1,3 +1,4 @@
+import logging
 import os, secrets
 from datetime import datetime, timedelta
 from typing import Optional
@@ -16,6 +17,7 @@ def _new_session_id() -> str:
 
 async def find_by_sid(sid: str) -> Optional[SessionDoc]:
     coll = get_collection(COLL)
+    logging.info(f"Finding session with sid: {sid}")
     doc = await coll.find_one({"session_id": sid})
     return SessionDoc(**doc) if doc else None
 

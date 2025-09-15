@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { api } from "../lib/api";
 import { toast } from "sonner";
+import Header from "@/components/Header";
+import SocialLogin from "@/components/SocialLogin";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -38,9 +41,8 @@ export default function AuthPage() {
         });
         toast.success("Account created!");
       }
-
-      // On success we have a linked session cookie; go to dashboard
-      navigate("/dashboard", { replace: true });
+      // On success we have a linked session cookie; go to profile
+      navigate("/profile", { replace: true });
     } catch (err) {
       const msg =
         err?.response?.data?.detail ||
@@ -52,10 +54,33 @@ export default function AuthPage() {
     }
   };
 
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
+    try {
+      setSubmitting(true);
+      // await api.post("/api/auth/login/google", {
+      //   token: credentialResponse.credential,
+      // });
+      console.log(credentialResponse);
+      console.log(credentialResponse.credential);
+      toast.success("Logged in with Google!");
+
+      navigate("/profile", { replace: true });
+
+    } catch (err) {
+
+      const msg =
+        err?.response?.data?.detail || err?.message || "Google login failed.";
+      toast.error(msg);
+
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="quiz-page" style={{ background: "var(--bg-page)", minHeight: "100vh" }}>
       {/* Header */}
-      <header className="header-nav">
+      {/* <header className="header-nav">
         <div className="logo">BeStyle.AI</div>
         <div className="nav-actions">
           <button className="btn-secondary" onClick={() => navigate("/")}>
@@ -63,7 +88,8 @@ export default function AuthPage() {
             Back to Home
           </button>
         </div>
-      </header>
+      </header> */}
+      <Header></Header>
 
       {/* Auth Card */}
       <div style={{ paddingTop: "100px", paddingBottom: "2rem" }}>
@@ -190,58 +216,8 @@ export default function AuthPage() {
           <div style={{ margin: "1.5rem 0", textAlign: "center" }}>
             <span style={{ color: "#888", fontWeight: 500 }}>Or continue with</span>
             <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
-              <button
-                type="button"
-                style={{
-                  border: "none",
-                  background: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-                  borderRadius: 8,
-                  padding: "0.5rem 1rem",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 500,
-                }}
-                onClick={() => toast.message("Google login coming soon")}
-              >
-                {/* replace with your own asset; wiki image URLs won't load due to CORS */}
-                <img src="/google.svg" alt="Google" style={{ width: 20, marginRight: 8 }} />
-              </button>
-              <button
-                type="button"
-                style={{
-                  border: "none",
-                  background: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-                  borderRadius: 8,
-                  padding: "0.5rem 1rem",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 500,
-                }}
-                onClick={() => toast.message("Apple login coming soon")}
-              >
-                <img src="/apple.svg" alt="Apple" style={{ width: 20, marginRight: 8 }} />
-              </button>
-              <button
-                type="button"
-                style={{
-                  border: "none",
-                  background: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-                  borderRadius: 8,
-                  padding: "0.5rem 1rem",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: 500,
-                }}
-                onClick={() => toast.message("Facebook login coming soon")}
-              >
-                <img src="/facebook.png" alt="Facebook" style={{ width: 20, marginRight: 8 }} />
-              </button>
+              {/* <SocialLogin provider="google" /> */}
+              <GoogleLogin onSuccess={handleGoogleLoginSuccess} onFailure={() => { console.log("Google login failed"); }} />
             </div>
           </div>
 
