@@ -6,9 +6,9 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
 // Create axios instance with default config
-const authAPI = axios.create({
+ const authAPI = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 100000,
   withCredentials: true, // Include cookies for session management
   headers: {
     'Content-Type': 'application/json'
@@ -159,5 +159,8 @@ export default {
   logout,
   redirectToSocialLogin,
   getLoginUrl,
-  parseSessionIdFromUrl
+  parseSessionIdFromUrl,
+  authAPI
 };
+
+export { authAPI as apiClient };

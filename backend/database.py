@@ -80,6 +80,12 @@ async def create_indexes():
         await db.users.create_index("style.current")
         await db.users.create_index("lifestyle.priority_occasions")
 
+        # User outfits (history) indexes
+        await db.user_outfits.create_index([("user_id", 1), ("created_at", -1)])
+        await db.user_outfits.create_index([("session_id", 1), ("created_at", -1)])
+        await db.user_outfits.create_index("favorite")
+        await db.user_outfits.create_index("occasion")
+
         
         logger.info("Database indexes created successfully")
         

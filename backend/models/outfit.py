@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel, Field, BeforeValidator, field_serializer
+from pydantic import BaseModel, ConfigDict, Field, BeforeValidator, field_serializer
 from bson import ObjectId
 from typing_extensions import Annotated
 
@@ -52,10 +52,11 @@ class Outfit(BaseModel):
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
+    model_config = ConfigDict(
+        populate_by_name=True,        # lets you pass/emit `_id`
+        arbitrary_types_allowed=True, # ObjectId allowed internally
+        json_encoders={ObjectId: str},   # serialize ObjectId -> str in responses
+    )
 
 class OutfitRecommendation(BaseModel):
     outfit: Outfit

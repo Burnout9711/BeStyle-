@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
+import authAPI, {apiClient} from '../lib/authApi';
 
 const OutfitSuggestionsPage = () => {
   const navigate = useNavigate();
@@ -154,11 +155,17 @@ const OutfitSuggestionsPage = () => {
     
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Generate mock recommendations based on answers
-      const mockRecommendations = generateMockOutfits(answers);
-      setRecommendations(mockRecommendations);
+      // // Generate mock recommendations based on answers
+      // const mockRecommendations = generateMockOutfits(answers);
+      // setRecommendations(mockRecommendations);
+      const { data } = await apiClient.post('/api/generate/outfits', {
+        answers,
+        count: 3,
+        save: true
+      });
+      setRecommendations(data.items || []);
       setShowResults(true);
     } catch (error) {
       console.error('Error generating recommendations:', error);

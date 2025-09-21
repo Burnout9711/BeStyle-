@@ -1,4 +1,6 @@
 import json
+import random
+import time
 from typing import Dict, Any, List
 from models.quiz import QuizResponses, StyleProfile
 from models.outfit import Outfit, OutfitItem
@@ -363,3 +365,165 @@ class RecommendationEngine:
                     }
                 ]
             }
+        
+
+    async def generate_outfits_from_answers(
+        self,
+        answers: Dict[str, Any],
+        count: int = 3
+    ) -> List[Dict[str, Any]]:
+        """
+        Returns a list of outfit dicts (same shape you render in UI).
+        Will try AI first (if API key present), else fallback.
+        """
+        api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+        if api_key:
+            try:
+                return await self.generate_from_answers_ai(answers, count)
+            except Exception as e:
+                # Log and fall back if AI errors out
+                print(f"[Engine] AI generation failed, using fallback: {e}")
+
+        return await self.generate_from_answers_fallback(answers, count)
+
+    async def generate_from_answers_ai(self, answers: Dict[str, Any], count: int) -> List[Dict[str, Any]]:
+        """
+        Pseudo-code: call your LLM of choice with a prompt based on `answers`.
+        Replace this stub with your actual OpenAI/Gemini SDK call.
+        """
+        logger.info("Generating outfits using AI...")
+        logger.info(f"Answers received for generation: {answers.items()}")
+        # ---- EXAMPLE PROMPT (pseudo) ----
+        prompt = f"""
+            You are a professional fashion stylist with deep knowledge of current trends, classic style principles, and outfit composition. Your goal is to provide personalized and stylish outfit recommendations based on a user's specific preferences.
+
+            The user has provided the following preferences for their outfit:
+            - **Occasion:** {answers.get('occasion')} (e.g., for a date, a work event, or casual wear)
+            - **Desired Mood:** {answers.get('mood')} (e.g., confident, comfortable, elegant, or fun)
+            - **Color Palette:** {','.join(answers.get('colors', []))}
+            - **Style Preferences:** {','.join(answers.get('style_preference', []))} (e.g., minimalist, bohemian, trendy)
+            - **Budget Range:** {answers.get('budget')} (e.g., budget-friendly, moderate, or premium)
+
+            Based on these details, please generate a single JSON object. This object must contain two main parts:
+
+            1.  A **"personal_advice"** key: A friendly and insightful paragraph of styling advice that summarizes the user's profile and gives them a general tip.
+            2.  An **"outfit_recommendations"** key: A list of exactly **three** distinct outfit objects.
+
+            Each outfit object in the list must have the following keys:
+            - **"title"**: A creative, short name for the outfit.
+            - **"occasion"**: The primary occasion this outfit is for (e.g., "Work", "Date Night").
+            - **"description"**: A short, compelling description of the outfit's vibe.
+            - **"confidence"**: A confidence score (0-100) indicating how well this outfit matches the user's preferences.
+            - **"color"**: A color value representing the outfit's primary color or vibe (e.g., a hex code like "#000000" or a CSS gradient string).
+            - **"items"**: A list of clothing items that make up the look. Each item in this list must be an object with **"name"** and **"brand"** keys. Ensure the brand suggestions are relevant to the specified budget.
+            - **"match_score"**: A score from 1 to 100, indicating how well this outfit matches the user's preferences.
+            
+            Ensure the entire response is a single, valid JSON object. Do not include any text, notes, or explanations before or after the JSON object.
+        """
+        #
+        # LLM call here -> parse JSON safely
+        # return parsed_items
+        try:
+            response = await client.aio.models.generate_content(
+                model="gemini-2.5-flash", contents=prompt
+                )
+            logger.debug(f" we are caling Gemini API response: {response.text}")
+            # Extract and parse the JSON content from the response
+            # Note: The model may return a response object that needs careful handling.
+            # You might need to check if the content exists and is properly formatted.
+            response_text = response.text.replace('```json', '').replace('```', '').strip()
+            logger.debug(f"Parsed response text: {response_text}")
+            parsed_outfits = json.loads(response_text)
+            return parsed_outfits['outfit_recommendations']
+        except Exception as e:
+            logger.error(f"Error calling Gemini API: {str(e)}")
+        # Temporary shim so you can deploy without AI now
+            return await self.generate_from_answers_fallback(answers, count)
+
+    async def generate_from_answers_fallback(self, answers: Dict[str, Any], count: int) -> List[Dict[str, Any]]:
+        """Deterministic mock using your demo logic so API works today."""
+        occasion = (answers.get("occasion") or "casual").lower()
+        colors = (answers.get("colors") or ["black","navy","gray"])[:3]
+        title_map = {
+            "work": "Professional Power",
+            "date": "Romantic Elegance",
+            "casual": "Effortless Chic",
+            "event": "Show Stopper",
+            "travel": "Jet Set Ready",
+            "gym": "Athletic Luxe",
+        }
+        base_items = {
+            "work": [
+                {"name":"Tailored blazer","brand":"Theory","price":295},
+                {"name":"Silk blouse","brand":"Equipment","price":158},
+                {"name":"Straight trousers","brand":"J.Crew","price":128},
+                {"name":"Leather pumps","brand":"Cole Haan","price":180},
+            ],
+            "date": [
+                {"name":"Wrap dress","brand":"DVF","price":268},
+                {"name":"Statement earrings","brand":"Mejuri","price":85},
+                {"name":"Block heels","brand":"Sam Edelman","price":130},
+                {"name":"Clutch bag","brand":"Mansur Gavriel","price":195},
+            ],
+            "casual": [
+                {"name":"Cashmere sweater","brand":"Everlane","price":118},
+                {"name":"High-rise jeans","brand":"Levi's","price":89},
+                {"name":"White sneakers","brand":"Veja","price":120},
+                {"name":"Crossbody bag","brand":"Polene","price":290},
+            ],
+            "event": [
+                {"name":"Midi cocktail dress","brand":"Reformation","price":218},
+                {"name":"Statement necklace","brand":"Jennifer Fisher","price":165},
+                {"name":"Strappy heels","brand":"Stuart Weitzman","price":425},
+                {"name":"Beaded clutch","brand":"Cult Gaia","price":198},
+            ],
+            "travel": [
+                {"name":"Knit cardigan","brand":"Uniqlo","price":49},
+                {"name":"Travel leggings","brand":"Athleta","price":89},
+                {"name":"Slip-on sneakers","brand":"Allbirds","price":95},
+                {"name":"Convertible tote","brand":"Away","price":195},
+            ],
+            "gym": [
+                {"name":"Sports bra","brand":"Lululemon","price":58},
+                {"name":"High-waist leggings","brand":"Alo Yoga","price":88},
+                {"name":"Oversized hoodie","brand":"Outdoor Voices","price":75},
+                {"name":"Training shoes","brand":"APL","price":140},
+            ],
+        }
+        gradients = {
+            "black": 'linear-gradient(135deg,#1a1a1a 0%,#2d1b69 100%)',
+            "white": 'linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%)',
+            "navy": 'linear-gradient(135deg,#1e3a8a 0%,#3730a3 100%)',
+            "red": 'linear-gradient(135deg,#dc2626 0%,#be185d 100%)',
+            "pink": 'linear-gradient(135deg,#ec4899 0%,#be185d 100%)',
+            "purple": 'linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%)',
+            "blue": 'linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%)',
+            "green": 'linear-gradient(135deg,#059669 0%,#047857 100%)',
+            "yellow": 'linear-gradient(135deg,#eab308 0%,#d97706 100%)',
+            "gray": 'linear-gradient(135deg,#6b7280 0%,#4b5563 100%)',
+            "beige": 'linear-gradient(135deg,#f5f5dc 0%,#d6d3d1 100%)',
+            "brown": 'linear-gradient(135deg,#8b4513 0%,#7c2d12 100%)',
+        }
+        title = title_map.get(occasion, title_map["casual"])
+        base = base_items.get(occasion, base_items["casual"])
+
+        items: List[Dict[str, Any]] = []
+        now = int(time.time() * 1000)
+        for i in range(count):
+            col = colors[i % len(colors)]
+            factor = [1.0, 0.8, 0.6][i] if i < 3 else 1.0
+            priced = [
+                {**x, "price": round(x["price"] * factor), "brand": x.get("brand") or "—"}
+                for x in base
+            ]
+            items.append({
+                "id": f"{now+i}",
+                "title": title if i == 0 else f"{title} - Variant {i}",
+                "occasion": occasion,
+                "description": "AI-curated look tailored to your preferences.",
+                "confidence": random.randint(88, 96),
+                "color": gradients.get(col, gradients["gray"]),
+                "items": priced,
+                "match_score": random.randint(88, 96),
+            })
+        return items

@@ -65,7 +65,11 @@ class Notifications(BaseModel):
     product_alerts: bool = True
 
 class User(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    model_config = ConfigDict(
+        populate_by_name=True,        # lets you pass/emit `_id`
+        arbitrary_types_allowed=True, # ObjectId allowed internally
+        json_encoders={ObjectId: str},   # serialize ObjectId -> str in responses
+    )
 
     id: PyObjectId = Field(default_factory=ObjectId, alias="_id")
     email: EmailStr

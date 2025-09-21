@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import authAPI from '../lib/authApi';
+import authAPI, {apiClient} from '../lib/authApi';
 import Header from '../components/Header';
 import RedirectGuard from '../components/RedirectGuard';
 
@@ -20,7 +20,7 @@ const EnhancedProfilePage = () => {
   useEffect(() => {
     const sessionId = authAPI.parseSessionIdFromUrl();
     const timestamp = performance.now();
-    
+    console.info('useEffect 1');
     console.info('ProfilePage: OAuth landing check', { 
       sessionId: sessionId ? '***' : null,
       hasSessionId: !!sessionId,
@@ -116,62 +116,76 @@ const EnhancedProfilePage = () => {
     setRecommendationsLoading(true);
     try {
       // Mock data for now - you can replace this with actual API call
-      const mockRecommendations = [
-        {
-          id: 1,
-          title: 'Smart Professional',
-          occasion: 'Work',
-          description: 'Perfect for office meetings with a confident, professional vibe.',
-          confidence: 95,
-          color: 'linear-gradient(135deg, #4F7FFF 0%, rgba(79, 127, 255, 0.8) 100%)',
-          items: [
-            { name: 'Tailored blazer', brand: 'Theory', price: 295 },
-            { name: 'Crisp button shirt', brand: 'Everlane', price: 78 },
-            { name: 'Straight-leg trousers', brand: 'J.Crew', price: 128 },
-            { name: 'Leather loafers', brand: 'Cole Haan', price: 180 }
-          ],
-          match_score: 92,
-          created_at: new Date().toISOString()
-        },
-        {
-          id: 2,
-          title: 'Weekend Explorer',
-          occasion: 'Casual',
-          description: 'Effortlessly stylish for weekend adventures and casual hangouts.',
-          confidence: 88,
-          color: 'linear-gradient(135deg, #F2546D 0%, rgba(242, 84, 109, 0.8) 100%)',
-          items: [
-            { name: 'Soft knit sweater', brand: 'Uniqlo', price: 39 },
-            { name: 'High-waisted jeans', brand: "Levi's", price: 89 },
-            { name: 'White sneakers', brand: 'Adidas', price: 90 },
-            { name: 'Canvas tote bag', brand: 'Baggu', price: 38 }
-          ],
-          match_score: 89,
-          created_at: new Date().toISOString()
-        },
-        {
-          id: 3,
-          title: 'Date Night Elegance',
-          occasion: 'Date',
-          description: 'Make a lasting impression with this sophisticated yet approachable look.',
-          confidence: 92,
-          color: 'linear-gradient(135deg, #1A1A1A 0%, rgba(26, 26, 26, 0.9) 100%)',
-          items: [
-            { name: 'Silk midi dress', brand: 'Reformation', price: 218 },
-            { name: 'Delicate jewelry set', brand: 'Mejuri', price: 125 },
-            { name: 'Block heel sandals', brand: 'Sam Edelman', price: 130 },
-            { name: 'Clutch purse', brand: 'Mansur Gavriel', price: 195 }
-          ],
-          match_score: 94,
-          created_at: new Date().toISOString()
-        }
-      ];
+      // const mockRecommendations = [
+      //   {
+      //     id: 1,
+      //     title: 'Smart Professional',
+      //     occasion: 'Work',
+      //     description: 'Perfect for office meetings with a confident, professional vibe.',
+      //     confidence: 95,
+      //     color: 'linear-gradient(135deg, #4F7FFF 0%, rgba(79, 127, 255, 0.8) 100%)',
+      //     items: [
+      //       { name: 'Tailored blazer', brand: 'Theory', price: 295 },
+      //       { name: 'Crisp button shirt', brand: 'Everlane', price: 78 },
+      //       { name: 'Straight-leg trousers', brand: 'J.Crew', price: 128 },
+      //       { name: 'Leather loafers', brand: 'Cole Haan', price: 180 }
+      //     ],
+      //     match_score: 92,
+      //     created_at: new Date().toISOString()
+      //   },
+      //   {
+      //     id: 2,
+      //     title: 'Weekend Explorer',
+      //     occasion: 'Casual',
+      //     description: 'Effortlessly stylish for weekend adventures and casual hangouts.',
+      //     confidence: 88,
+      //     color: 'linear-gradient(135deg, #F2546D 0%, rgba(242, 84, 109, 0.8) 100%)',
+      //     items: [
+      //       { name: 'Soft knit sweater', brand: 'Uniqlo', price: 39 },
+      //       { name: 'High-waisted jeans', brand: "Levi's", price: 89 },
+      //       { name: 'White sneakers', brand: 'Adidas', price: 90 },
+      //       { name: 'Canvas tote bag', brand: 'Baggu', price: 38 }
+      //     ],
+      //     match_score: 89,
+      //     created_at: new Date().toISOString()
+      //   },
+      //   {
+      //     id: 3,
+      //     title: 'Date Night Elegance',
+      //     occasion: 'Date',
+      //     description: 'Make a lasting impression with this sophisticated yet approachable look.',
+      //     confidence: 92,
+      //     color: 'linear-gradient(135deg, #1A1A1A 0%, rgba(26, 26, 26, 0.9) 100%)',
+      //     items: [
+      //       { name: 'Silk midi dress', brand: 'Reformation', price: 218 },
+      //       { name: 'Delicate jewelry set', brand: 'Mejuri', price: 125 },
+      //       { name: 'Block heel sandals', brand: 'Sam Edelman', price: 130 },
+      //       { name: 'Clutch purse', brand: 'Mansur Gavriel', price: 195 }
+      //     ],
+      //     match_score: 94,
+      //     created_at: new Date().toISOString()
+      //   }
+      // ];
       
-      setRecommendations(mockRecommendations);
+      // setRecommendations(mockRecommendations);
       
-      // Mock favorite outfits (subset of recommendations marked as favorites)
-      setFavoriteOutfits([mockRecommendations[0], mockRecommendations[2]]);
-      
+      // // Mock favorite outfits (subset of recommendations marked as favorites)
+      // setFavoriteOutfits([mockRecommendations[0], mockRecommendations[2]]);
+      console.info('Loading user outfit recommendations from API');
+      const { data } = await apiClient.get('/api/user/outfits?limit=60');
+      const items = (data?.items || []).map(d => ({
+        id: d._id,
+        title: d.title || d.outfit?.title,
+        occasion: d.occasion || d.outfit?.occasion,
+        description: d.outfit?.description || 'AI-curated look',
+        confidence: d.confidence || d.outfit?.confidence || 90,
+        color: d.color || d.outfit?.color || 'linear-gradient(135deg,#1a1a1a,#2d1b69)',
+        items: d.outfit?.items || [],
+        match_score: d.outfit?.match_score || 90,
+        favorite: !!d.favorite,
+      }));
+      setRecommendations(items);
+      setFavoriteOutfits(items.filter(i => i.favorite));
     } catch (error) {
       console.error('Error loading recommendations:', error);
     } finally {
@@ -181,9 +195,10 @@ const EnhancedProfilePage = () => {
 
   // Load detailed profile when authenticated
   useEffect(() => {
+    console.info('useEffect 2');
     if (isAuthenticated && user && !oauthInFlight) {
       console.info('ProfilePage: User authenticated - loading detailed profile');
-      loadDetailedProfile();
+      // loadDetailedProfile();
       loadUserRecommendations();
     }
   }, [isAuthenticated, user, oauthInFlight]);
