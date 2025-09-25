@@ -86,6 +86,10 @@ async def create_indexes():
         await db.user_outfits.create_index("favorite")
         await db.user_outfits.create_index("occasion")
 
+        # database.create_indexes()
+        await db.users.create_index("auth.oauth_id")
+        await db.users.create_index("auth.provider")
+
         
         logger.info("Database indexes created successfully")
         

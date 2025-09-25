@@ -18,11 +18,32 @@ def _coerce_object_id(v):
 PyObjectId = Annotated[ObjectId, BeforeValidator(_coerce_object_id)]
 # ----------------------------------------
 
+from enum import Enum
+
+# --- NEW: Model for Google-specific auth details ---
+class GoogleAuth(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True  # This is the key change
+    )
+    # The 'sub' field from Google's response maps to a field named 'id' in our model
+    id: str = Field(..., alias="sub") 
+    email: Optional[EmailStr] = None
+    email_verified: bool = False
+    name: Optional[str] = None
+    picture: Optional[str] = None
+    last_login_at: datetime = Field(default_factory=datetime.utcnow)
+    
+class Providers(str, Enum):
+    password = "password"
+    google = "google"
+    apple = "apple"
+
 # 🔑 Authentication info (can extend for OAuth, etc.)
 class AuthInfo(BaseModel):
-    provider: str = "password"        # e.g., "password", "google", "apple"
+    providers: Providers = Providers.password
     password_hash: Optional[str] = None
     oauth_id: Optional[str] = None
+    google: Optional[GoogleAuth] = None
 
 class Measurements(BaseModel):
     height_cm: Optional[float] = None
@@ -84,6 +105,7 @@ class User(BaseModel):
     style: Style = Field(default_factory=Style)
     lifestyle: Lifestyle = Field(default_factory=Lifestyle)
     notifications: Notifications = Field(default_factory=Notifications)
+    last_login_at: Optional[datetime] = None   
 
     # --- Serialization: turn ObjectId into str ---
     @field_serializer("id", when_used="json")

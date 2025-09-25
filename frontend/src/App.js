@@ -15,11 +15,11 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 function App() {
 
-  const clientId = '965120397324-8bt3aev27e0njuuoeffcub79oqaorpig.apps.googleusercontent.com' ;
+  // const clientId = '965120397324-8bt3aev27e0njuuoeffcub79oqaorpig.apps.googleusercontent.com' ;
 
   return (
     <div className="App">
-      <GoogleOAuthProvider clientId={clientId}>
+      {/* <GoogleOAuthProvider clientId={clientId}> */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<RestructuredLandingPage />} />
@@ -51,7 +51,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       
-            </GoogleOAuthProvider>
+            {/* </GoogleOAuthProvider> */}
     </div>
   );
 }

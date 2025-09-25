@@ -5,7 +5,7 @@ import { api } from "../lib/api";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import SocialLogin from "@/components/SocialLogin";
-import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,6 +53,13 @@ export default function AuthPage() {
       setSubmitting(false);
     }
   };
+
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:8000";
+
+  function continueWithGoogle() {
+    const postLoginDest = `${window.location.origin}/profile`; // or wherever
+    window.location.href = `${API_BASE}/api/auth/google/login?redirect=${encodeURIComponent(postLoginDest)}`;
+  }
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
@@ -217,7 +224,8 @@ export default function AuthPage() {
             <span style={{ color: "#888", fontWeight: 500 }}>Or continue with</span>
             <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
               {/* <SocialLogin provider="google" /> */}
-              <GoogleLogin onSuccess={handleGoogleLoginSuccess} onFailure={() => { console.log("Google login failed"); }} />
+              <button onClick={continueWithGoogle}>Continue with Google</button>
+              {/* <GoogleLogin onSuccess={handleGoogleLoginSuccess} onFailure={() => { console.log("Google login failed"); }} /> */}
             </div>
           </div>
 

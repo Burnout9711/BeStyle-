@@ -6,6 +6,7 @@ from fastapi import HTTPException
 from database import get_collection
 from models.session import SessionDoc, DEFAULT_TTL_DAYS
 from bson import ObjectId
+from typing import Any, Dict
 
 COLL = "sessions"
 COOKIE_NAME = "sid"
@@ -50,3 +51,19 @@ async def attach_user(sid: str, user_id: str) -> None:
         {"session_id": sid},
         {"$set": {"user_id": ObjectId(user_id)}}
     )
+
+async def set_session_fields(sid: str, fields: Dict[str, Any]) -> None:
+    """Set arbitrary fields on the session document in Mongo."""
+    coll = get_collection(COLL)
+    await coll.update_one({"session_id": sid}, {"$set": fields})
+
+async def pop_session_field(sid: str, field_name: str) -> Optional[Any]:
+    """Atomically read & remove a field (e.g. redirect_to) from a session."""
+    coll = get_collection(COLL)
+    doc = await coll.find_one_and_update(
+        {"session_id": sid},
+        {"$unset": {field_name: ""}},
+        projection={field_name: 1},
+        return_document=False,  # return pre-image
+    )
+    return (doc or {}).get(field_name)
