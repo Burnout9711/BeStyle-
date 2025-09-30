@@ -5,6 +5,10 @@ from urllib.parse import urlencode
 
 from fastapi import HTTPException
 from pydantic import BaseModel
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from services.session_service import (
     create_session,
@@ -59,10 +63,12 @@ async def handle_callback(*, state: str, code: str) -> CallbackResult:
     sid = state
     # 1) exchange the code -> id_token/profile (you implement this)
     #    For brevity we’ll assume your user service can do it and return user dict with _id.
+    logger.info(f"Handling Google callback with code: {code} and state (sid): {state}")
+    logger.info("Exchanging code for user info...")
     user = await get_or_create_user_from_google(code=code, redirect_uri=GOOGLE_REDIRECT_URI)
     if not user or not user.get("_id"):
         raise HTTPException(status_code=401, detail="Google login failed")
-
+    logger.info("get or create done")
     # 2) attach user to the session
     await attach_user(sid, str(user["_id"]))
 

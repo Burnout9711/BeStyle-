@@ -89,6 +89,7 @@ async def create_indexes():
         # database.create_indexes()
         await db.users.create_index("auth.oauth_id")
         await db.users.create_index("auth.provider")
+        await db.users.create_index("auth.google.sub", unique=True, sparse=True)
 
         
         logger.info("Database indexes created successfully")

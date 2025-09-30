@@ -90,7 +90,7 @@ async def upsert_user_from_google_userinfo(ui: Dict[str, Any]) -> User:
     """
     if not ui or "sub" not in ui:
         raise HTTPException(400, "Invalid Google userinfo")
-
+    logger.info(f"Google userinfo: {ui}")
     sub = ui["sub"]
     email = (ui.get("email") or "").lower() or None
     email_verified = bool(ui.get("email_verified"))
@@ -109,17 +109,19 @@ async def upsert_user_from_google_userinfo(ui: Dict[str, Any]) -> User:
     now = datetime.utcnow()
 
     # 1) Try by google sub
-    doc = await coll.find_one({"auth.google.id": ui["sub"]})
+    doc = await coll.find_one({"auth.google.sub": ui["sub"]})
+    logger.info(f"Found user by google.sub: {doc}")
     if doc:
         # Update profile surface + google provider info
         await coll.update_one(
             {"_id": doc["_id"]},
             {"$set": {
-                "name": name if name else doc.get("name"),
-                "email": email if email else doc.get("email"),
-                "avatar_url": picture or doc.get("avatar_url"),
-                "email_verified": email_verified or doc.get("email_verified", False),
-                "auth.providers.google": {
+                # "name": name if name else doc.get("name"),
+                # "email": email if email else doc.get("email"),
+                # "avatar_url": picture or doc.get("avatar_url"),
+                # "email_verified": email_verified or doc.get("email_verified", False),
+                "auth.providers": "google",         # <- keep providers a string
+                "auth.google": {                    # <- all google info lives here
                     "sub": sub,
                     "email": email,
                     "email_verified": email_verified,
@@ -132,11 +134,15 @@ async def upsert_user_from_google_userinfo(ui: Dict[str, Any]) -> User:
             }}
         )
         doc = await coll.find_one({"_id": doc["_id"]})
-        return User.model_validate(doc) 
+        logger.info(f"We are returning updated user doc: {doc}")
+        logger.info("User type at session issue: %s", type(doc))
+        user_model = User.model_validate(doc)
+        return user_model.model_dump(by_alias=True)  # returns dict with "_id"
 
     # 2) Try to attach to existing account by verified email
     if email and email_verified:
       by_email = await coll.find_one({"email": email})
+      logger.info(f"Found user by email: {by_email}")
       if by_email:
         await coll.update_one(
           {"_id": by_email["_id"]},
@@ -159,7 +165,9 @@ async def upsert_user_from_google_userinfo(ui: Dict[str, Any]) -> User:
           }}
         )
         doc = await coll.find_one({"_id": by_email["_id"]})
-        return User.model_validate(doc) # <--- Correct way
+        logger.info("User type at session issue: %s", type(doc))
+        user_model = User.model_validate(doc)
+        return user_model.model_dump(by_alias=True)  # returns dict with "_id"
 
     # 3) Create new user
     payload: Dict[str, Any] = {
@@ -188,7 +196,8 @@ async def upsert_user_from_google_userinfo(ui: Dict[str, Any]) -> User:
     user = User.model_validate(payload)
     res = await coll.insert_one(user.model_dump(by_alias=True))
     created = await coll.find_one({"_id": res.inserted_id})
-    return User.model_validate(created)
+    validated = User.model_validate(created)
+    return validated.model_dump(by_alias=True)  # returns dict with "_id"
 
 
 async def get_or_create_user_from_google(*, code: str, redirect_uri: str) -> User:
@@ -216,7 +225,7 @@ async def get_or_create_user_from_google(*, code: str, redirect_uri: str) -> Use
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         try:
-            logger.error(f"Google token exchange successful: {token_resp.json()}")
+            logger.info(f"Google token exchange successful: {token_resp.json()}")
             token_resp.raise_for_status()
         except httpx.HTTPStatusError as e:
             logger.error(f"Google token exchange failed: {e.response.text}")
