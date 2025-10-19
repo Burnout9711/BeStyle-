@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import authAPI, {apiClient} from '../lib/authApi';
+import { formatAED } from '@/lib/money';
 
 const OutfitSuggestionsPage = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const OutfitSuggestionsPage = () => {
   const [answers, setAnswers] = useState({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
+  const [productLinks, setProductLinks] = useState({}); // { [outfitId]: { [itemName]: ProductLink[] } }
   const [showResults, setShowResults] = useState(false);
 
   // Redirect if not authenticated
@@ -160,12 +162,23 @@ const OutfitSuggestionsPage = () => {
       // // Generate mock recommendations based on answers
       // const mockRecommendations = generateMockOutfits(answers);
       // setRecommendations(mockRecommendations);
-      const { data } = await apiClient.post('/api/generate/outfits', {
+      const { data } = await apiClient.post('/api/generate/outfits-with-links', {
         answers,
         count: 3,
         save: true
       });
+      console.log('Received recommendations:', data);
       setRecommendations(data.items || []);
+      // Index: OutfitProducts[] -> { outfitId: { itemName: links[] } }
+      const indexed = {};
+      (data.links || []).forEach(op => {
+        const byItem = {};
+        (op.products || []).forEach(ip => {
+          byItem[ip.item_name] = ip.links || [];
+        });
+        indexed[op.outfit_id] = byItem;
+      });
+      setProductLinks(indexed);
       setShowResults(true);
     } catch (error) {
       console.error('Error generating recommendations:', error);
@@ -351,7 +364,7 @@ const OutfitSuggestionsPage = () => {
               Your Perfect Outfits ✨
             </h1>
             <p className="text-gray-300 text-lg">
-              Here are 3 personalized recommendations based on your preferences
+              Here is 1 personalized recommendation based on your preferences
             </p>
           </div>
 
@@ -383,10 +396,41 @@ const OutfitSuggestionsPage = () => {
                     {outfit.items.map((item, itemIndex) => (
                       <div key={itemIndex} className="flex justify-between items-center text-sm">
                         <span className="text-gray-300">{item.name}</span>
-                        <div className="text-right">
+                        {/* <div className="text-right">
                           <div className="text-gray-400 text-xs">{item.brand}</div>
-                          <div className="text-white font-medium">${item.price}</div>
-                        </div>
+                          {typeof item.price === 'number' && (
+                            <div className="text-white font-medium">{formatAED(item.price)}</div>
+                          )}
+                        </div> */}
+                               {/* Product links for this item */}
+                        {!!productLinks[outfit.id]?.[item.name]?.length && (
+                          <div className="mt-2 ml-2 space-y-1">
+                            {productLinks[outfit.id][item.name].slice(0, 3).map((pl, i) => (
+                              <a
+                                key={i}
+                                href={pl.url}
+                                target="_blank"
+                                rel="noopener noreferrer nofollow"
+                                className="flex items-center justify-between rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2"
+                              >
+                                <div className="flex items-center gap-2">
+                                  {pl.image_url && (
+                                    <img alt="" src={pl.image_url} className="w-8 h-8 rounded object-cover" />
+                                  )}
+                                  <div className="text-xs text-gray-200 line-clamp-1">{pl.title}</div>
+                                </div>
+                                <div className="text-right">
+                                  <div className="text-xs text-gray-400">{pl.source}</div>
+                                  {typeof pl.price === 'number' && (
+                                    <div className="text-xs text-white font-semibold">
+                                      {formatAED(pl.price)}
+                                    </div>
+                                  )}
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                     

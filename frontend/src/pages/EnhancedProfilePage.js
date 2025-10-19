@@ -12,6 +12,7 @@ const EnhancedProfilePage = () => {
   const [detailedProfile, setDetailedProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
+  const [productLinks, setProductLinks] = useState({}); // { [outfitId]: { [itemName]: ProductLink[] } }
   const [favoriteOutfits, setFavoriteOutfits] = useState([]);
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
@@ -305,7 +306,7 @@ const EnhancedProfilePage = () => {
       <div className="p-6">
         <p className="text-gray-300 text-sm mb-4">{outfit.description}</p>
         
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <h4 className="text-white font-medium text-sm">Items ({outfit.items.length})</h4>
           {outfit.items.slice(0, 3).map((item, index) => (
             <div key={index} className="flex justify-between items-center text-sm">
@@ -323,6 +324,20 @@ const EnhancedProfilePage = () => {
               <span className="text-purple-400 text-xs">+{outfit.items.length - 3} more items</span>
             </div>
           )}
+        </div> */}
+        <div className="space-y-2">
+          <h4 className="text-white font-medium text-sm">Items ({outfit.items.length})</h4>
+          {outfit.items.map((item, index) => (
+            <div key={index} className="flex justify-between items-center text-sm">
+              <span className="text-gray-300">{item.name}</span>
+              <div className="text-right">
+                <div className="text-gray-400 text-xs">{item.brand}</div>
+                {item.price && (
+                  <div className="text-white font-medium">${item.price}</div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

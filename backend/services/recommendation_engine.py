@@ -439,6 +439,69 @@ class RecommendationEngine:
             logger.error(f"Error calling Gemini API: {str(e)}")
         # Temporary shim so you can deploy without AI now
             return await self.generate_from_answers_fallback(answers, count)
+    
+    async def generate_from_answers_ai_for_serp(self, answers: Dict[str, Any]) -> List[Dict[str, Any]]:
+        
+        logger.info("Generating outfits using gemini and then passing it to serpapi...")
+        # k = max(3, min(count, 6))
+        k = 1
+        count = 1
+
+        prompt = f"""
+        You are a professional stylist for users in the UAE.
+
+        Return ONLY JSON (no prose outside JSON) that conforms to the provided schema.
+        STRICT requirements for each outfit item:
+        - Use brands that sell in the UAE or ship reliably to the UAE (e.g., Zara, H&M, Namshi, 6thStreet, Noon, Amazon.ae, Nike UAE, Adidas AE, Ounass, Sun & Sand Sports, etc.).
+        - Provide a realistic numeric "price_aed" in AED (no currency symbols).
+        - Provide a concrete "name" (e.g., "White Oxford Shirt") and a brand (e.g., "H&M").
+        - Optional but helpful: "color" and "category" (e.g., "white", "shirt").
+
+        User preferences:
+        - Occasion: {answers.get('occasion')}
+        - Mood: {answers.get('mood')}
+        - Colors: {', '.join(answers.get('colors', []))}
+        - Style Preferences: {', '.join(answers.get('style_preference', []))}
+        - Budget: {answers.get('budget')}
+
+        Constraints:
+        - Produce exactly {k} outfit objects in "outfit_recommendations".
+        - Keep "confidence" and "match_score" between 0–100.
+        """
+
+        schema = _outfit_response_schema()
+        data = await _generate_json_from_gemini(prompt, schema=schema)
+        logger.debug(f"Gemini returned data that we will use: {data}")
+        
+        outfits = data.get("outfit_recommendations") or []
+        now = int(time.time() * 1000)
+        cards: List[Dict[str, Any]] = []
+
+        for i, o in enumerate(outfits[:count]):
+            norm_items = []
+            for it in (o.get("items") or []):
+                # Map price_aed -> price for your UI model
+                price = it.get("price_aed")
+                norm_items.append({
+                    "name": it.get("name", "").strip() or "Item",
+                    "brand": it.get("brand", "").strip() or "—",
+                    "price": price if isinstance(price, (int, float)) else None
+                })
+            cards.append({
+                "id": f"{now+i}",
+                "title": o.get("title") or "Styled Look",
+                "occasion": (o.get("occasion") or (answers.get("occasion") or "casual")).title(),
+                "description": o.get("description") or "AI-curated look tailored to your preferences.",
+                "confidence": max(0, min(int(o.get("confidence", 90)), 100)),
+                "color": o.get("color") or "linear-gradient(135deg,#1a1a1a 0%,#2d1b69 100%)",
+                "items": norm_items,
+                "match_score": max(1, min(int(o.get("match_score", 90)), 100)),
+            })
+
+        if not cards:
+            return await self.generate_from_answers_fallback(answers, count)
+        return cards
+
 
     async def generate_from_answers_fallback(self, answers: Dict[str, Any], count: int) -> List[Dict[str, Any]]:
         """Deterministic mock using your demo logic so API works today."""
@@ -527,3 +590,85 @@ class RecommendationEngine:
                 "match_score": random.randint(88, 96),
             })
         return items
+    
+def _outfit_response_schema() -> dict:
+    """
+    Schema forces Gemini to output items we can pass straight into SerpAPI.
+    We keep UI-compatible fields and add price_aed (we'll map -> price).
+    """
+    return {
+    "type": "object",
+    "properties": {
+        "personal_advice": {"type": "string"},
+        "outfit_recommendations": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 6,
+        "items": {
+            "type": "object",
+            "required": ["title","occasion","description","confidence","color","items","match_score"],
+            "properties": {
+            "title": {"type": "string"},
+            "occasion": {"type": "string"},
+            "description": {"type": "string"},
+            "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+            "color": {"type": "string"},
+            "match_score": {"type": "integer", "minimum": 1, "maximum": 100},
+            "items": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                "type": "object",
+                "required": ["name", "brand", "price_aed"],
+                "properties": {
+                    "name": {"type": "string"},          # e.g., "White Oxford Shirt"
+                    "brand": {"type": "string"},         # e.g., "H&M"
+                    "price_aed": {"type": "number"},     # numeric, for price banding
+                    "color": {"type": "string"},         # optional: "white"
+                    "category": {"type": "string"}       # optional: "shirt"
+                },
+                "additionalProperties": False
+                }
+            },
+            "style_types": {"type": "array", "items": {"type": "string"}},
+            "body_types": {"type": "array", "items": {"type": "string"}},
+            "seasons": {"type": "array", "items": {"type": "string"}}
+            },
+            "additionalProperties": False
+        }
+        }
+    },
+    "required": ["personal_advice","outfit_recommendations"],
+    "additionalProperties": False
+    }
+
+def _strip_code_fences(s: str) -> str:
+    s = s.strip()
+    if s.startswith("```"):
+        s = s.strip("`")
+        if "\n" in s:
+            s = s.split("\n", 1)[1]
+    if s.endswith("```"):
+        s = s[:-3]
+    return s.strip()
+
+async def _generate_json_from_gemini(prompt: str, *, schema: dict) -> dict:
+    gen_cfg = {
+        "response_mime_type": "application/json",
+        "temperature": 0.6,
+        "top_p": 0.9,
+        "response_schema": schema,  # if your SDK supports it (latest google-genai does)
+    }
+    resp = await client.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        # generation_config=gen_cfg,
+    )
+    raw = getattr(resp, "text", None)
+    if not raw and getattr(resp, "candidates", None):
+        parts = resp.candidates[0].content.parts
+        raw = "".join(getattr(p, "text", "") for p in parts)
+    if not raw:
+        raise ValueError("Empty response from Gemini")
+    raw = _strip_code_fences(raw)
+    return json.loads(raw)
